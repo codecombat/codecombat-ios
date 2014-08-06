@@ -43,6 +43,7 @@
 		287AE109199294CC00EEE4F0 /* ParticleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE105199294CC00EEE4F0 /* ParticleView.swift */; };
 		287AE10A199294CC00EEE4F0 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 287AE106199294CC00EEE4F0 /* spark.png */; };
 		287AE10B199294CC00EEE4F0 /* TestParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 287AE107199294CC00EEE4F0 /* TestParticle.sks */; };
+		28BA9B561992D5DA006ACB3A /* NewPlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B551992D5DA006ACB3A /* NewPlayViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -102,6 +103,7 @@
 		287AE105199294CC00EEE4F0 /* ParticleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParticleView.swift; sourceTree = "<group>"; };
 		287AE106199294CC00EEE4F0 /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 		287AE107199294CC00EEE4F0 /* TestParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TestParticle.sks; sourceTree = "<group>"; };
+		28BA9B551992D5DA006ACB3A /* NewPlayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPlayViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -227,6 +229,7 @@
 		287AE10C1992950E00EEE4F0 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				28BA9B541992D580006ACB3A /* NEW PLAY VIEW */,
 				287AE1141992957100EEE4F0 /* Play */,
 				287AE1131992956D00EEE4F0 /* Login */,
 				287AE1121992956800EEE4F0 /* Loading */,
@@ -316,6 +319,14 @@
 				287AE0B51992926400EEE4F0 /* EditorTextViewController.swift */,
 			);
 			name = Play;
+			sourceTree = "<group>";
+		};
+		28BA9B541992D580006ACB3A /* NEW PLAY VIEW */ = {
+			isa = PBXGroup;
+			children = (
+				28BA9B551992D5DA006ACB3A /* NewPlayViewController.swift */,
+			);
+			name = "NEW PLAY VIEW";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -430,6 +441,7 @@
 				287AE0DB1992927300EEE4F0 /* WebManager.swift in Sources */,
 				287AE0B91992926400EEE4F0 /* AppDelegate.swift in Sources */,
 				287AE0D11992927300EEE4F0 /* PlayViewChildViewController.swift in Sources */,
+				28BA9B561992D5DA006ACB3A /* NewPlayViewController.swift in Sources */,
 				287AE0D81992927300EEE4F0 /* StoreViewController.swift in Sources */,
 				287AE0D21992927300EEE4F0 /* PlayViewController.swift in Sources */,
 				287AE0BA1992926400EEE4F0 /* BackbonePublisher.swift in Sources */,
