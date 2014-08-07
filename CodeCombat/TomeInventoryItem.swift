@@ -6,11 +6,17 @@
 //  Copyright (c) 2014 CodeCombat. All rights reserved.
 //
 
-class TomeInventoryItem {
-  var name = ""
-  var spells: [TomeInventoryItemSpell] = []
+struct TomeInventoryItem {
+  let name = ""
+  let slot = ""
+  var properties: [TomeInventoryItemProperty] = []
   
-  func addSpell(spell:TomeInventoryItemSpell) {
-    spells.append(spell)
+  init(name: String, slot: String) {
+    self.name = name
+    self.slot = slot
+  }
+  
+  mutating func addProperty(property:TomeInventoryItemProperty) {
+    self.properties.append(property)
   }
 }

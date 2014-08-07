@@ -1,0 +1,11 @@
+[
+  {"name":"Holy Sword","slot":"right-hand","programmableProperties":["attack","target","hasEffect","powerUp"],"moreProgrammableProperties":[],"extraHUDProperties":["attackDamage"],"stats":{}},
+  {"name":"Wooden Shield","slot":"left-hand","programmableProperties":["shield"],"moreProgrammableProperties":[],"stats":{"maxHealth":{"factor":1.25},"health":{"factor":1.25}}},
+  {"name":"Boots of Leaping","slot":"feet","programmableProperties":["move","targetPos","jumpTo"],"moreProgrammableProperties":["jump"],"extraHUDProperties":["maxSpeed"],"stats":{}},
+  {"name":"Stethoscope","slot":"misc-0","programmableProperties":["health","maxHealth","hasEffect"],"moreProgrammableProperties":["action"],"stats":{}},
+  {"name":"Megaphone","slot":"misc-1","programmableProperties":["say"],"moreProgrammableProperties":[],"stats":{}},
+  {"name":"Watch","slot":"wrists","programmableProperties":["now","getCooldown"],"moreProgrammableProperties":[],"stats":{}},
+  {"name":"Fine Glasses","slot":"eyes","programmableProperties":["pos","getEnemies","getNearest","distanceTo"],"moreProgrammableProperties":["getItems","getFriends"],"stats":{}},
+  {"name":"Programmaticon I", "slot":"programming-book","programmableProperties":[],"moreProgrammableProperties":[],"stats":{}}
+]
+

@@ -45,14 +45,27 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
   func setupInventory() {
     let inventoryFrame = CGRectMake(0, 0, editorContainerView.frame.width / 3, editorContainerView.frame.height)
     tomeInventory = TomeInventory(frame: inventoryFrame)
+    
+    var object: AnyObject! = decodeJSONFile("items_tharin")
+    println(object)
     //Sample items go here
-    let testItem = TomeInventoryItem()
-    testItem.name = "Programmaticon"
-    let testSpell = TomeInventoryItemSpell()
-    testSpell.name = "if"
-    testSpell.snippet = "if (${0:BLAH){\n\tHi\n}"
-    testItem.spells.append(testSpell)
-    tomeInventory!.items.append(testItem) //lol NSArray what even is that
+    /*
+    var testItem: [String:AnyObject] = ["name": "Programmaticon", "slot": "programmaticon", "properties": []]
+    var prop: [String:AnyObject] = ["name": "if", "type": "snippet", "snippet": "if (${0:BLAH){\n\tHi\n}"]
+    var testItemProperties = testItem["properties"] as Array
+    testItemProperties.append(prop)
+    
+    //var testItem = TomeInventoryItem(name: "Programmaticon", slot: "programmaticon")
+    //testItem.addProperty(prop)
+    tomeInventory!.items.append(testItem)
+
+    testItem = TomeInventoryItem(name: "Holy Sword", slot: "right-hand")
+    testItem.addProperty(TomeInventoryItemProperty(name: "attack", type: "function", snippet: "this.attack(${0:this.getNearest(this.getEnemies())})"))
+    testItem.addProperty(TomeInventoryItemProperty(name: "target", type: "object", snippet: "this.target"))
+    testItem.addProperty(TomeInventoryItemProperty(name: "hasEffect", type: "function", snippet: "this.hasEffect(${0:'power-up'})"))
+    testItem.addProperty(TomeInventoryItemProperty(name: "powerUp", type: "function", snippet: "this.powerUp()"))
+*/
+    
     tomeInventory!.setNeedsDisplay()
     editorContainerView.addSubview(tomeInventory!)
   }

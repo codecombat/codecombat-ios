@@ -1,0 +1,17 @@
+[
+  {"name":"Holy Sword","slot":"right-hand","programmableProperties":["attack","target","hasEffect","powerUp"],"moreProgrammableProperties":[],"extraHUDProperties":["attackDamage"],"stats":{}},
+  {"name":"Wooden Shield","slot":"left-hand","programmableProperties":["shield"],"moreProgrammableProperties":[],"stats":{"maxHealth":{"factor":1.25},"health":{"factor":1.25}}},
+  {"name":"Boots of Leaping","slot":"feet","programmableProperties":["move","targetPos","jumpTo"],"moreProgrammableProperties":["jump"],"extraHUDProperties":["maxSpeed"],"stats":{}},
+  {"name":"Stethoscope","slot":"misc-0","programmableProperties":["health","maxHealth","hasEffect"],"moreProgrammableProperties":["action"],"stats":{}},
+  {"name":"Megaphone","slot":"misc-1","programmableProperties":["say"],"moreProgrammableProperties":[],"stats":{}},
+  {"name":"Watch","slot":"wrists","programmableProperties":["now","getCooldown"],"moreProgrammableProperties":[],"stats":{}},
+  {"name":"Fine Glasses","slot":"eyes","programmableProperties":["pos","getEnemies","getNearest","distanceTo"],"moreProgrammableProperties":["getItems","getFriends"],"stats":{}},
+  {"name":"Crossbow","slot":"right-hand","programmableProperties":["attack","target","attackRange"],"moreProgrammableProperties":["attackXY","targetPos"],"extraHUDProperties":["attackDamage","attackRange"],"stats":{}},
+  {"name":"Longsword","slot":"right-hand","programmableProperties":["attack","target"],"moreProgrammableProperties":[],"extraHUDProperties":["attackDamage"],"stats":{}},
+  {"name":"Simple Boots","slot":"feet","programmableProperties":["moveLeft","moveRight","moveUp","moveDown"],"moreProgrammableProperties":[],"extraHUDProperties":[],"stats":{}},
+  {"name":"Leather Boots","slot":"feet","programmableProperties":["moveXY"],"moreProgrammableProperties":[],"extraHUDProperties":["maxSpeed"],"stats":{}},
+  {"name":"Fine Boots","slot":"feet","programmableProperties":["move","targetPos","jump"],"moreProgrammableProperties":[],"extraHUDProperties":["maxSpeed"],"stats":{}},
+  {"name":"X-Ray Goggles","slot":"eyes","programmableProperties":["pos","getEnemies","getNearest","distanceTo"],"moreProgrammableProperties":["getItems","getFriends"],"stats":{}},
+  {"name":"Crude Glasses","slot":"eyes","programmableProperties":["pos","getEnemies"],"moreProgrammableProperties":["getItems","getFriends"],"stats":{}},
+  {"name":"Programmaticon I", "slot":"programming-book","programmableProperties":[],"moreProgrammableProperties":[],"stats":{}}
+]
