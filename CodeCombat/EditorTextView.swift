@@ -9,18 +9,17 @@
 import UIKit
 
 class EditorTextView: UITextView {
-  var showLineNumbers = true
+  var shouldShowLineNumbers = false
   var textAttributes = Dictionary<NSObject, AnyObject>()
   var numberOfCharactersInLineNumberGutter = 0
   var lineNumberWidth = CGFloat(20.0)
   
   override func drawRect(rect: CGRect) {
-    if showLineNumbers {
-      resizeLineNumberGutter()
+    
+    if shouldShowLineNumbers {
       drawLineNumbers()
       
     }
-    println("DRAWING RECT")
     super.drawRect(rect)
   }
   
@@ -48,24 +47,32 @@ class EditorTextView: UITextView {
           lineNumber++
           let LineNumberString = NSString(string: "\(lineNumber)")
           let Size = LineNumberString.sizeWithAttributes(self!.textAttributes)
-          let Point = CGPointMake(self!.lineNumberWidth - Size.width, aRect.origin.y + 8)
+          let Point = CGPointMake(self!.lineNumberWidth - 4 - Size.width, aRect.origin.y + 8)
           LineNumberString.drawAtPoint(Point, withAttributes: self!.textAttributes)
         }
     })
   }
   
-  private func resizeLineNumberGutter() {
-    if !showLineNumbers {
+  func showLineNumbers() {
+    if shouldShowLineNumbers {
+      return
+    }
+    font = UIFont(name: "Courier", size: 20)
+    contentSize = CGSizeMake(bounds.size.width - lineNumberWidth, bounds.size.height)
+    //contentInset = UIEdgeInsetsMake(0, 0, 0, lineNumberWidth * 5)
+    shouldShowLineNumbers = true
+    resizeLineNumberGutter()
+  }
+  
+  func resizeLineNumberGutter() {
+    if !shouldShowLineNumbers {
       return
     }
     let TotalLines = 10 //Replace this with the actual total lines
     let TotalLinesString = NSString(string: "\(TotalLines)")
     let NumberOfCharacters = TotalLinesString.length
-    //CHANGE THIS
-    font = UIFont(name: "Courier", size: 20)
     if NumberOfCharacters != numberOfCharactersInLineNumberGutter {
-      let Attributes = [NSFontAttributeName: font]
-      let Size = TotalLinesString.sizeWithAttributes(Attributes)
+      let Size = TotalLinesString.sizeWithAttributes([NSFontAttributeName: font])
       let ContainerRect = bounds
       let GutterPadding = CGFloat(5.0)
       let Rect = CGRectMake(ContainerRect.origin.x, ContainerRect.origin.y, Size.width + GutterPadding, CGFloat.max)
