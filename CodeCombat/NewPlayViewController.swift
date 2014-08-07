@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NewPlayViewController: UIViewController {
+class NewPlayViewController: UIViewController, UITextViewDelegate {
   
   let screenshotView = UIImageView(image: UIImage(named: "largeScreenshot"))
   let editorContainerView = UIView()
@@ -46,6 +46,7 @@ class NewPlayViewController: UIViewController {
     layoutManager.addTextContainer(textContainer)
     let editorTextViewFrame = CGRectMake(inventoryFrame.width, 0, editorContainerView.frame.width - inventoryFrame.width, editorContainerView.frame.height)
     let editorTextView = EditorTextView(frame: editorTextViewFrame, textContainer: textContainer)
+    editorTextView.delegate = self
     
     editorContainerView.addSubview(editorTextView)
     
@@ -55,6 +56,10 @@ class NewPlayViewController: UIViewController {
     scrollView.addSubview(editorContainerView)
     scrollView.bounces = false
     view.addSubview(scrollView)
+  }
+  
+  func textViewDidChange(textView: UITextView!) {
+    textView.setNeedsDisplay()
   }
   
   

@@ -11,12 +11,16 @@ import UIKit
 class EditorTextView: UITextView {
   var showLineNumbers = true
   var textAttributes = Dictionary<NSObject, AnyObject>()
-
+  var numberOfCharactersInLineNumberGutter = 0
+  var lineNumberWidth = CGFloat(20.0)
+  
   override func drawRect(rect: CGRect) {
     if showLineNumbers {
+      resizeLineNumberGutter()
       drawLineNumbers()
       
     }
+    println("DRAWING RECT")
     super.drawRect(rect)
   }
   
@@ -25,9 +29,8 @@ class EditorTextView: UITextView {
     let Context = UIGraphicsGetCurrentContext()
     let Bounds = bounds
     let LineNumberBackgroundColor = UIColor.grayColor()
-    let LineNumberWidth = CGFloat(20.0)
     CGContextSetFillColorWithColor(Context, LineNumberBackgroundColor.CGColor)
-    let LineNumberBackgroundRect = CGRectMake(Bounds.origin.x, Bounds.origin.y, LineNumberWidth, Bounds.size.height)
+    let LineNumberBackgroundRect = CGRectMake(Bounds.origin.x, Bounds.origin.y, lineNumberWidth, Bounds.size.height)
     CGContextFillRect(Context, LineNumberBackgroundRect)
     
     let textRange = layoutManager.glyphRangeForBoundingRect(Bounds, inTextContainer: textContainer)
@@ -45,11 +48,31 @@ class EditorTextView: UITextView {
           lineNumber++
           let LineNumberString = NSString(string: "\(lineNumber)")
           let Size = LineNumberString.sizeWithAttributes(self!.textAttributes)
-          let Point = CGPointMake(LineNumberWidth - Size.width, aRect.origin.y + 8)
+          let Point = CGPointMake(self!.lineNumberWidth - Size.width, aRect.origin.y + 8)
           LineNumberString.drawAtPoint(Point, withAttributes: self!.textAttributes)
         }
     })
   }
   
-    
+  private func resizeLineNumberGutter() {
+    if !showLineNumbers {
+      return
+    }
+    let TotalLines = 10 //Replace this with the actual total lines
+    let TotalLinesString = NSString(string: "\(TotalLines)")
+    let NumberOfCharacters = TotalLinesString.length
+    //CHANGE THIS
+    font = UIFont(name: "Courier", size: 20)
+    if NumberOfCharacters != numberOfCharactersInLineNumberGutter {
+      let Attributes = [NSFontAttributeName: font]
+      let Size = TotalLinesString.sizeWithAttributes(Attributes)
+      let ContainerRect = bounds
+      let GutterPadding = CGFloat(5.0)
+      let Rect = CGRectMake(ContainerRect.origin.x, ContainerRect.origin.y, Size.width + GutterPadding, CGFloat.max)
+      lineNumberWidth = Rect.size.width
+      textContainer.exclusionPaths = [UIBezierPath(rect: Rect)]
+      numberOfCharactersInLineNumberGutter = NumberOfCharacters
+    }
+    setNeedsDisplay()
+  }
 }
