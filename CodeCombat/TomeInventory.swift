@@ -1,5 +1,5 @@
 //
-//  EditorInventory.swift
+//  TomeInventory.swift
 //  CodeCombat
 //
 //  Created by Michael Schmatz on 8/6/14.
@@ -9,9 +9,9 @@
 import UIKit
 import QuartzCore
 
-class EditorInventory: UIScrollView {
+class TomeInventory: UIScrollView {
   
-  var items: [EditorInventoryItem] = []
+  var items: [TomeInventoryItem] = []
 
   func baseInit() {
     bounces = false

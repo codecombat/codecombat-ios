@@ -12,8 +12,8 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
   
   let screenshotView = UIImageView(image: UIImage(named: "largeScreenshot"))
   let editorContainerView = UIView()
-  var editor:Editor? = nil
-  var editorInventory:EditorInventory? = nil
+  var codeEditor:Editor? = nil
+  var tomeInventory:TomeInventory? = nil
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -30,7 +30,7 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
     
     setupScrollView()
     setupInventory()
-    setupEditor()
+    setupTome()
   }
   
   func setupScrollView() {
@@ -44,29 +44,29 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
   
   func setupInventory() {
     let inventoryFrame = CGRectMake(0, 0, editorContainerView.frame.width / 3, editorContainerView.frame.height)
-    editorInventory = EditorInventory(frame: inventoryFrame)
+    tomeInventory = TomeInventory(frame: inventoryFrame)
     //Sample items go here
-    let testItem = EditorInventoryItem()
+    let testItem = TomeInventoryItem()
     testItem.name = "Programmaticon"
-    let testSpell = EditorInventoryItemSpell()
+    let testSpell = TomeInventoryItemSpell()
     testSpell.name = "if"
     testSpell.snippet = "if (${0:BLAH){\n\tHi\n}"
     testItem.spells.append(testSpell)
-    editorInventory!.items.append(testItem) //lol NSArray what even is that
-    editorInventory!.setNeedsDisplay()
-    editorContainerView.addSubview(editorInventory!)
+    tomeInventory!.items.append(testItem) //lol NSArray what even is that
+    tomeInventory!.setNeedsDisplay()
+    editorContainerView.addSubview(tomeInventory!)
   }
   
-  func setupEditor() {
+  func setupTome() {
     let textStorage = EditorTextStorage()
     let layoutManager = EditorLayoutManager()
     textStorage.addLayoutManager(layoutManager)
     let textContainer = NSTextContainer()
     layoutManager.addTextContainer(textContainer)
-    let editorTextViewFrame = CGRectMake(editorInventory!.frame.width, 0, editorContainerView.frame.width - editorInventory!.frame.width, editorContainerView.frame.height)
+    let editorTextViewFrame = CGRectMake(tomeInventory!.frame.width, 0, editorContainerView.frame.width - tomeInventory!.frame.width, editorContainerView.frame.height)
     let editorTextView = EditorTextView(frame: editorTextViewFrame, textContainer: textContainer)
-    editor = Editor(textView: editorTextView)
-    editorTextView.delegate = editor!
+    codeEditor = Editor(textView: editorTextView)
+    editorTextView.delegate = codeEditor!
     editorContainerView.addSubview(editorTextView)
   }
 
