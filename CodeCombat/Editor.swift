@@ -13,9 +13,12 @@ class Editor : NSObject, UITextViewDelegate {
     self.textView = textView
     super.init()
   }
-  
-  func textViewDidChange(textView: UITextView!) {
-    textView.setNeedsDisplay()
+
+  func textView(textView: UITextView!, shouldChangeTextInRange range: NSRange, replacementText text: String!) -> Bool {
+    if text == "\n" {
+      textView.setNeedsDisplay()
+    }
+    return true
   }
 
 }

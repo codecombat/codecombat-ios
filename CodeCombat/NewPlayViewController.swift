@@ -30,7 +30,7 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
     
     setupScrollView()
     setupInventory()
-    setupTome()
+    setupEditor()
   }
   
   func setupScrollView() {
@@ -57,16 +57,22 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
     editorContainerView.addSubview(tomeInventory!)
   }
   
-  func setupTome() {
+  func setupEditor() {
     let textStorage = EditorTextStorage()
     let layoutManager = EditorLayoutManager()
+    layoutManager.allowsNonContiguousLayout = true
     textStorage.addLayoutManager(layoutManager)
     let textContainer = NSTextContainer()
+    textContainer.lineBreakMode = NSLineBreakMode.ByCharWrapping
+    textContainer.widthTracksTextView = true
     layoutManager.addTextContainer(textContainer)
     let editorTextViewFrame = CGRectMake(tomeInventory!.frame.width, 0, editorContainerView.frame.width - tomeInventory!.frame.width, editorContainerView.frame.height)
     let editorTextView = EditorTextView(frame: editorTextViewFrame, textContainer: textContainer)
+    editorTextView.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
+
     codeEditor = Editor(textView: editorTextView)
     editorTextView.delegate = codeEditor!
+    editorTextView.showLineNumbers()
     editorContainerView.addSubview(editorTextView)
   }
 
