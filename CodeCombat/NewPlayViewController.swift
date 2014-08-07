@@ -37,10 +37,16 @@ class NewPlayViewController: UIViewController {
     testItem.spells.append(testSpell)
     inventory.items.append(testItem) //lol NSArray what even is that
     inventory.setNeedsDisplay()
-    
     editorContainerView.addSubview(inventory)
+    
+    let textStorage = EditorTextStorage()
+    let layoutManager = EditorLayoutManager()
+    textStorage.addLayoutManager(layoutManager)
+    let textContainer = NSTextContainer()
+    layoutManager.addTextContainer(textContainer)
     let editorTextViewFrame = CGRectMake(inventoryFrame.width, 0, editorContainerView.frame.width - inventoryFrame.width, editorContainerView.frame.height)
-    let editorTextView = EditorTextView(frame: editorTextViewFrame)
+    let editorTextView = EditorTextView(frame: editorTextViewFrame, textContainer: textContainer)
+    
     editorContainerView.addSubview(editorTextView)
     
     let scrollView = UIScrollView(frame: view.frame)

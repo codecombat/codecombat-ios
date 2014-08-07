@@ -201,16 +201,12 @@
 		287AE1011992945F00EEE4F0 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				287AE0DD199292CE00EEE4F0 /* IAPHelper.swift */,
+				28C96DFC1993F0ED009FCD9E /* IAP */,
+				28C96DF91993F0BF009FCD9E /* Editor */,
 				287AE0C61992927300EEE4F0 /* SpriteDialogue.swift */,
 				287AE0CA1992927300EEE4F0 /* User.swift */,
 				287AE0CC1992927300EEE4F0 /* WebManager.swift */,
 				287AE0CD1992927300EEE4F0 /* ColorManager.swift */,
-				287AE0B01992926400EEE4F0 /* EditorTextStorage.swift */,
-				287AE0B31992926400EEE4F0 /* CodeCombatIAPHelper.swift */,
-				287AE0B41992926400EEE4F0 /* EditorLayoutManager.swift */,
-				28BA9B591992FFB0006ACB3A /* EditorInventoryItem.swift */,
-				28BA9B5B199300A5006ACB3A /* EditorInventoryItemSpell.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -339,6 +335,42 @@
 				28BA9B571992E185006ACB3A /* EditorInventory.swift */,
 			);
 			name = NewPlayView;
+			sourceTree = "<group>";
+		};
+		28C96DF91993F0BF009FCD9E /* Editor */ = {
+			isa = PBXGroup;
+			children = (
+				28C96DFB1993F0DE009FCD9E /* Inventory */,
+				28C96DFA1993F0CE009FCD9E /* Text */,
+			);
+			name = Editor;
+			sourceTree = "<group>";
+		};
+		28C96DFA1993F0CE009FCD9E /* Text */ = {
+			isa = PBXGroup;
+			children = (
+				287AE0B01992926400EEE4F0 /* EditorTextStorage.swift */,
+				287AE0B41992926400EEE4F0 /* EditorLayoutManager.swift */,
+			);
+			name = Text;
+			sourceTree = "<group>";
+		};
+		28C96DFB1993F0DE009FCD9E /* Inventory */ = {
+			isa = PBXGroup;
+			children = (
+				28BA9B591992FFB0006ACB3A /* EditorInventoryItem.swift */,
+				28BA9B5B199300A5006ACB3A /* EditorInventoryItemSpell.swift */,
+			);
+			name = Inventory;
+			sourceTree = "<group>";
+		};
+		28C96DFC1993F0ED009FCD9E /* IAP */ = {
+			isa = PBXGroup;
+			children = (
+				287AE0DD199292CE00EEE4F0 /* IAPHelper.swift */,
+				287AE0B31992926400EEE4F0 /* CodeCombatIAPHelper.swift */,
+			);
+			name = IAP;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
