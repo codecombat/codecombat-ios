@@ -20,5 +20,9 @@ class Editor : NSObject, UITextViewDelegate {
     }
     return true
   }
+  
+  func textViewDidChange(textView: UITextView!) {
+    self.textView.resizeLineNumberGutter()
+  }
 
 }

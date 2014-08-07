@@ -57,21 +57,20 @@ class EditorTextView: UITextView {
     if shouldShowLineNumbers {
       return
     }
+    font = UIFont(name: "Courier", size: 20)
     contentSize = CGSizeMake(bounds.size.width - lineNumberWidth, bounds.size.height)
     //contentInset = UIEdgeInsetsMake(0, 0, 0, lineNumberWidth * 5)
     shouldShowLineNumbers = true
     resizeLineNumberGutter()
   }
   
-  private func resizeLineNumberGutter() {
+  func resizeLineNumberGutter() {
     if !shouldShowLineNumbers {
       return
     }
     let TotalLines = 10 //Replace this with the actual total lines
     let TotalLinesString = NSString(string: "\(TotalLines)")
     let NumberOfCharacters = TotalLinesString.length
-    //CHANGE THIS
-    font = UIFont(name: "Courier", size: 20)
     if NumberOfCharacters != numberOfCharactersInLineNumberGutter {
       let Size = TotalLinesString.sizeWithAttributes([NSFontAttributeName: font])
       let ContainerRect = bounds

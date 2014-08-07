@@ -69,7 +69,7 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
     let editorTextViewFrame = CGRectMake(tomeInventory!.frame.width, 0, editorContainerView.frame.width - tomeInventory!.frame.width, editorContainerView.frame.height)
     let editorTextView = EditorTextView(frame: editorTextViewFrame, textContainer: textContainer)
     editorTextView.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
-
+    
     codeEditor = Editor(textView: editorTextView)
     editorTextView.delegate = codeEditor!
     editorTextView.showLineNumbers()
