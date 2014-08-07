@@ -45,6 +45,8 @@
 		287AE10B199294CC00EEE4F0 /* TestParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 287AE107199294CC00EEE4F0 /* TestParticle.sks */; };
 		28BA9B561992D5DA006ACB3A /* NewPlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B551992D5DA006ACB3A /* NewPlayViewController.swift */; };
 		28BA9B581992E185006ACB3A /* EditorInventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B571992E185006ACB3A /* EditorInventory.swift */; };
+		28BA9B5A1992FFB0006ACB3A /* EditorInventoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B591992FFB0006ACB3A /* EditorInventoryItem.swift */; };
+		28BA9B5C199300A5006ACB3A /* EditorInventoryItemSpell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B5B199300A5006ACB3A /* EditorInventoryItemSpell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,6 +108,8 @@
 		287AE107199294CC00EEE4F0 /* TestParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TestParticle.sks; sourceTree = "<group>"; };
 		28BA9B551992D5DA006ACB3A /* NewPlayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPlayViewController.swift; sourceTree = "<group>"; };
 		28BA9B571992E185006ACB3A /* EditorInventory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorInventory.swift; sourceTree = "<group>"; };
+		28BA9B591992FFB0006ACB3A /* EditorInventoryItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorInventoryItem.swift; sourceTree = "<group>"; };
+		28BA9B5B199300A5006ACB3A /* EditorInventoryItemSpell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorInventoryItemSpell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -203,6 +207,8 @@
 				287AE0B01992926400EEE4F0 /* EditorTextStorage.swift */,
 				287AE0B31992926400EEE4F0 /* CodeCombatIAPHelper.swift */,
 				287AE0B41992926400EEE4F0 /* EditorLayoutManager.swift */,
+				28BA9B591992FFB0006ACB3A /* EditorInventoryItem.swift */,
+				28BA9B5B199300A5006ACB3A /* EditorInventoryItemSpell.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -449,6 +455,7 @@
 				287AE0D81992927300EEE4F0 /* StoreViewController.swift in Sources */,
 				287AE0D21992927300EEE4F0 /* PlayViewController.swift in Sources */,
 				287AE0BA1992926400EEE4F0 /* BackbonePublisher.swift in Sources */,
+				28BA9B5A1992FFB0006ACB3A /* EditorInventoryItem.swift in Sources */,
 				287AE0E0199292E400EEE4F0 /* InventoryCell.swift in Sources */,
 				287AE0FC199293B600EEE4F0 /* MarkdownTokens.m in Sources */,
 				287AE0B61992926400EEE4F0 /* LevelLoadingViewController.swift in Sources */,
@@ -466,6 +473,7 @@
 				287AE0E2199292F900EEE4F0 /* EquippedItemsViewController.swift in Sources */,
 				287AE109199294CC00EEE4F0 /* ParticleView.swift in Sources */,
 				287AE0D01992927300EEE4F0 /* MainMenuController.swift in Sources */,
+				28BA9B5C199300A5006ACB3A /* EditorInventoryItemSpell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

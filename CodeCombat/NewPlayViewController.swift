@@ -25,7 +25,7 @@ class NewPlayViewController: UIViewController {
     screenshotView.frame = CGRectMake(0, 0, frameWidth, frameWidth / aspectRatio)
     editorContainerView.frame = CGRectMake(0, screenshotView.frame.height, frameWidth, frameHeight)
     editorContainerView.backgroundColor = UIColor.redColor()
-  
+    
     let inventoryFrame = CGRectMake(0, 0, editorContainerView.frame.width / 3, editorContainerView.frame.height)
     let inventory = EditorInventory(frame: inventoryFrame)
     editorContainerView.addSubview(inventory)
