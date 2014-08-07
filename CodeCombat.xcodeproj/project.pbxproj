@@ -47,6 +47,7 @@
 		28BA9B581992E185006ACB3A /* EditorInventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B571992E185006ACB3A /* EditorInventory.swift */; };
 		28BA9B5A1992FFB0006ACB3A /* EditorInventoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B591992FFB0006ACB3A /* EditorInventoryItem.swift */; };
 		28BA9B5C199300A5006ACB3A /* EditorInventoryItemSpell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B5B199300A5006ACB3A /* EditorInventoryItemSpell.swift */; };
+		28C96DF71993D09C009FCD9E /* EditorTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C96DF61993D09C009FCD9E /* EditorTextView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -110,6 +111,7 @@
 		28BA9B571992E185006ACB3A /* EditorInventory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorInventory.swift; sourceTree = "<group>"; };
 		28BA9B591992FFB0006ACB3A /* EditorInventoryItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorInventoryItem.swift; sourceTree = "<group>"; };
 		28BA9B5B199300A5006ACB3A /* EditorInventoryItemSpell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorInventoryItemSpell.swift; sourceTree = "<group>"; };
+		28C96DF61993D09C009FCD9E /* EditorTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorTextView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -217,6 +219,7 @@
 			isa = PBXGroup;
 			children = (
 				287AE0AF1992926400EEE4F0 /* Main.storyboard */,
+				28C96DF61993D09C009FCD9E /* EditorTextView.swift */,
 				287AE0DF199292E400EEE4F0 /* InventoryCell.swift */,
 				287AE1031992948500EEE4F0 /* Effects */,
 			);
@@ -466,6 +469,7 @@
 				287AE0D71992927300EEE4F0 /* StoreItemDetailViewController.swift in Sources */,
 				287AE108199294CC00EEE4F0 /* ParticleScene.swift in Sources */,
 				287AE0D91992927300EEE4F0 /* User.swift in Sources */,
+				28C96DF71993D09C009FCD9E /* EditorTextView.swift in Sources */,
 				287AE0BB1992926400EEE4F0 /* CodeCombatIAPHelper.swift in Sources */,
 				287AE0D61992927300EEE4F0 /* SpriteDialogueViewController.swift in Sources */,
 				287AE0FA199293B600EEE4F0 /* fmemopen.c in Sources */,

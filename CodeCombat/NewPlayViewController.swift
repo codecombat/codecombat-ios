@@ -40,7 +40,7 @@ class NewPlayViewController: UIViewController {
     
     editorContainerView.addSubview(inventory)
     let editorTextViewFrame = CGRectMake(inventoryFrame.width, 0, editorContainerView.frame.width - inventoryFrame.width, editorContainerView.frame.height)
-    let editorTextView = UITextView(frame: editorTextViewFrame)
+    let editorTextView = EditorTextView(frame: editorTextViewFrame)
     editorContainerView.addSubview(editorTextView)
     
     let scrollView = UIScrollView(frame: view.frame)
