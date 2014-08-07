@@ -12,6 +12,8 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
   
   let screenshotView = UIImageView(image: UIImage(named: "largeScreenshot"))
   let editorContainerView = UIView()
+  var editor:Editor? = nil
+  var editorInventory:EditorInventory? = nil
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -26,8 +28,23 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
     editorContainerView.frame = CGRectMake(0, screenshotView.frame.height, frameWidth, frameHeight)
     editorContainerView.backgroundColor = UIColor.redColor()
     
+    setupScrollView()
+    setupInventory()
+    setupEditor()
+  }
+  
+  func setupScrollView() {
+    let scrollView = UIScrollView(frame: view.frame)
+    scrollView.addSubview(screenshotView)
+    scrollView.contentSize = CGSizeMake(view.frame.size.width, screenshotView.frame.height + view.frame.size.height)
+    scrollView.addSubview(editorContainerView)
+    scrollView.bounces = false
+    view.addSubview(scrollView)
+  }
+  
+  func setupInventory() {
     let inventoryFrame = CGRectMake(0, 0, editorContainerView.frame.width / 3, editorContainerView.frame.height)
-    let inventory = EditorInventory(frame: inventoryFrame)
+    editorInventory = EditorInventory(frame: inventoryFrame)
     //Sample items go here
     let testItem = EditorInventoryItem()
     testItem.name = "Programmaticon"
@@ -35,48 +52,22 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
     testSpell.name = "if"
     testSpell.snippet = "if (${0:BLAH){\n\tHi\n}"
     testItem.spells.append(testSpell)
-    inventory.items.append(testItem) //lol NSArray what even is that
-    inventory.setNeedsDisplay()
-    editorContainerView.addSubview(inventory)
-    
+    editorInventory!.items.append(testItem) //lol NSArray what even is that
+    editorInventory!.setNeedsDisplay()
+    editorContainerView.addSubview(editorInventory!)
+  }
+  
+  func setupEditor() {
     let textStorage = EditorTextStorage()
     let layoutManager = EditorLayoutManager()
     textStorage.addLayoutManager(layoutManager)
     let textContainer = NSTextContainer()
     layoutManager.addTextContainer(textContainer)
-    let editorTextViewFrame = CGRectMake(inventoryFrame.width, 0, editorContainerView.frame.width - inventoryFrame.width, editorContainerView.frame.height)
+    let editorTextViewFrame = CGRectMake(editorInventory!.frame.width, 0, editorContainerView.frame.width - editorInventory!.frame.width, editorContainerView.frame.height)
     let editorTextView = EditorTextView(frame: editorTextViewFrame, textContainer: textContainer)
-    editorTextView.delegate = self
-    
+    editor = Editor(textView: editorTextView)
+    editorTextView.delegate = editor!
     editorContainerView.addSubview(editorTextView)
-    
-    let scrollView = UIScrollView(frame: view.frame)
-    scrollView.addSubview(screenshotView)
-    scrollView.contentSize = CGSizeMake(frameWidth, screenshotView.frame.height + frameHeight)
-    scrollView.addSubview(editorContainerView)
-    scrollView.bounces = false
-    view.addSubview(scrollView)
   }
-  
-  func textViewDidChange(textView: UITextView!) {
-    textView.setNeedsDisplay()
-  }
-  
-  
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
-  }
-  
-  
-  /*
-  // MARK: - Navigation
-  
-  // In a storyboard-based application, you will often want to do a little preparation before navigation
-  override func prepareForSegue(segue: UIStoryboardSegue!, sender: AnyObject!) {
-  // Get the new view controller using segue.destinationViewController.
-  // Pass the selected object to the new view controller.
-  }
-  */
-  
+
 }
