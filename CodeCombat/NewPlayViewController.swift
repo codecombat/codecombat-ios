@@ -28,6 +28,16 @@ class NewPlayViewController: UIViewController {
     
     let inventoryFrame = CGRectMake(0, 0, editorContainerView.frame.width / 3, editorContainerView.frame.height)
     let inventory = EditorInventory(frame: inventoryFrame)
+    //Sample items go here
+    let testItem = EditorInventoryItem()
+    testItem.name = "Programmaticon"
+    let testSpell = EditorInventoryItemSpell()
+    testSpell.name = "if"
+    testSpell.snippet = "if (${0:BLAH){\n\tHi\n}"
+    testItem.spells.append(testSpell)
+    inventory.items.append(testItem) //lol NSArray what even is that
+    inventory.setNeedsDisplay()
+    
     editorContainerView.addSubview(inventory)
     let editorTextViewFrame = CGRectMake(inventoryFrame.width, 0, editorContainerView.frame.width - inventoryFrame.width, editorContainerView.frame.height)
     let editorTextView = UITextView(frame: editorTextViewFrame)

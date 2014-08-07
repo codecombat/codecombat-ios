@@ -10,6 +10,8 @@ import UIKit
 import QuartzCore
 
 class EditorInventory: UIScrollView {
+  
+  var items: [EditorInventoryItem] = []
 
   func baseInit() {
     bounces = false
