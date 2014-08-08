@@ -24,12 +24,8 @@ class TomeInventoryView: UIScrollView, UIGestureRecognizerDelegate {
     backgroundColor = UIColor.blueColor()
     let width = frame.width
     let height = 2 * frame.height
-    let gradient = CAGradientLayer()
     contentSize = CGSizeMake(width, height)
-    gradient.frame = CGRectMake(0, 0, width, height)
-    let gradientColors: Array <AnyObject> = [UIColor.blackColor().CGColor, UIColor.orangeColor().CGColor]
-    gradient.colors = gradientColors
-    layer.insertSublayer(gradient, atIndex: 0)
+    backgroundColor = UIColor(red: CGFloat(234.0/256.0), green: CGFloat(219.0/256.0), blue: CGFloat(169.0/256.0), alpha: 1)
     setupGestureRecognizer()
   }
   
@@ -132,7 +128,7 @@ class TomeInventoryView: UIScrollView, UIGestureRecognizerDelegate {
     if Snippet.isString {
       return Snippet.toString(pretty: false) + "\n"
     } else {
-      return itemProperty.propertyData["name"].toString(pretty: false)
+      return itemProperty.propertyData["name"].toString(pretty: false) + "\n"
     }
   }
   

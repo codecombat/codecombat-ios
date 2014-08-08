@@ -45,7 +45,7 @@ class TomeInventoryItemView: UIView {
         if properties.count > 0 {
           var label = UILabel(frame: CGRect(x: Margin, y: Margin, width: frame.width / 2.0 - 2 * Margin, height: frame.height - 2 * Margin))
           label.text = name
-          label.textColor = UIColor(white: 0.85, alpha: 1)
+          label.textColor = UIColor.blackColor()
           label.sizeToFit()
           label.frame = CGRect(x: label.frame.origin.x, y: CGFloat((y + Margin - label.frame.height) / 2.0), width: label.frame.width, height: label.frame.height)
           addSubview(label)
@@ -54,7 +54,8 @@ class TomeInventoryItemView: UIView {
       }
     }
     frame = CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.width, height: showsProperties ? y + Margin : 0)
-    backgroundColor = UIColor(hue: 0.67, saturation: 0.33, brightness: 1.0, alpha: 0.2)
+    backgroundColor = UIColor(red: CGFloat(211.0/256.0), green: CGFloat(191.0/256.0), blue: CGFloat(129.0/256.0), alpha: 1)
+    //211	191	129
   }
   
   func tomeInventoryItemPropertyAtLocation(location:CGPoint) -> TomeInventoryItemProperty? {

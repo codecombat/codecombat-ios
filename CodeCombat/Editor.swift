@@ -11,6 +11,12 @@ class Editor : NSObject, UITextViewDelegate {
   
   init(textView:EditorTextView) {
     self.textView = textView
+    //230	212	145
+    textView.backgroundColor = UIColor(
+      red: CGFloat(230.0 / 256.0),
+      green: CGFloat(212.0 / 256.0),
+      blue: CGFloat(145.0 / 256.0),
+      alpha: 1)
     super.init()
   }
 

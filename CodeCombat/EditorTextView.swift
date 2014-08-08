@@ -29,7 +29,8 @@ class EditorTextView: UITextView {
     let Storage = textStorage as EditorTextStorage
     let Context = UIGraphicsGetCurrentContext()
     let Bounds = bounds
-    let LineNumberBackgroundColor = UIColor.grayColor()
+    //234	219	169
+    let LineNumberBackgroundColor = UIColor(red: CGFloat(234.0/256.0), green: CGFloat(219.0/256.0), blue: CGFloat(169.0/256.0), alpha: 1)
     CGContextSetFillColorWithColor(Context, LineNumberBackgroundColor.CGColor)
     let LineNumberBackgroundRect = CGRectMake(Bounds.origin.x, Bounds.origin.y, lineNumberWidth, Bounds.size.height)
     CGContextFillRect(Context, LineNumberBackgroundRect)
@@ -93,7 +94,12 @@ class EditorTextView: UITextView {
   func handleItemPropertyDragEndedAtLocation(location:CGPoint, code:String) {
     currentHighlightingView?.removeFromSuperview()
     currentHighlightingView = nil
-    textStorage.insertAttributedString(NSAttributedString(string: code), atIndex: 0)
+    let GlyphIndex = layoutManager.glyphIndexForPoint(CGPointMake(0, location.y), inTextContainer: textContainer)
+    println(GlyphIndex)
+    textStorage.beginEditing()
+    textStorage.insertAttributedString(NSAttributedString(string: code), atIndex: GlyphIndex)
+    textStorage.endEditing()
+    setNeedsDisplay()
     
   }
   

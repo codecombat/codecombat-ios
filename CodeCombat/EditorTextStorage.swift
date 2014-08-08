@@ -51,10 +51,11 @@ class EditorTextStorage: NSTextStorage {
   }
   
   override func processEditing() {
-    changeColorOfTextWithRegexPattern("this", color: UIColor.redColor())
-    changeColorOfTextWithRegexPattern("//.*", color: UIColor.greenColor())
-    drawBoxAroundPattern("\\{{2}.*\\}{2}", color: UIColor.blackColor())
     super.processEditing()
+    changeColorOfTextWithRegexPattern("self", color: UIColor.redColor())
+    //changeColorOfTextWithRegexPattern("//.*", color: UIColor.greenColor())
+    //drawBoxAroundPattern("\\{{2}.*\\}{2}", color: UIColor.blackColor())
+    
   }
   
   func changeColorOfTextWithRegexPattern(pattern:String, color:UIColor) {
