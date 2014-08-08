@@ -13,7 +13,7 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
   let screenshotView = UIImageView(image: UIImage(named: "largeScreenshot"))
   let editorContainerView = UIView()
   var codeEditor:Editor? = nil
-  var tomeInventory:TomeInventory? = nil
+  var tomeInventory:TomeInventoryView? = nil
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -44,11 +44,11 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
   
   func setupInventory() {
     let inventoryFrame = CGRectMake(0, 0, editorContainerView.frame.width / 3, editorContainerView.frame.height)
-    tomeInventory = TomeInventory(frame: inventoryFrame)
+    tomeInventory = TomeInventoryView(frame: inventoryFrame)
     let itemsData = parseJSONFile("items_tharin")
     let propertiesData = parseJSONFile("properties")
     for (index, itemData) in itemsData {
-      tomeInventory!.items.append(TomeInventoryItem(itemData: itemData, propertiesData: propertiesData))
+      tomeInventory!.addItem(TomeInventoryItem(itemData: itemData, propertiesData: propertiesData))
     }
     println(tomeInventory!.items)
     tomeInventory!.setNeedsDisplay()

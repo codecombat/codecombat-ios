@@ -9,7 +9,7 @@
 import UIKit
 import QuartzCore
 
-class TomeInventory: UIScrollView {
+class TomeInventoryView: UIScrollView {
   
   var items: [TomeInventoryItem] = []
 
@@ -36,5 +36,12 @@ class TomeInventory: UIScrollView {
     baseInit()
   }
   
-
+  func addItem(item: TomeInventoryItem) {
+    let LineHeight = 30
+    let y = CGFloat(LineHeight * items.count)
+    let itemFrame = CGRect(x: 0, y: y, width: self.frame.width, height: CGFloat(LineHeight))
+    let itemView = TomeInventoryItemView(item: item, frame: itemFrame)
+    items.append(item)
+    addSubview(itemView)
+  }
 }
