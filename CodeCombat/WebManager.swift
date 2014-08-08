@@ -12,7 +12,7 @@ class WebManager: NSObject, WKScriptMessageHandler {
   
   var webViewConfiguration:WKWebViewConfiguration!
   var urlSesssionConfiguration:NSURLSessionConfiguration?
-  let rootURL = NSURL(scheme: "http", host: "10.0.1.9:3000", path: "/")
+  let rootURL = NSURL(scheme: "http", host: "localhost:3000", path: "/")
   var operationQueue:NSOperationQueue?
   var listenersInjectedSoFar = 0
   

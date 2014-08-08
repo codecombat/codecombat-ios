@@ -33,7 +33,7 @@ class TomeInventoryItemView: UIView {
   }
   
   func buildSubviews() {
-    let Margin = CGFloat(5.0)
+    let Margin = CGFloat(3.0)
     var y = CGFloat(0)
     if let name = item?.itemData["name"].asString {
       if let properties = item?.properties {
@@ -55,5 +55,18 @@ class TomeInventoryItemView: UIView {
     }
     frame = CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.width, height: showsProperties ? y + Margin : 0)
     backgroundColor = UIColor(hue: 0.67, saturation: 0.33, brightness: 1.0, alpha: 0.2)
+  }
+  
+  func tomeInventoryItemPropertyAtLocation(location:CGPoint) -> TomeInventoryItemProperty? {
+    for subview in subviews {
+      if !subview.isKindOfClass(TomeInventoryItemPropertyView) {
+        continue
+      }
+      let CandidateView = subview as TomeInventoryItemPropertyView
+      if CandidateView.frame.contains(location) {
+        return CandidateView.property
+      }
+    }
+    return nil
   }
 }

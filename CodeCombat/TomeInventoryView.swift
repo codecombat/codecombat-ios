@@ -9,10 +9,12 @@
 import UIKit
 import QuartzCore
 
-class TomeInventoryView: UIScrollView {
+class TomeInventoryView: UIScrollView, UIGestureRecognizerDelegate {
   
   var items: [TomeInventoryItem] = []
   var itemHeight: CGFloat = CGFloat(0.0)
+  var currentDragRecognizer:UIPanGestureRecognizer? = nil
+  var currentDraggedItemProperty:TomeInventoryItemProperty? = nil
 
   func baseInit() {
     bounces = false
@@ -25,6 +27,7 @@ class TomeInventoryView: UIScrollView {
     let gradientColors: Array <AnyObject> = [UIColor.blackColor().CGColor, UIColor.orangeColor().CGColor]
     gradient.colors = gradientColors
     layer.insertSublayer(gradient, atIndex: 0)
+    setupGestureRecognizer()
   }
   
   override init(frame: CGRect) {
@@ -47,4 +50,69 @@ class TomeInventoryView: UIScrollView {
     }
     items.append(item)
   }
+  
+  func setupGestureRecognizer() {
+    let DragAndDropRecognizer = UIPanGestureRecognizer(target: self, action: "handleDrag:")
+    addGestureRecognizer(DragAndDropRecognizer)
+    panGestureRecognizer.requireGestureRecognizerToFail(DragAndDropRecognizer)
+  }
+  
+  func handleDrag(recognizer:UIPanGestureRecognizer) {
+    var itemView:TomeInventoryItemView? = nil
+    switch recognizer.state {
+    case .Began:
+      if currentDragRecognizer != nil {
+        return
+      }
+      println("Began drag, finding item...")
+      
+      let Item = tomeInventoryItemPropertyAtLocationWithRecognizer(recognizer)
+      if Item == nil {
+        recognizer.enabled = false
+        recognizer.enabled = true
+      } else {
+        currentDragRecognizer = recognizer
+        println(Item?.propertyData["name"])
+      }
+      
+      break
+    case .Cancelled:
+      println("Cancelled!")
+    case .Ended:
+      if recognizer == currentDragRecognizer {
+        println("Drag ended")
+        currentDragRecognizer = nil
+      }
+      
+      break
+    case .Changed:
+      
+      break
+    default:
+      break
+    }
+  }
+  
+  func tomeInventoryItemPropertyAtLocationWithRecognizer(recognizer:UIPanGestureRecognizer) -> TomeInventoryItemProperty? {
+    for subview in subviews {
+      if !subview.isKindOfClass(TomeInventoryItemView) {
+        continue
+      }
+      let CandidateView = subview as TomeInventoryItemView
+      if CandidateView.frame.contains(recognizer.locationInView(self)) {
+        println("Found candidate view!")
+        return CandidateView.tomeInventoryItemPropertyAtLocation(recognizer.locationInView(CandidateView))
+      }
+    }
+    return nil
+  }
+  
+  override func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer!) -> Bool {
+    println("Decide whether to begin")
+    if gestureRecognizer.isKindOfClass(UIPanGestureRecognizer) {
+      return true
+    }
+    return false
+  }
+  
 }
