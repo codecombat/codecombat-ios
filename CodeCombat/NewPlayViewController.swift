@@ -39,6 +39,7 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
     scrollView.contentSize = CGSizeMake(view.frame.size.width, screenshotView.frame.height + view.frame.size.height)
     scrollView.addSubview(editorContainerView)
     scrollView.bounces = false
+    scrollView.contentOffset = CGPoint(x: 0, y: 500)  // Helps for testing.
     view.addSubview(scrollView)
   }
   

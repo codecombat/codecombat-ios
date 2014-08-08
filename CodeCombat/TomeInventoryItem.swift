@@ -13,10 +13,20 @@ struct TomeInventoryItem {
   init(itemData: JSON, propertiesData: JSON) {
     self.itemData = itemData
     for (propIndex, prop) in itemData["programmableProperties"] {
-      properties.append(TomeInventoryItemProperty(propertyData: propertiesData[prop.asString!], primary: true))
+      for (anotherPropIndex, anotherProp) in propertiesData {
+        if anotherProp["name"].asString! == prop.asString! {
+          properties.append(TomeInventoryItemProperty(propertyData: anotherProp, primary: true))
+          break
+        }
+      }
     }
     for (propIndex, prop) in itemData["moreProgrammableProperties"] {
-      properties.append(TomeInventoryItemProperty(propertyData: propertiesData[prop.asString!], primary: false))
+      for (anotherPropIndex, anotherProp) in propertiesData {
+        if anotherProp["name"].asString! == prop.asString! {
+          properties.append(TomeInventoryItemProperty(propertyData: anotherProp, primary: false))
+          break
+        }
+      }
     }
   }
 }

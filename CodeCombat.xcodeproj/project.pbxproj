@@ -55,6 +55,7 @@
 		C827D1D51994784E00B5724C /* TomeInventoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C827D1D31994784E00B5724C /* TomeInventoryItem.swift */; };
 		C827D1D61994784E00B5724C /* TomeInventoryItemProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = C827D1D41994784E00B5724C /* TomeInventoryItemProperty.swift */; };
 		C827D1D91994937C00B5724C /* TomeInventoryItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C827D1D81994937C00B5724C /* TomeInventoryItemView.swift */; };
+		C827D1DB19949E0200B5724C /* TomeInventoryItemPropertyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C827D1DA19949E0200B5724C /* TomeInventoryItemPropertyView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -126,6 +127,7 @@
 		C827D1D31994784E00B5724C /* TomeInventoryItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventoryItem.swift; sourceTree = "<group>"; };
 		C827D1D41994784E00B5724C /* TomeInventoryItemProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventoryItemProperty.swift; sourceTree = "<group>"; };
 		C827D1D81994937C00B5724C /* TomeInventoryItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventoryItemView.swift; sourceTree = "<group>"; };
+		C827D1DA19949E0200B5724C /* TomeInventoryItemPropertyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventoryItemPropertyView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -406,6 +408,7 @@
 			children = (
 				28BA9B571992E185006ACB3A /* TomeInventoryView.swift */,
 				C827D1D81994937C00B5724C /* TomeInventoryItemView.swift */,
+				C827D1DA19949E0200B5724C /* TomeInventoryItemPropertyView.swift */,
 			);
 			name = NewPlayView;
 			sourceTree = "<group>";
@@ -523,6 +526,7 @@
 				28BA9B581992E185006ACB3A /* TomeInventoryView.swift in Sources */,
 				287AE0DA1992927300EEE4F0 /* wasted_work.swift in Sources */,
 				287AE0FB199293B600EEE4F0 /* MarkdownTokenizer.m in Sources */,
+				C827D1DB19949E0200B5724C /* TomeInventoryItemPropertyView.swift in Sources */,
 				287AE0DB1992927300EEE4F0 /* WebManager.swift in Sources */,
 				287AE0B91992926400EEE4F0 /* AppDelegate.swift in Sources */,
 				287AE0D11992927300EEE4F0 /* PlayViewChildViewController.swift in Sources */,

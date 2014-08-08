@@ -8,12 +8,10 @@
 
 import Foundation
 
-import UIKit
-import QuartzCore
-
 class TomeInventoryItemView: UIView {
   
   var item: TomeInventoryItem?
+  var showsProperties = false
 
   func baseInit(item: TomeInventoryItem) {
     self.item = item
@@ -35,12 +33,27 @@ class TomeInventoryItemView: UIView {
   }
   
   func buildSubviews() {
+    let Margin = CGFloat(5.0)
+    var y = CGFloat(0)
     if let name = item?.itemData["name"].asString {
-      println("Gotta build subviews for \(name)!")
-      var label = UILabel(frame: CGRect(x: 0, y: 0, width: frame.width / 2.0, height: frame.height))
-      label.text = name
-      label.textColor = UIColor(white: 1, alpha: 1)
-      addSubview(label)
+      if let properties = item?.properties {
+        for property in properties {
+          let propertyView = TomeInventoryItemPropertyView(item: item!, property: property, frame: CGRect(x: frame.width / 2.0 + Margin, y: y + Margin, width: frame.width / 2.0 - 2 * Margin, height: 50.0))
+          addSubview(propertyView)
+          y += propertyView.frame.height + Margin
+        }
+        if properties.count > 0 {
+          var label = UILabel(frame: CGRect(x: Margin, y: Margin, width: frame.width / 2.0 - 2 * Margin, height: frame.height - 2 * Margin))
+          label.text = name
+          label.textColor = UIColor(white: 0.85, alpha: 1)
+          label.sizeToFit()
+          label.frame = CGRect(x: label.frame.origin.x, y: CGFloat((y + Margin - label.frame.height) / 2.0), width: label.frame.width, height: label.frame.height)
+          addSubview(label)
+          showsProperties = true
+        }
+      }
     }
+    frame = CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.width, height: showsProperties ? y + Margin : 0)
+    backgroundColor = UIColor(hue: 0.67, saturation: 0.33, brightness: 1.0, alpha: 0.2)
   }
 }
