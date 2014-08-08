@@ -15,6 +15,7 @@ class TomeInventoryView: UIScrollView, UIGestureRecognizerDelegate {
   var itemHeight: CGFloat = CGFloat(0.0)
   var currentDragRecognizer:UIPanGestureRecognizer? = nil
   var currentDraggedItemProperty:TomeInventoryItemProperty? = nil
+  var dragAndDropRecognizer:UIPanGestureRecognizer? = nil
 
   func baseInit() {
     bounces = false
@@ -52,9 +53,9 @@ class TomeInventoryView: UIScrollView, UIGestureRecognizerDelegate {
   }
   
   func setupGestureRecognizer() {
-    let DragAndDropRecognizer = UIPanGestureRecognizer(target: self, action: "handleDrag:")
-    addGestureRecognizer(DragAndDropRecognizer)
-    panGestureRecognizer.requireGestureRecognizerToFail(DragAndDropRecognizer)
+    dragAndDropRecognizer = UIPanGestureRecognizer(target: self, action: "handleDrag:")
+    addGestureRecognizer(dragAndDropRecognizer!)
+    panGestureRecognizer.requireGestureRecognizerToFail(dragAndDropRecognizer!)
   }
   
   func handleDrag(recognizer:UIPanGestureRecognizer) {
@@ -64,26 +65,21 @@ class TomeInventoryView: UIScrollView, UIGestureRecognizerDelegate {
       if currentDragRecognizer != nil {
         return
       }
-      println("Began drag, finding item...")
-      
       let Item = tomeInventoryItemPropertyAtLocationWithRecognizer(recognizer)
       if Item == nil {
         recognizer.enabled = false
         recognizer.enabled = true
       } else {
         currentDragRecognizer = recognizer
-        println(Item?.propertyData["name"])
+        currentDraggedItemProperty = Item
       }
       
       break
-    case .Cancelled:
-      println("Cancelled!")
     case .Ended:
       if recognizer == currentDragRecognizer {
-        println("Drag ended")
         currentDragRecognizer = nil
+        println(currentDraggedItemProperty!.propertyData["name"])
       }
-      
       break
     case .Changed:
       
@@ -100,17 +96,15 @@ class TomeInventoryView: UIScrollView, UIGestureRecognizerDelegate {
       }
       let CandidateView = subview as TomeInventoryItemView
       if CandidateView.frame.contains(recognizer.locationInView(self)) {
-        println("Found candidate view!")
         return CandidateView.tomeInventoryItemPropertyAtLocation(recognizer.locationInView(CandidateView))
       }
     }
     return nil
   }
-  
-  override func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer!) -> Bool {
-    println("Decide whether to begin")
-    if gestureRecognizer.isKindOfClass(UIPanGestureRecognizer) {
-      return true
+  func gestureRecognizer(gestureRecognizer: UIGestureRecognizer!, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer!) -> Bool {
+    if gestureRecognizer == panGestureRecognizer && otherGestureRecognizer == dragAndDropRecognizer ||
+      otherGestureRecognizer == panGestureRecognizer && gestureRecognizer == dragAndDropRecognizer {
+        return true
     }
     return false
   }
