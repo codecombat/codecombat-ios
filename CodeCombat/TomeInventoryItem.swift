@@ -7,16 +7,16 @@
 //
 
 struct TomeInventoryItem {
-  let name = ""
-  let slot = ""
+  let itemData: JSON
   var properties: [TomeInventoryItemProperty] = []
   
-  init(name: String, slot: String) {
-    self.name = name
-    self.slot = slot
-  }
-  
-  mutating func addProperty(property:TomeInventoryItemProperty) {
-    self.properties.append(property)
+  init(itemData: JSON, propertiesData: JSON) {
+    self.itemData = itemData
+    for (propIndex, prop) in itemData["programmableProperties"] {
+      properties.append(TomeInventoryItemProperty(propertyData: propertiesData[prop.asString!], primary: true))
+    }
+    for (propIndex, prop) in itemData["moreProgrammableProperties"] {
+      properties.append(TomeInventoryItemProperty(propertyData: propertiesData[prop.asString!], primary: false))
+    }
   }
 }

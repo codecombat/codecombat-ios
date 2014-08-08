@@ -8,11 +8,6 @@
 
 import Foundation
 
-func decodeJSON(json: String) -> AnyObject! {
-  var data = json.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true)
-  return NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: nil)
-}
-
 func readResourceFile(filename: String, type: String="json") -> String {
   let bundle = NSBundle.mainBundle()
   let path = bundle.pathForResource(filename, ofType: type)
@@ -20,6 +15,6 @@ func readResourceFile(filename: String, type: String="json") -> String {
   return content
 }
 
-func decodeJSONFile(filename: String) -> AnyObject! {
-  return decodeJSON(readResourceFile(filename))
+func parseJSONFile(filename: String) -> JSON {
+  return JSON.parse(readResourceFile(filename))
 }

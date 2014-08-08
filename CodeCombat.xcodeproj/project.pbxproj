@@ -45,14 +45,15 @@
 		287AE10B199294CC00EEE4F0 /* TestParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 287AE107199294CC00EEE4F0 /* TestParticle.sks */; };
 		28BA9B561992D5DA006ACB3A /* NewPlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B551992D5DA006ACB3A /* NewPlayViewController.swift */; };
 		28BA9B581992E185006ACB3A /* TomeInventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B571992E185006ACB3A /* TomeInventory.swift */; };
-		28BA9B5A1992FFB0006ACB3A /* TomeInventoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B591992FFB0006ACB3A /* TomeInventoryItem.swift */; };
-		28BA9B5C199300A5006ACB3A /* TomeInventoryItemProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B5B199300A5006ACB3A /* TomeInventoryItemProperty.swift */; };
 		28C96DF71993D09C009FCD9E /* EditorTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C96DF61993D09C009FCD9E /* EditorTextView.swift */; };
 		28C96DFE1993FF3B009FCD9E /* Editor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C96DFD1993FF3B009FCD9E /* Editor.swift */; };
 		C827D1C919943EA500B5724C /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C827D1C819943EA500B5724C /* Utilities.swift */; };
 		C827D1CB19943FF700B5724C /* items_tharin.json in Resources */ = {isa = PBXBuildFile; fileRef = C827D1CA19943FF700B5724C /* items_tharin.json */; };
 		C827D1CD199443AE00B5724C /* properties.json in Resources */ = {isa = PBXBuildFile; fileRef = C827D1CC199443AE00B5724C /* properties.json */; };
 		C827D1CF1994457700B5724C /* items_all.json in Resources */ = {isa = PBXBuildFile; fileRef = C827D1CE1994457700B5724C /* items_all.json */; };
+		C827D1D11994726600B5724C /* json.swift in Sources */ = {isa = PBXBuildFile; fileRef = C827D1D01994726600B5724C /* json.swift */; };
+		C827D1D51994784E00B5724C /* TomeInventoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C827D1D31994784E00B5724C /* TomeInventoryItem.swift */; };
+		C827D1D61994784E00B5724C /* TomeInventoryItemProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = C827D1D41994784E00B5724C /* TomeInventoryItemProperty.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,14 +115,15 @@
 		287AE107199294CC00EEE4F0 /* TestParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TestParticle.sks; sourceTree = "<group>"; };
 		28BA9B551992D5DA006ACB3A /* NewPlayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPlayViewController.swift; sourceTree = "<group>"; };
 		28BA9B571992E185006ACB3A /* TomeInventory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventory.swift; sourceTree = "<group>"; };
-		28BA9B591992FFB0006ACB3A /* TomeInventoryItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventoryItem.swift; sourceTree = "<group>"; };
-		28BA9B5B199300A5006ACB3A /* TomeInventoryItemProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventoryItemProperty.swift; sourceTree = "<group>"; };
 		28C96DF61993D09C009FCD9E /* EditorTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorTextView.swift; sourceTree = "<group>"; };
 		28C96DFD1993FF3B009FCD9E /* Editor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Editor.swift; sourceTree = "<group>"; };
 		C827D1C819943EA500B5724C /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		C827D1CA19943FF700B5724C /* items_tharin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = items_tharin.json; sourceTree = "<group>"; };
 		C827D1CC199443AE00B5724C /* properties.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = properties.json; sourceTree = "<group>"; };
 		C827D1CE1994457700B5724C /* items_all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = items_all.json; sourceTree = "<group>"; };
+		C827D1D01994726600B5724C /* json.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = json.swift; sourceTree = "<group>"; };
+		C827D1D31994784E00B5724C /* TomeInventoryItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventoryItem.swift; sourceTree = "<group>"; };
+		C827D1D41994784E00B5724C /* TomeInventoryItemProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventoryItemProperty.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -262,6 +264,7 @@
 			children = (
 				287AE0F0199293B600EEE4F0 /* CodeCombat-Bridging-Header.h */,
 				287AE10E1992952500EEE4F0 /* NimbusKitMarkdown */,
+				C827D1D01994726600B5724C /* json.swift */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -354,7 +357,7 @@
 		28C96DF91993F0BF009FCD9E /* Editor */ = {
 			isa = PBXGroup;
 			children = (
-				28C96DFB1993F0DE009FCD9E /* Inventory */,
+				C827D1D21994784300B5724C /* Inventory */,
 				28C96DFA1993F0CE009FCD9E /* Text */,
 			);
 			name = Editor;
@@ -368,15 +371,6 @@
 				287AE0B41992926400EEE4F0 /* EditorLayoutManager.swift */,
 			);
 			name = Text;
-			sourceTree = "<group>";
-		};
-		28C96DFB1993F0DE009FCD9E /* Inventory */ = {
-			isa = PBXGroup;
-			children = (
-				28BA9B591992FFB0006ACB3A /* TomeInventoryItem.swift */,
-				28BA9B5B199300A5006ACB3A /* TomeInventoryItemProperty.swift */,
-			);
-			name = Inventory;
 			sourceTree = "<group>";
 		};
 		28C96DFC1993F0ED009FCD9E /* IAP */ = {
@@ -394,6 +388,15 @@
 				C827D1C819943EA500B5724C /* Utilities.swift */,
 			);
 			name = Utilities;
+			sourceTree = "<group>";
+		};
+		C827D1D21994784300B5724C /* Inventory */ = {
+			isa = PBXGroup;
+			children = (
+				C827D1D31994784E00B5724C /* TomeInventoryItem.swift */,
+				C827D1D41994784E00B5724C /* TomeInventoryItemProperty.swift */,
+			);
+			name = Inventory;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -512,19 +515,21 @@
 				287AE0DB1992927300EEE4F0 /* WebManager.swift in Sources */,
 				287AE0B91992926400EEE4F0 /* AppDelegate.swift in Sources */,
 				287AE0D11992927300EEE4F0 /* PlayViewChildViewController.swift in Sources */,
+				C827D1D11994726600B5724C /* json.swift in Sources */,
 				28BA9B561992D5DA006ACB3A /* NewPlayViewController.swift in Sources */,
 				287AE0D81992927300EEE4F0 /* StoreViewController.swift in Sources */,
 				287AE0D21992927300EEE4F0 /* PlayViewController.swift in Sources */,
 				287AE0BA1992926400EEE4F0 /* BackbonePublisher.swift in Sources */,
-				28BA9B5A1992FFB0006ACB3A /* TomeInventoryItem.swift in Sources */,
 				C827D1C919943EA500B5724C /* Utilities.swift in Sources */,
 				287AE0E0199292E400EEE4F0 /* InventoryCell.swift in Sources */,
 				287AE0FC199293B600EEE4F0 /* MarkdownTokens.m in Sources */,
+				C827D1D61994784E00B5724C /* TomeInventoryItemProperty.swift in Sources */,
 				287AE0B61992926400EEE4F0 /* LevelLoadingViewController.swift in Sources */,
 				287AE0D41992927300EEE4F0 /* SpellPaletteViewController.swift in Sources */,
 				287AE0BD1992926400EEE4F0 /* EditorTextViewController.swift in Sources */,
 				287AE0B81992926400EEE4F0 /* EditorTextStorage.swift in Sources */,
 				28C96DFE1993FF3B009FCD9E /* Editor.swift in Sources */,
+				C827D1D51994784E00B5724C /* TomeInventoryItem.swift in Sources */,
 				287AE0CE1992927300EEE4F0 /* LevelPlaybackViewController.swift in Sources */,
 				287AE0D71992927300EEE4F0 /* StoreItemDetailViewController.swift in Sources */,
 				287AE108199294CC00EEE4F0 /* ParticleScene.swift in Sources */,
@@ -537,7 +542,6 @@
 				287AE0E2199292F900EEE4F0 /* EquippedItemsViewController.swift in Sources */,
 				287AE109199294CC00EEE4F0 /* ParticleView.swift in Sources */,
 				287AE0D01992927300EEE4F0 /* MainMenuController.swift in Sources */,
-				28BA9B5C199300A5006ACB3A /* TomeInventoryItemProperty.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
