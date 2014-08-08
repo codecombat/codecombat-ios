@@ -13,6 +13,8 @@ class EditorTextView: UITextView {
   var textAttributes = Dictionary<NSObject, AnyObject>()
   var numberOfCharactersInLineNumberGutter = 0
   var lineNumberWidth = CGFloat(20.0)
+  var currentDragView:UIView? = nil
+  var currentHighlightingView:UIView? = nil
   
   override func drawRect(rect: CGRect) {
     
@@ -81,5 +83,39 @@ class EditorTextView: UITextView {
       numberOfCharactersInLineNumberGutter = NumberOfCharacters
     }
     setNeedsDisplay()
+  }
+  
+  func handleItemPropertyDragChangedAtLocation(location:CGPoint, code:String) {
+    let currentLine = getLineHeightAtPoint(location)
+    highlightLines(startingLineNumber: currentLine, numberOfLines: 1)
+  }
+  
+  func handleItemPropertyDragEndedAtLocation(location:CGPoint, code:String) {
+    currentHighlightingView?.removeFromSuperview()
+    currentHighlightingView = nil
+    textStorage.insertAttributedString(NSAttributedString(string: code), atIndex: 0)
+    
+  }
+  
+  func getLineHeightAtPoint(location:CGPoint) -> Int {
+    let LineHeight = font.lineHeight
+    let EditorHeight = frame.height
+    return Int(location.y / LineHeight)
+  }
+  func getLineNumberRect(lineNumber:Int) -> CGRect{
+    let LineHeight = CGFloat(font.lineHeight)
+    let LineNumberRect = CGRectMake(0, LineHeight * CGFloat(lineNumber), frame.width, LineHeight)
+    return LineNumberRect
+  }
+  
+  func highlightLines(#startingLineNumber:Int, numberOfLines:Int) {
+    let FirstLineNumberRect = getLineNumberRect(startingLineNumber)
+    let HighlightingRect = CGRectMake(FirstLineNumberRect.origin.x, FirstLineNumberRect.origin.y , FirstLineNumberRect.width, FirstLineNumberRect.height * CGFloat(numberOfLines))
+    if currentHighlightingView == nil {
+      currentHighlightingView = UIView(frame: HighlightingRect)
+      currentHighlightingView?.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.2)
+      addSubview(currentHighlightingView!)
+    }
+    currentHighlightingView?.frame = HighlightingRect
   }
 }

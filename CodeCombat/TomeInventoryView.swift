@@ -16,6 +16,8 @@ class TomeInventoryView: UIScrollView, UIGestureRecognizerDelegate {
   var currentDragRecognizer:UIPanGestureRecognizer? = nil
   var currentDraggedItemProperty:TomeInventoryItemProperty? = nil
   var dragAndDropRecognizer:UIPanGestureRecognizer? = nil
+  var draggedView:UIView? = nil
+  var editorView:EditorTextView? = nil
 
   func baseInit() {
     bounces = false
@@ -60,6 +62,15 @@ class TomeInventoryView: UIScrollView, UIGestureRecognizerDelegate {
   
   func handleDrag(recognizer:UIPanGestureRecognizer) {
     var itemView:TomeInventoryItemView? = nil
+    if editorView == nil {
+      let SuperView = superview!
+      for subview in SuperView.subviews {
+        if subview.isKindOfClass(EditorTextView) {
+          editorView = subview as? EditorTextView
+          break
+        }
+      }
+    }
     switch recognizer.state {
     case .Began:
       if currentDragRecognizer != nil {
@@ -72,20 +83,56 @@ class TomeInventoryView: UIScrollView, UIGestureRecognizerDelegate {
       } else {
         currentDragRecognizer = recognizer
         currentDraggedItemProperty = Item
+        //Try basic drag
+        let SuperViewLocation = recognizer.locationInView(superview)
+        let TestViewFrame = CGRectMake(0, 0, 50, 50)
+        let TestView = UILabel(frame: TestViewFrame)
+        TestView.font = UIFont(name: "Courier", size: 40)
+        let Snippet = Item!.propertyData["snippets"]["python"]["code"]
+        if Snippet.isString {
+          TestView.text = Snippet.toString(pretty: true)
+        } else {
+          TestView.text = Item!.propertyData["name"].toString(pretty: false)
+        }
+        TestView.sizeToFit()
+        TestView.center = SuperViewLocation
+        TestView.backgroundColor = UIColor.clearColor()
+        superview?.addSubview(TestView)
+        draggedView = TestView
       }
       
       break
     case .Ended:
-      if recognizer == currentDragRecognizer {
-        currentDragRecognizer = nil
+      //TODO: Check if this is necessary
+      if recognizer != currentDragRecognizer {
+        return
+      }
+      if editorView!.frame.contains(recognizer.locationInView(superview)) {
         println(currentDraggedItemProperty!.propertyData["name"])
       }
+      draggedView?.removeFromSuperview()
+      editorView!.handleItemPropertyDragEndedAtLocation(recognizer.locationInView(editorView), code: getSnippetForItemProperty(currentDraggedItemProperty!))
+      draggedView = nil
+      currentDragRecognizer = nil
       break
     case .Changed:
-      
+      let Center = recognizer.locationInView(superview)
+      draggedView?.center = Center
+      if editorView!.frame.contains(recognizer.locationInView(superview)) {
+        editorView!.handleItemPropertyDragChangedAtLocation(recognizer.locationInView(editorView), code: getSnippetForItemProperty(currentDraggedItemProperty!))
+      }
       break
     default:
       break
+    }
+  }
+  
+  func getSnippetForItemProperty(itemProperty:TomeInventoryItemProperty) -> String {
+    let Snippet = itemProperty.propertyData["snippets"]["python"]["code"]
+    if Snippet.isString {
+      return Snippet.toString(pretty: false) + "\n"
+    } else {
+      return itemProperty.propertyData["name"].toString(pretty: false)
     }
   }
   
