@@ -13,8 +13,9 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
   let screenshotView = UIImageView(image: UIImage(named: "largeScreenshot"))
   let editorContainerView = UIView()
   var codeEditor:Editor? = nil
-  var tomeInventory:TomeInventoryView? = nil
-  
+  var editorTextView:EditorTextView!
+  var inventoryViewController:TomeInventoryViewController!
+  var inventoryFrame:CGRect!
   override func viewDidLoad() {
     super.viewDidLoad()
     setupViews()
@@ -44,16 +45,11 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
   }
   
   func setupInventory() {
-    let inventoryFrame = CGRectMake(0, 0, editorContainerView.frame.width / 3, editorContainerView.frame.height)
-    tomeInventory = TomeInventoryView(frame: inventoryFrame)
-    let itemsData = parseJSONFile("items_tharin")
-    let propertiesData = parseJSONFile("properties")
-    for (index, itemData) in itemsData {
-      tomeInventory!.addItem(TomeInventoryItem(itemData: itemData, propertiesData: propertiesData))
-    }
-    println(tomeInventory!.items)
-    tomeInventory!.setNeedsDisplay()
-    editorContainerView.addSubview(tomeInventory!)
+    inventoryFrame = CGRectMake(0, 0, editorContainerView.frame.width / 3, editorContainerView.frame.height)
+    inventoryViewController = TomeInventoryViewController()
+    inventoryViewController.view.frame = inventoryFrame
+    addChildViewController(inventoryViewController)
+    editorContainerView.addSubview(inventoryViewController.view)
   }
   
   func setupEditor() {
@@ -65,8 +61,8 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
     textContainer.lineBreakMode = NSLineBreakMode.ByCharWrapping
     textContainer.widthTracksTextView = true
     layoutManager.addTextContainer(textContainer)
-    let editorTextViewFrame = CGRectMake(tomeInventory!.frame.width, 0, editorContainerView.frame.width - tomeInventory!.frame.width, editorContainerView.frame.height)
-    let editorTextView = EditorTextView(frame: editorTextViewFrame, textContainer: textContainer)
+    let editorTextViewFrame = CGRectMake(inventoryFrame.width, 0, editorContainerView.frame.width - inventoryFrame.width, editorContainerView.frame.height)
+    editorTextView = EditorTextView(frame: editorTextViewFrame, textContainer: textContainer)
     editorTextView.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
     
     codeEditor = Editor(textView: editorTextView)

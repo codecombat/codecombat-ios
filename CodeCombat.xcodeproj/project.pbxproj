@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		282FC3BE19986F8700EB78A1 /* TomeInventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 282FC3BD19986F8700EB78A1 /* TomeInventory.swift */; };
 		287AE0A4199290DF00EEE4F0 /* CodeCombatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0A3199290DF00EEE4F0 /* CodeCombatTests.swift */; };
 		287AE0B61992926400EEE4F0 /* LevelLoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0AE1992926400EEE4F0 /* LevelLoadingViewController.swift */; };
 		287AE0B71992926400EEE4F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 287AE0AF1992926400EEE4F0 /* Main.storyboard */; };
@@ -44,9 +45,10 @@
 		287AE10A199294CC00EEE4F0 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 287AE106199294CC00EEE4F0 /* spark.png */; };
 		287AE10B199294CC00EEE4F0 /* TestParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 287AE107199294CC00EEE4F0 /* TestParticle.sks */; };
 		28BA9B561992D5DA006ACB3A /* NewPlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B551992D5DA006ACB3A /* NewPlayViewController.swift */; };
-		28BA9B581992E185006ACB3A /* TomeInventoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B571992E185006ACB3A /* TomeInventoryView.swift */; };
 		28C96DF71993D09C009FCD9E /* EditorTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C96DF61993D09C009FCD9E /* EditorTextView.swift */; };
 		28C96DFE1993FF3B009FCD9E /* Editor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C96DFD1993FF3B009FCD9E /* Editor.swift */; };
+		28DE0CDD1999305700C6699D /* TomeInventoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28DE0CDC1999305700C6699D /* TomeInventoryViewController.swift */; };
+		28DE0CE0199959DB00C6699D /* TomeEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28DE0CDF199959DB00C6699D /* TomeEditorViewController.swift */; };
 		C827D1C919943EA500B5724C /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C827D1C819943EA500B5724C /* Utilities.swift */; };
 		C827D1CB19943FF700B5724C /* items_tharin.json in Resources */ = {isa = PBXBuildFile; fileRef = C827D1CA19943FF700B5724C /* items_tharin.json */; };
 		C827D1CD199443AE00B5724C /* properties.json in Resources */ = {isa = PBXBuildFile; fileRef = C827D1CC199443AE00B5724C /* properties.json */; };
@@ -69,6 +71,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		282FC3BD19986F8700EB78A1 /* TomeInventory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventory.swift; sourceTree = "<group>"; };
 		287AE08B199290DF00EEE4F0 /* CodeCombat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodeCombat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		287AE08F199290DF00EEE4F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		287AE09D199290DF00EEE4F0 /* CodeCombatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CodeCombatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -116,9 +119,10 @@
 		287AE106199294CC00EEE4F0 /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 		287AE107199294CC00EEE4F0 /* TestParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TestParticle.sks; sourceTree = "<group>"; };
 		28BA9B551992D5DA006ACB3A /* NewPlayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPlayViewController.swift; sourceTree = "<group>"; };
-		28BA9B571992E185006ACB3A /* TomeInventoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventoryView.swift; sourceTree = "<group>"; };
 		28C96DF61993D09C009FCD9E /* EditorTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorTextView.swift; sourceTree = "<group>"; };
 		28C96DFD1993FF3B009FCD9E /* Editor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Editor.swift; sourceTree = "<group>"; };
+		28DE0CDC1999305700C6699D /* TomeInventoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventoryViewController.swift; sourceTree = "<group>"; };
+		28DE0CDF199959DB00C6699D /* TomeEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeEditorViewController.swift; sourceTree = "<group>"; };
 		C827D1C819943EA500B5724C /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		C827D1CA19943FF700B5724C /* items_tharin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = items_tharin.json; sourceTree = "<group>"; };
 		C827D1CC199443AE00B5724C /* properties.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = properties.json; sourceTree = "<group>"; };
@@ -169,6 +173,7 @@
 		287AE08D199290DF00EEE4F0 /* CodeCombat */ = {
 			isa = PBXGroup;
 			children = (
+				28DE0CDE19994E6500C6699D /* Protocols */,
 				C827D1C719943E8B00B5724C /* Utilities */,
 				287AE1001992942C00EEE4F0 /* Application */,
 				287AE1011992945F00EEE4F0 /* Models */,
@@ -184,7 +189,6 @@
 		287AE08E199290DF00EEE4F0 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				287AE0B21992926400EEE4F0 /* BackbonePublisher.swift */,
 				287AE08F199290DF00EEE4F0 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -354,6 +358,8 @@
 			isa = PBXGroup;
 			children = (
 				28BA9B551992D5DA006ACB3A /* NewPlayViewController.swift */,
+				28DE0CDC1999305700C6699D /* TomeInventoryViewController.swift */,
+				28DE0CDF199959DB00C6699D /* TomeEditorViewController.swift */,
 			);
 			name = NewPlayView;
 			sourceTree = "<group>";
@@ -386,6 +392,14 @@
 			name = IAP;
 			sourceTree = "<group>";
 		};
+		28DE0CDE19994E6500C6699D /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				287AE0B21992926400EEE4F0 /* BackbonePublisher.swift */,
+			);
+			name = Protocols;
+			sourceTree = "<group>";
+		};
 		C827D1C719943E8B00B5724C /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
@@ -397,6 +411,7 @@
 		C827D1D21994784300B5724C /* Inventory */ = {
 			isa = PBXGroup;
 			children = (
+				282FC3BD19986F8700EB78A1 /* TomeInventory.swift */,
 				C827D1D31994784E00B5724C /* TomeInventoryItem.swift */,
 				C827D1D41994784E00B5724C /* TomeInventoryItemProperty.swift */,
 			);
@@ -406,7 +421,6 @@
 		C827D1D71994934D00B5724C /* NewPlayView */ = {
 			isa = PBXGroup;
 			children = (
-				28BA9B571992E185006ACB3A /* TomeInventoryView.swift */,
 				C827D1D81994937C00B5724C /* TomeInventoryItemView.swift */,
 				C827D1DA19949E0200B5724C /* TomeInventoryItemPropertyView.swift */,
 			);
@@ -518,12 +532,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28DE0CDD1999305700C6699D /* TomeInventoryViewController.swift in Sources */,
 				287AE0DE199292CE00EEE4F0 /* IAPHelper.swift in Sources */,
 				287AE0DC1992927300EEE4F0 /* ColorManager.swift in Sources */,
 				287AE0D51992927300EEE4F0 /* SpriteDialogue.swift in Sources */,
 				287AE0CF1992927300EEE4F0 /* LoginViewController.swift in Sources */,
 				287AE0BC1992926400EEE4F0 /* EditorLayoutManager.swift in Sources */,
-				28BA9B581992E185006ACB3A /* TomeInventoryView.swift in Sources */,
 				287AE0DA1992927300EEE4F0 /* wasted_work.swift in Sources */,
 				287AE0FB199293B600EEE4F0 /* MarkdownTokenizer.m in Sources */,
 				C827D1DB19949E0200B5724C /* TomeInventoryItemPropertyView.swift in Sources */,
@@ -538,6 +552,7 @@
 				287AE0BA1992926400EEE4F0 /* BackbonePublisher.swift in Sources */,
 				C827D1C919943EA500B5724C /* Utilities.swift in Sources */,
 				287AE0E0199292E400EEE4F0 /* InventoryCell.swift in Sources */,
+				282FC3BE19986F8700EB78A1 /* TomeInventory.swift in Sources */,
 				287AE0FC199293B600EEE4F0 /* MarkdownTokens.m in Sources */,
 				C827D1D61994784E00B5724C /* TomeInventoryItemProperty.swift in Sources */,
 				287AE0B61992926400EEE4F0 /* LevelLoadingViewController.swift in Sources */,
@@ -545,6 +560,7 @@
 				287AE0BD1992926400EEE4F0 /* EditorTextViewController.swift in Sources */,
 				287AE0B81992926400EEE4F0 /* EditorTextStorage.swift in Sources */,
 				28C96DFE1993FF3B009FCD9E /* Editor.swift in Sources */,
+				28DE0CE0199959DB00C6699D /* TomeEditorViewController.swift in Sources */,
 				C827D1D51994784E00B5724C /* TomeInventoryItem.swift in Sources */,
 				287AE0CE1992927300EEE4F0 /* LevelPlaybackViewController.swift in Sources */,
 				287AE0D71992927300EEE4F0 /* StoreItemDetailViewController.swift in Sources */,

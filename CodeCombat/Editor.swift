@@ -7,7 +7,8 @@
 //
 
 class Editor : NSObject, UITextViewDelegate {
-  var textView:EditorTextView 
+  var textView:EditorTextView
+  var currentLanguage:String = "javascript"
   
   init(textView:EditorTextView) {
     self.textView = textView

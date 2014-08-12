@@ -12,7 +12,7 @@ class TomeInventoryItemView: UIView {
   
   var item: TomeInventoryItem?
   var showsProperties = false
-
+  
   func baseInit(item: TomeInventoryItem) {
     self.item = item
     buildSubviews()
