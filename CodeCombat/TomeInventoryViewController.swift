@@ -9,13 +9,13 @@
 import UIKit
 
 class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
-  private let Inventory:TomeInventory!
+  private let inventory:TomeInventory!
   private var inventoryView:UIScrollView!
   private var draggedView:UIView!
   private var draggedProperty:TomeInventoryItemProperty!
   
   override init() {
-    Inventory = TomeInventory(
+    inventory = TomeInventory(
       itemsData: parseJSONFile("items_tharin"),
       propertiesData: parseJSONFile("properties"))
     super.init(nibName: "", bundle: nil)
@@ -27,25 +27,38 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    let ScreenBounds = UIScreen.mainScreen().bounds
-    let Frame = CGRectMake(0, 0, ScreenBounds.width / 3, ScreenBounds.height)
-    inventoryView = UIScrollView(frame: Frame)
+    let screenBounds = UIScreen.mainScreen().bounds
+    let inventoryFrame = CGRect(
+      x: 0,
+      y: 0,
+      width: screenBounds.width / 3,
+      height: screenBounds.height)
+    inventoryView = UIScrollView(frame: inventoryFrame)
     inventoryView.delegate = self
     
-    let DragAndDropRecognizer = UIPanGestureRecognizer(target: self, action: "handleDrag:")
+    let DragAndDropRecognizer = UIPanGestureRecognizer(
+      target: self,
+      action: "handleDrag:")
     DragAndDropRecognizer.delegate = self
     inventoryView.addGestureRecognizer(DragAndDropRecognizer)
     inventoryView.panGestureRecognizer.requireGestureRecognizerToFail(DragAndDropRecognizer)
     
     inventoryView.bounces = false
-    inventoryView.backgroundColor = UIColor(red: CGFloat(234.0/256.0), green: CGFloat(219.0/256.0), blue: CGFloat(169.0/256.0), alpha: 1)
-    inventoryView.contentSize = CGSizeMake(Frame.width, 2 * Frame.height) // TODO: Calculate the actual size
+    inventoryView.backgroundColor = UIColor(
+      red: CGFloat(234.0/256.0),
+      green: CGFloat(219.0/256.0),
+      blue: CGFloat(169.0/256.0),
+      alpha: 1)
+    // TODO: Calculate the actual size
+    inventoryView.contentSize = CGSize(
+      width: inventoryFrame.width,
+      height: 2 * inventoryFrame.height)
     
     var itemHeight = 0
     let ItemMargin = 10
-    for item in Inventory.items {
-      let Width = Int(Frame.width) - ItemMargin
-      let Height = Int(Frame.height) - itemHeight - ItemMargin
+    for item in inventory.items {
+      let Width = Int(inventoryFrame.width) - ItemMargin
+      let Height = Int(inventoryFrame.height) - itemHeight - ItemMargin
       let ItemFrame = CGRect(x: ItemMargin/2, y: itemHeight + ItemMargin/2, width: Width, height: Height)
       let ItemView = TomeInventoryItemView(item: item, frame: ItemFrame)
       if ItemView.showsProperties {

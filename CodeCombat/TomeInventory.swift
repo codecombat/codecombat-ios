@@ -13,7 +13,9 @@ class TomeInventory: NSObject {
   init(itemsData: JSON, propertiesData:JSON) {
     super.init()
     for (i, itemData) in itemsData {
-      let item = TomeInventoryItem(itemData: itemData, propertiesData: propertiesData)
+      let item = TomeInventoryItem(
+        itemData: itemData,
+        propertiesData: propertiesData)
       items.append(item)
     }
   }
