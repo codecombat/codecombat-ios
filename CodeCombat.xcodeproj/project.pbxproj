@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		280D7E5619AE2655004F95D4 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286A24E319AE21BF003D2269 /* Document.swift */; };
+		280D7E5A19AE27A8004F95D4 /* DocumentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280D7E5919AE27A8004F95D4 /* DocumentTests.swift */; };
+		280D7E5C19AE2807004F95D4 /* DocumentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280D7E5B19AE2807004F95D4 /* DocumentNode.swift */; };
+		280D7E5D19AE2807004F95D4 /* DocumentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280D7E5B19AE2807004F95D4 /* DocumentNode.swift */; };
+		280D7E5F19AE283B004F95D4 /* DocumentNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280D7E5E19AE283B004F95D4 /* DocumentNodeTests.swift */; };
 		282FC3BE19986F8700EB78A1 /* TomeInventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 282FC3BD19986F8700EB78A1 /* TomeInventory.swift */; };
 		285A5426199C34BD00932DDE /* OnigRegexp.m in Sources */ = {isa = PBXBuildFile; fileRef = 285A540E199C34BD00932DDE /* OnigRegexp.m */; };
 		285A5427199C34BD00932DDE /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = 285A5411199C34BD00932DDE /* COPYING */; };
@@ -24,6 +29,7 @@
 		285A5433199C34BD00932DDE /* regversion.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5422199C34BD00932DDE /* regversion.c */; };
 		285A5434199C34BD00932DDE /* st.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5423199C34BD00932DDE /* st.c */; };
 		285A5435199C34BD00932DDE /* OnigRegexpUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 285A5425199C34BD00932DDE /* OnigRegexpUtility.m */; };
+		286A24E419AE21BF003D2269 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286A24E319AE21BF003D2269 /* Document.swift */; };
 		287AE0A4199290DF00EEE4F0 /* CodeCombatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0A3199290DF00EEE4F0 /* CodeCombatTests.swift */; };
 		287AE0B61992926400EEE4F0 /* LevelLoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0AE1992926400EEE4F0 /* LevelLoadingViewController.swift */; };
 		287AE0B71992926400EEE4F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 287AE0AF1992926400EEE4F0 /* Main.storyboard */; };
@@ -80,6 +86,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		280D7E5719AE268D004F95D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 287AE083199290DF00EEE4F0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 287AE08A199290DF00EEE4F0;
+			remoteInfo = CodeCombat;
+		};
 		287AE09E199290DF00EEE4F0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 287AE083199290DF00EEE4F0 /* Project object */;
@@ -118,6 +131,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		280D7E5919AE27A8004F95D4 /* DocumentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentTests.swift; sourceTree = "<group>"; };
+		280D7E5B19AE2807004F95D4 /* DocumentNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentNode.swift; sourceTree = "<group>"; };
+		280D7E5E19AE283B004F95D4 /* DocumentNodeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentNodeTests.swift; sourceTree = "<group>"; };
 		282FC3BD19986F8700EB78A1 /* TomeInventory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventory.swift; sourceTree = "<group>"; };
 		285A540C199C34BD00932DDE /* OnigRegexp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OnigRegexp.h; path = CocoaOniguruma/OnigRegexp.h; sourceTree = "<group>"; };
 		285A540D199C34BD00932DDE /* OnigRegexpUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OnigRegexpUtility.h; path = CocoaOniguruma/OnigRegexpUtility.h; sourceTree = "<group>"; };
@@ -143,6 +159,7 @@
 		285A5423199C34BD00932DDE /* st.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = st.c; sourceTree = "<group>"; };
 		285A5424199C34BD00932DDE /* st.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = st.h; sourceTree = "<group>"; };
 		285A5425199C34BD00932DDE /* OnigRegexpUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OnigRegexpUtility.m; path = CocoaOniguruma/OnigRegexpUtility.m; sourceTree = "<group>"; };
+		286A24E319AE21BF003D2269 /* Document.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
 		287AE08B199290DF00EEE4F0 /* CodeCombat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodeCombat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		287AE08F199290DF00EEE4F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		287AE09D199290DF00EEE4F0 /* CodeCombatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CodeCombatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -321,6 +338,8 @@
 			children = (
 				287AE0A3199290DF00EEE4F0 /* CodeCombatTests.swift */,
 				287AE0A1199290DF00EEE4F0 /* Supporting Files */,
+				280D7E5919AE27A8004F95D4 /* DocumentTests.swift */,
+				280D7E5E19AE283B004F95D4 /* DocumentNodeTests.swift */,
 			);
 			path = CodeCombatTests;
 			sourceTree = "<group>";
@@ -505,6 +524,8 @@
 				287AE0B41992926400EEE4F0 /* EditorLayoutManager.swift */,
 				28DE0CE1199A96A500C6699D /* DocumentAnalyzer.swift */,
 				28DE0CE3199AA84300C6699D /* Syntax.swift */,
+				286A24E319AE21BF003D2269 /* Document.swift */,
+				280D7E5B19AE2807004F95D4 /* DocumentNode.swift */,
 			);
 			name = Text;
 			sourceTree = "<group>";
@@ -589,6 +610,7 @@
 				288F11D5199C6B8900CA8A71 /* PBXTargetDependency */,
 				288F11D7199C6BD100CA8A71 /* PBXTargetDependency */,
 				288F11D9199C6BD100CA8A71 /* PBXTargetDependency */,
+				280D7E5819AE268D004F95D4 /* PBXTargetDependency */,
 			);
 			name = CodeCombatTests;
 			productName = CodeCombatTests;
@@ -709,6 +731,7 @@
 				287AE0D71992927300EEE4F0 /* StoreItemDetailViewController.swift in Sources */,
 				285A5434199C34BD00932DDE /* st.c in Sources */,
 				285A542C199C34BD00932DDE /* regenc.c in Sources */,
+				286A24E419AE21BF003D2269 /* Document.swift in Sources */,
 				285A5426199C34BD00932DDE /* OnigRegexp.m in Sources */,
 				287AE108199294CC00EEE4F0 /* ParticleScene.swift in Sources */,
 				285A542D199C34BD00932DDE /* regerror.c in Sources */,
@@ -722,6 +745,7 @@
 				287AE0FD199293B600EEE4F0 /* NSAttributedStringMarkdownParser.m in Sources */,
 				287AE0E2199292F900EEE4F0 /* EquippedItemsViewController.swift in Sources */,
 				287AE109199294CC00EEE4F0 /* ParticleView.swift in Sources */,
+				280D7E5C19AE2807004F95D4 /* DocumentNode.swift in Sources */,
 				28DE0CE2199A96A500C6699D /* DocumentAnalyzer.swift in Sources */,
 				287AE0D01992927300EEE4F0 /* MainMenuController.swift in Sources */,
 			);
@@ -731,6 +755,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				280D7E5619AE2655004F95D4 /* Document.swift in Sources */,
+				280D7E5A19AE27A8004F95D4 /* DocumentTests.swift in Sources */,
+				280D7E5F19AE283B004F95D4 /* DocumentNodeTests.swift in Sources */,
+				280D7E5D19AE2807004F95D4 /* DocumentNode.swift in Sources */,
 				287AE0A4199290DF00EEE4F0 /* CodeCombatTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -738,6 +766,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		280D7E5819AE268D004F95D4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 287AE08A199290DF00EEE4F0 /* CodeCombat */;
+			targetProxy = 280D7E5719AE268D004F95D4 /* PBXContainerItemProxy */;
+		};
 		287AE09F199290DF00EEE4F0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 287AE08A199290DF00EEE4F0 /* CodeCombat */;
@@ -897,7 +930,6 @@
 		287AE0AB199290DF00EEE4F0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -916,7 +948,6 @@
 		287AE0AC199290DF00EEE4F0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",

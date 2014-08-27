@@ -1,19 +1,20 @@
 //
-//  CodeCombatTests.swift
-//  CodeCombatTests
+//  DocumentTests.swift
+//  CodeCombat
 //
-//  Created by Michael Schmatz on 8/6/14.
+//  Created by Michael Schmatz on 8/27/14.
 //  Copyright (c) 2014 CodeCombat. All rights reserved.
 //
 
-import UIKit
+import Foundation
 import XCTest
 
-class CodeCombatTests: XCTestCase {
+class DocumentTests: XCTestCase {
   
   override func setUp() {
     super.setUp()
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    
   }
   
   override func tearDown() {
