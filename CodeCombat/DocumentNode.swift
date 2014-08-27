@@ -13,6 +13,9 @@ class DocumentNode {
   var name:String = ""
   var children:[DocumentNode] = []
   var sourceText:NSString!
+  var data:String {
+    return sourceText.substringWithRange(range)
+  }
   
   init() {
   
@@ -32,7 +35,7 @@ class DocumentNode {
     let end = range.location + range.length
     let nodeName = name == "" ? "(no name)" : name
     if children.count == 0 {
-      return indent + "\(begin)-\(end): \(nodeName) - Data: \"\(data())\"\n"
+      return indent + "\(begin)-\(end): \(nodeName) - Data: \"\(data)\"\n"
     } else {
       var returnString = indent + "\(begin)-\(end): \"\(nodeName)\"\n"
       indent = indent + "\t"
@@ -41,10 +44,6 @@ class DocumentNode {
       }
       return returnString
     }
-  }
-  
-  func data() -> String {
-    return sourceText.substringWithRange(range)
   }
   
 }

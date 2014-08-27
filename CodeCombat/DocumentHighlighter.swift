@@ -8,6 +8,8 @@
 
 import Foundation
 
-class Document {
+class DocumentHighlighter {
+  var rootNode:DocumentNode!
+  var lastScopeNode:DocumentNode!
   
 }

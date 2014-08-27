@@ -51,11 +51,19 @@ class DocumentNodeTests: XCTestCase {
     XCTAssertEqual(defaultNode.description(), "0-4: (no name) - Data: \"This\"\n")
   }
   
+  func testGetData() {
+    var exampleString:NSString = "Test String"
+    defaultNode.sourceText = exampleString
+    defaultNode.range = NSRange(location: 0, length: 4)
+    XCTAssertEqual(defaultNode.data, "Test", "The data getter should work")
+  }
+  
   func testPerformanceExample() {
     // This is an example of a performance test case.
     self.measureBlock() {
       // Put the code you want to measure the time of here.
     }
+    
   }
   
 }
