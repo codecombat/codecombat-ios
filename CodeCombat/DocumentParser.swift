@@ -61,16 +61,108 @@ class Language {
   }
 }
 
+//The language provider is responsible for parsing files into languages
 class LanguageProvider {
   var mutex:Bool = false //currently does nothing, learn how iOS mutexes work
   var scope:[String:String] = Dictionary<String,String>()
+  
+  func getLanguage(id:String) -> Language {
+    
+  }
+  
+  func languageFromScope(id:String) -> Language {
+    let fileContentsString = scope[id]
+    if fileContentsString != nil {
+      
+    }
+  }
+  
+  func languageFromFile(languageFileName:String) -> Language {
+    let languageFilePath = NSBundle.mainBundle().pathForResource(languageFileName, ofType: "tmLanguageJSON")
+    let error:NSErrorPointer = nil
+    let languageFileContents = String.stringWithContentsOfFile(languageFilePath!, encoding: NSUTF8StringEncoding, error: error)
+    let languageFileJSON = JSON.parse(languageFileContents)
+    
+  }
+  
+  private func parseLanguageFileJSON(data:JSON) -> Language {
+    
+  }
+  
+  /*
+  func parseJSONIntoSyntax(syntaxData:JSON) -> Syntax {
+    let syntaxObject = Syntax()
+    //parse top level elements
+    syntaxObject.name = syntaxData["name"].asString
+    syntaxObject.scopeName = syntaxData["scopeName"].asString
+    if let repository = syntaxData["repository"].asDictionary {
+      for (ruleID,ruleData) in repository {
+        let rule = parseJSONSyntaxRule(ruleData)
+        syntaxObject.addRuleToRepository(ruleID, pattern: rule)
+      }
+    }
+    if let patterns = syntaxData["patterns"].asArray {
+      for patternData in patterns {
+        let pattern = parseJSONSyntaxRule(patternData)
+        syntaxObject.addPattern(pattern)
+      }
+    }
+    return syntaxObject
+  }
+  
+  func parseJSONSyntaxRule(ruleData:JSON) -> SyntaxRule {
+    let rule = SyntaxRule()
+    rule.comment = ruleData["comment"].asString
+    rule.disabled = ruleData["disabled"].asInt == 1 ? true : false
+    rule.isInclude = ruleData["include"].isString
+    rule.includePath = ruleData["include"].asString
+    rule.name = ruleData["name"].asString
+    rule.match = ruleData["match"].asString
+    rule.begin = ruleData["begin"].asString
+    rule.end = ruleData["end"].asString
+    rule.contentName = ruleData["contentName"].asString
+    if let captures = ruleData["captures"].asDictionary {
+      rule.captures = Dictionary<String, SyntaxCapture>()
+      for (captureNumber, captureData) in captures {
+        let capture = SyntaxCapture()
+        capture.name = captureData["name"].asString
+        rule.captures![captureNumber] = capture
+      }
+    }
+    if let beginCaptures = ruleData["beginCaptures"].asDictionary {
+      rule.beginCaptures = Dictionary<String, SyntaxCapture>()
+      for (captureNumber, captureData) in beginCaptures {
+        let capture = SyntaxCapture()
+        capture.name = captureData["name"].asString
+        rule.beginCaptures![captureNumber] = capture
+      }
+    }
+    if let endCaptures = ruleData["endCaptures"].asDictionary {
+      rule.endCaptures = Dictionary<String, SyntaxCapture>()
+      for (captureNumber, captureData) in endCaptures {
+        let capture = SyntaxCapture()
+        capture.name = captureData["name"].asString
+        rule.endCaptures![captureNumber] = capture
+      }
+    }
+    if let patterns = ruleData["patterns"].asArray {
+      rule.patterns = Array<SyntaxRule>()
+      for patternData in patterns {
+        let pattern = parseJSONSyntaxRule(patternData)
+        rule.patterns!.append(pattern)
+      }
+    }
+    return rule
+  }
+  */
+  
 }
 
 class UnpatchedLanguage {
   var fileTypes:[String] = []
   var firstLineMatch:String!
   var rootPattern:RootPattern!
-  
+
 }
 
 class Named {
