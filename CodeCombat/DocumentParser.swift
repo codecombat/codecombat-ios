@@ -123,57 +123,54 @@ class LanguageProvider {
   
   private func parsePattern(data:JSON) -> Pattern {
     let pattern = Pattern()
+    pattern.name = data["name"].asString
+    pattern.disabled = data["disabled"].asBool
+    pattern.include = data["include"].asString
+    if let matchData = data["match"].asString {
+      let match = Regex()
+      //TODO: Profile that compiling all of the regexes on the fly is performant
+      match.regex = OnigRegexp.compile(matchData)
+      pattern.match = match
+    }
+    if let captures = data["captures"].asDictionary {
+      for (captureNumber, captureData) in captures {
+        let capture = Capture(key: captureNumber.toInt()!)
+        capture.name = captureData["name"].asString
+        pattern.captures.append(capture)
+      }
+    }
+    if let beginData = data["begin"].asString {
+      let begin = Regex()
+      begin.regex = OnigRegexp.compile(beginData)
+      pattern.begin = begin
+    }
+    if let beginCaptures = data["beginCaptures"].asDictionary {
+      for (captureNumber, captureData) in beginCaptures {
+        let capture = Capture(key: captureNumber.toInt()!)
+        capture.name = captureData["name"].asString
+        pattern.beginCaptures.append(capture)
+      }
+    }
+    if let endData = data["end"].asString {
+      let end = Regex()
+      end.regex = OnigRegexp.compile(endData)
+      pattern.end = end
+    }
+    if let endCaptures = data["endCaptures"].asDictionary {
+      for (captureNumber, captureData) in endCaptures {
+        let capture = Capture(key: captureNumber.toInt()!)
+        capture.name = captureData["name"].asString
+        pattern.endCaptures.append(capture)
+      }
+    }
+    if let patterns = data["patterns"].asArray {
+      for patternData in patterns {
+        let nestedPattern = parsePattern(patternData)
+        pattern.patterns.append(nestedPattern)
+      }
+    }
     return pattern
   }
-  
-  /*
-  
-  func parseJSONSyntaxRule(ruleData:JSON) -> SyntaxRule {
-    let rule = SyntaxRule()
-    rule.comment = ruleData["comment"].asString
-    rule.disabled = ruleData["disabled"].asInt == 1 ? true : false
-    rule.isInclude = ruleData["include"].isString
-    rule.includePath = ruleData["include"].asString
-    rule.name = ruleData["name"].asString
-    rule.match = ruleData["match"].asString
-    rule.begin = ruleData["begin"].asString
-    rule.end = ruleData["end"].asString
-    rule.contentName = ruleData["contentName"].asString
-    if let captures = ruleData["captures"].asDictionary {
-      rule.captures = Dictionary<String, SyntaxCapture>()
-      for (captureNumber, captureData) in captures {
-        let capture = SyntaxCapture()
-        capture.name = captureData["name"].asString
-        rule.captures![captureNumber] = capture
-      }
-    }
-    if let beginCaptures = ruleData["beginCaptures"].asDictionary {
-      rule.beginCaptures = Dictionary<String, SyntaxCapture>()
-      for (captureNumber, captureData) in beginCaptures {
-        let capture = SyntaxCapture()
-        capture.name = captureData["name"].asString
-        rule.beginCaptures![captureNumber] = capture
-      }
-    }
-    if let endCaptures = ruleData["endCaptures"].asDictionary {
-      rule.endCaptures = Dictionary<String, SyntaxCapture>()
-      for (captureNumber, captureData) in endCaptures {
-        let capture = SyntaxCapture()
-        capture.name = captureData["name"].asString
-        rule.endCaptures![captureNumber] = capture
-      }
-    }
-    if let patterns = ruleData["patterns"].asArray {
-      rule.patterns = Array<SyntaxRule>()
-      for patternData in patterns {
-        let pattern = parseJSONSyntaxRule(patternData)
-        rule.patterns!.append(pattern)
-      }
-    }
-    return rule
-  }
-  */
-  
 }
 
 class UnpatchedLanguage {
@@ -185,16 +182,9 @@ class UnpatchedLanguage {
 
 }
 
-class Named {
-  var name:String
-  init(name:String) {
-    self.name = name
-  }
-}
-
 class Capture {
   var key:Int
-  var named:Named!
+  var name:String!
   init(key:Int) {
     self.key = key
   }
@@ -203,6 +193,7 @@ class Capture {
 class Pattern {
   //change the implicitly unwrapped optionals once construction is understood
   var name:String!
+  var disabled:Bool! = false
   var include:String!
   var match:Regex!
   var captures:[Capture] = []
