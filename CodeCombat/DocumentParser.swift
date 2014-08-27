@@ -105,36 +105,28 @@ class LanguageProvider {
     newUnpatchedLanguage.firstLineMatch = data["firstLineMatch"].asString
     newUnpatchedLanguage.scopeName = data["scopeName"].asString!
     if let repository = data["repository"].asDictionary {
-      
-    }
-    if let patterns = data["patterns"].asArray {
-      //parse the root pattern here
-      
+      for (patternName, pattern) in repository {
+        newUnpatchedLanguage.repository[patternName] = parsePattern(pattern)
+      }
     }
     
+    if let patterns = data["patterns"].asArray {
+      //parse the root pattern here
+      let rootPattern = Pattern()
+      for pattern in patterns {
+        rootPattern.patterns.append(parsePattern(pattern))
+      }
+      newUnpatchedLanguage.rootPattern = rootPattern
+    }
     return Language(lang: newUnpatchedLanguage)
   }
   
-  /*
-  func parseJSONIntoSyntax(syntaxData:JSON) -> Syntax {
-    let syntaxObject = Syntax()
-    //parse top level elements
-    syntaxObject.name = syntaxData["name"].asString
-    syntaxObject.scopeName = syntaxData["scopeName"].asString
-    if let repository = syntaxData["repository"].asDictionary {
-      for (ruleID,ruleData) in repository {
-        let rule = parseJSONSyntaxRule(ruleData)
-        syntaxObject.addRuleToRepository(ruleID, pattern: rule)
-      }
-    }
-    if let patterns = syntaxData["patterns"].asArray {
-      for patternData in patterns {
-        let pattern = parseJSONSyntaxRule(patternData)
-        syntaxObject.addPattern(pattern)
-      }
-    }
-    return syntaxObject
+  private func parsePattern(data:JSON) -> Pattern {
+    let pattern = Pattern()
+    return pattern
   }
+  
+  /*
   
   func parseJSONSyntaxRule(ruleData:JSON) -> SyntaxRule {
     let rule = SyntaxRule()
@@ -187,7 +179,7 @@ class LanguageProvider {
 class UnpatchedLanguage {
   var fileTypes:[String] = []
   var firstLineMatch:String!
-  var rootPattern:RootPattern!
+  var rootPattern:Pattern!
   var repository:[String:Pattern] = Dictionary<String,Pattern>()
   var scopeName:String = ""
 
@@ -205,13 +197,6 @@ class Capture {
   var named:Named!
   init(key:Int) {
     self.key = key
-  }
-}
-
-class RootPattern {
-  var pattern:Pattern
-  init(pattern:Pattern) {
-    self.pattern = pattern
   }
 }
 
