@@ -9,7 +9,6 @@
 class TomeInventory: NSObject {
   //can use dynamic keyword for KVO
   var items: [TomeInventoryItem] = []
-  
   init(itemsData: JSON, propertiesData:JSON) {
     super.init()
     for (i, itemData) in itemsData {

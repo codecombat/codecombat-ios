@@ -8,6 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		282FC3BE19986F8700EB78A1 /* TomeInventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 282FC3BD19986F8700EB78A1 /* TomeInventory.swift */; };
+		285A5426199C34BD00932DDE /* OnigRegexp.m in Sources */ = {isa = PBXBuildFile; fileRef = 285A540E199C34BD00932DDE /* OnigRegexp.m */; };
+		285A5427199C34BD00932DDE /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = 285A5411199C34BD00932DDE /* COPYING */; };
+		285A5428199C34BD00932DDE /* ascii.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5413199C34BD00932DDE /* ascii.c */; };
+		285A5429199C34BD00932DDE /* unicode.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5414199C34BD00932DDE /* unicode.c */; };
+		285A542A199C34BD00932DDE /* utf16_le.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5415199C34BD00932DDE /* utf16_le.c */; };
+		285A542B199C34BD00932DDE /* regcomp.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5417199C34BD00932DDE /* regcomp.c */; };
+		285A542C199C34BD00932DDE /* regenc.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5418199C34BD00932DDE /* regenc.c */; };
+		285A542D199C34BD00932DDE /* regerror.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A541A199C34BD00932DDE /* regerror.c */; };
+		285A542E199C34BD00932DDE /* regexec.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A541B199C34BD00932DDE /* regexec.c */; };
+		285A542F199C34BD00932DDE /* regext.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A541C199C34BD00932DDE /* regext.c */; };
+		285A5430199C34BD00932DDE /* regparse.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A541E199C34BD00932DDE /* regparse.c */; };
+		285A5431199C34BD00932DDE /* regsyntax.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5420199C34BD00932DDE /* regsyntax.c */; };
+		285A5432199C34BD00932DDE /* regtrav.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5421199C34BD00932DDE /* regtrav.c */; };
+		285A5433199C34BD00932DDE /* regversion.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5422199C34BD00932DDE /* regversion.c */; };
+		285A5434199C34BD00932DDE /* st.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5423199C34BD00932DDE /* st.c */; };
+		285A5435199C34BD00932DDE /* OnigRegexpUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 285A5425199C34BD00932DDE /* OnigRegexpUtility.m */; };
 		287AE0A4199290DF00EEE4F0 /* CodeCombatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0A3199290DF00EEE4F0 /* CodeCombatTests.swift */; };
 		287AE0B61992926400EEE4F0 /* LevelLoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0AE1992926400EEE4F0 /* LevelLoadingViewController.swift */; };
 		287AE0B71992926400EEE4F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 287AE0AF1992926400EEE4F0 /* Main.storyboard */; };
@@ -71,10 +87,62 @@
 			remoteGlobalIDString = 287AE08A199290DF00EEE4F0;
 			remoteInfo = CodeCombat;
 		};
+		288F11D2199C6B8800CA8A71 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 287AE083199290DF00EEE4F0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 287AE08A199290DF00EEE4F0;
+			remoteInfo = CodeCombat;
+		};
+		288F11D4199C6B8900CA8A71 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 287AE083199290DF00EEE4F0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 287AE08A199290DF00EEE4F0;
+			remoteInfo = CodeCombat;
+		};
+		288F11D6199C6BD100CA8A71 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 287AE083199290DF00EEE4F0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 287AE08A199290DF00EEE4F0;
+			remoteInfo = CodeCombat;
+		};
+		288F11D8199C6BD100CA8A71 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 287AE083199290DF00EEE4F0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 287AE08A199290DF00EEE4F0;
+			remoteInfo = CodeCombat;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		282FC3BD19986F8700EB78A1 /* TomeInventory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventory.swift; sourceTree = "<group>"; };
+		285A540C199C34BD00932DDE /* OnigRegexp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OnigRegexp.h; path = CocoaOniguruma/OnigRegexp.h; sourceTree = "<group>"; };
+		285A540D199C34BD00932DDE /* OnigRegexpUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OnigRegexpUtility.h; path = CocoaOniguruma/OnigRegexpUtility.h; sourceTree = "<group>"; };
+		285A540E199C34BD00932DDE /* OnigRegexp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OnigRegexp.m; path = CocoaOniguruma/OnigRegexp.m; sourceTree = "<group>"; };
+		285A5410199C34BD00932DDE /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		285A5411199C34BD00932DDE /* COPYING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
+		285A5413199C34BD00932DDE /* ascii.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ascii.c; sourceTree = "<group>"; };
+		285A5414199C34BD00932DDE /* unicode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unicode.c; sourceTree = "<group>"; };
+		285A5415199C34BD00932DDE /* utf16_le.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = utf16_le.c; sourceTree = "<group>"; };
+		285A5416199C34BD00932DDE /* oniguruma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = oniguruma.h; sourceTree = "<group>"; };
+		285A5417199C34BD00932DDE /* regcomp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = regcomp.c; sourceTree = "<group>"; };
+		285A5418199C34BD00932DDE /* regenc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = regenc.c; sourceTree = "<group>"; };
+		285A5419199C34BD00932DDE /* regenc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = regenc.h; sourceTree = "<group>"; };
+		285A541A199C34BD00932DDE /* regerror.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = regerror.c; sourceTree = "<group>"; };
+		285A541B199C34BD00932DDE /* regexec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = regexec.c; sourceTree = "<group>"; };
+		285A541C199C34BD00932DDE /* regext.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = regext.c; sourceTree = "<group>"; };
+		285A541D199C34BD00932DDE /* regint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = regint.h; sourceTree = "<group>"; };
+		285A541E199C34BD00932DDE /* regparse.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = regparse.c; sourceTree = "<group>"; };
+		285A541F199C34BD00932DDE /* regparse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = regparse.h; sourceTree = "<group>"; };
+		285A5420199C34BD00932DDE /* regsyntax.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = regsyntax.c; sourceTree = "<group>"; };
+		285A5421199C34BD00932DDE /* regtrav.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = regtrav.c; sourceTree = "<group>"; };
+		285A5422199C34BD00932DDE /* regversion.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = regversion.c; sourceTree = "<group>"; };
+		285A5423199C34BD00932DDE /* st.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = st.c; sourceTree = "<group>"; };
+		285A5424199C34BD00932DDE /* st.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = st.h; sourceTree = "<group>"; };
+		285A5425199C34BD00932DDE /* OnigRegexpUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OnigRegexpUtility.m; path = CocoaOniguruma/OnigRegexpUtility.m; sourceTree = "<group>"; };
 		287AE08B199290DF00EEE4F0 /* CodeCombat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodeCombat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		287AE08F199290DF00EEE4F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		287AE09D199290DF00EEE4F0 /* CodeCombatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CodeCombatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -158,6 +226,54 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		285A540B199C34AF00932DDE /* CocoaOniguruma */ = {
+			isa = PBXGroup;
+			children = (
+				285A540C199C34BD00932DDE /* OnigRegexp.h */,
+				285A540D199C34BD00932DDE /* OnigRegexpUtility.h */,
+				285A540E199C34BD00932DDE /* OnigRegexp.m */,
+				285A540F199C34BD00932DDE /* oniguruma */,
+				285A5425199C34BD00932DDE /* OnigRegexpUtility.m */,
+			);
+			name = CocoaOniguruma;
+			sourceTree = "<group>";
+		};
+		285A540F199C34BD00932DDE /* oniguruma */ = {
+			isa = PBXGroup;
+			children = (
+				285A5410199C34BD00932DDE /* config.h */,
+				285A5411199C34BD00932DDE /* COPYING */,
+				285A5412199C34BD00932DDE /* enc */,
+				285A5416199C34BD00932DDE /* oniguruma.h */,
+				285A5417199C34BD00932DDE /* regcomp.c */,
+				285A5418199C34BD00932DDE /* regenc.c */,
+				285A5419199C34BD00932DDE /* regenc.h */,
+				285A541A199C34BD00932DDE /* regerror.c */,
+				285A541B199C34BD00932DDE /* regexec.c */,
+				285A541C199C34BD00932DDE /* regext.c */,
+				285A541D199C34BD00932DDE /* regint.h */,
+				285A541E199C34BD00932DDE /* regparse.c */,
+				285A541F199C34BD00932DDE /* regparse.h */,
+				285A5420199C34BD00932DDE /* regsyntax.c */,
+				285A5421199C34BD00932DDE /* regtrav.c */,
+				285A5422199C34BD00932DDE /* regversion.c */,
+				285A5423199C34BD00932DDE /* st.c */,
+				285A5424199C34BD00932DDE /* st.h */,
+			);
+			name = oniguruma;
+			path = CocoaOniguruma/oniguruma;
+			sourceTree = "<group>";
+		};
+		285A5412199C34BD00932DDE /* enc */ = {
+			isa = PBXGroup;
+			children = (
+				285A5413199C34BD00932DDE /* ascii.c */,
+				285A5414199C34BD00932DDE /* unicode.c */,
+				285A5415199C34BD00932DDE /* utf16_le.c */,
+			);
+			path = enc;
+			sourceTree = "<group>";
+		};
 		287AE082199290DF00EEE4F0 = {
 			isa = PBXGroup;
 			children = (
@@ -277,6 +393,7 @@
 		287AE10D1992951800EEE4F0 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				285A540B199C34AF00932DDE /* CocoaOniguruma */,
 				287AE0F0199293B600EEE4F0 /* CodeCombat-Bridging-Header.h */,
 				287AE10E1992952500EEE4F0 /* NimbusKitMarkdown */,
 				C827D1D01994726600B5724C /* json.swift */,
@@ -468,6 +585,10 @@
 			);
 			dependencies = (
 				287AE09F199290DF00EEE4F0 /* PBXTargetDependency */,
+				288F11D3199C6B8800CA8A71 /* PBXTargetDependency */,
+				288F11D5199C6B8900CA8A71 /* PBXTargetDependency */,
+				288F11D7199C6BD100CA8A71 /* PBXTargetDependency */,
+				288F11D9199C6BD100CA8A71 /* PBXTargetDependency */,
 			);
 			name = CodeCombatTests;
 			productName = CodeCombatTests;
@@ -524,6 +645,7 @@
 				287AE10A199294CC00EEE4F0 /* spark.png in Resources */,
 				28DE0CFF199AE1D600C6699D /* javascriptSyntax.json in Resources */,
 				287AE0B71992926400EEE4F0 /* Main.storyboard in Resources */,
+				285A5427199C34BD00932DDE /* COPYING in Resources */,
 				287AE0D31992927300EEE4F0 /* progressListener.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -544,6 +666,7 @@
 			files = (
 				28DE0CDD1999305700C6699D /* TomeInventoryViewController.swift in Sources */,
 				287AE0DE199292CE00EEE4F0 /* IAPHelper.swift in Sources */,
+				285A5433199C34BD00932DDE /* regversion.c in Sources */,
 				287AE0DC1992927300EEE4F0 /* ColorManager.swift in Sources */,
 				287AE0D51992927300EEE4F0 /* SpriteDialogue.swift in Sources */,
 				287AE0CF1992927300EEE4F0 /* LoginViewController.swift in Sources */,
@@ -555,6 +678,7 @@
 				287AE0DB1992927300EEE4F0 /* WebManager.swift in Sources */,
 				287AE0B91992926400EEE4F0 /* AppDelegate.swift in Sources */,
 				287AE0D11992927300EEE4F0 /* PlayViewChildViewController.swift in Sources */,
+				285A542F199C34BD00932DDE /* regext.c in Sources */,
 				C827D1D11994726600B5724C /* json.swift in Sources */,
 				28BA9B561992D5DA006ACB3A /* NewPlayViewController.swift in Sources */,
 				287AE0D81992927300EEE4F0 /* StoreViewController.swift in Sources */,
@@ -563,19 +687,32 @@
 				287AE0BA1992926400EEE4F0 /* BackbonePublisher.swift in Sources */,
 				C827D1C919943EA500B5724C /* Utilities.swift in Sources */,
 				287AE0E0199292E400EEE4F0 /* InventoryCell.swift in Sources */,
+				285A5428199C34BD00932DDE /* ascii.c in Sources */,
 				282FC3BE19986F8700EB78A1 /* TomeInventory.swift in Sources */,
+				285A5429199C34BD00932DDE /* unicode.c in Sources */,
 				287AE0FC199293B600EEE4F0 /* MarkdownTokens.m in Sources */,
 				C827D1D61994784E00B5724C /* TomeInventoryItemProperty.swift in Sources */,
+				285A542B199C34BD00932DDE /* regcomp.c in Sources */,
+				285A5430199C34BD00932DDE /* regparse.c in Sources */,
+				285A5432199C34BD00932DDE /* regtrav.c in Sources */,
 				287AE0B61992926400EEE4F0 /* LevelLoadingViewController.swift in Sources */,
+				285A5431199C34BD00932DDE /* regsyntax.c in Sources */,
 				287AE0D41992927300EEE4F0 /* SpellPaletteViewController.swift in Sources */,
 				287AE0BD1992926400EEE4F0 /* EditorTextViewController.swift in Sources */,
 				287AE0B81992926400EEE4F0 /* EditorTextStorage.swift in Sources */,
 				28C96DFE1993FF3B009FCD9E /* Editor.swift in Sources */,
 				28DE0CE0199959DB00C6699D /* TomeEditorViewController.swift in Sources */,
 				C827D1D51994784E00B5724C /* TomeInventoryItem.swift in Sources */,
+				285A542A199C34BD00932DDE /* utf16_le.c in Sources */,
 				287AE0CE1992927300EEE4F0 /* LevelPlaybackViewController.swift in Sources */,
 				287AE0D71992927300EEE4F0 /* StoreItemDetailViewController.swift in Sources */,
+				285A5434199C34BD00932DDE /* st.c in Sources */,
+				285A542C199C34BD00932DDE /* regenc.c in Sources */,
+				285A5426199C34BD00932DDE /* OnigRegexp.m in Sources */,
 				287AE108199294CC00EEE4F0 /* ParticleScene.swift in Sources */,
+				285A542D199C34BD00932DDE /* regerror.c in Sources */,
+				285A5435199C34BD00932DDE /* OnigRegexpUtility.m in Sources */,
+				285A542E199C34BD00932DDE /* regexec.c in Sources */,
 				287AE0D91992927300EEE4F0 /* User.swift in Sources */,
 				28C96DF71993D09C009FCD9E /* EditorTextView.swift in Sources */,
 				287AE0BB1992926400EEE4F0 /* CodeCombatIAPHelper.swift in Sources */,
@@ -604,6 +741,26 @@
 			isa = PBXTargetDependency;
 			target = 287AE08A199290DF00EEE4F0 /* CodeCombat */;
 			targetProxy = 287AE09E199290DF00EEE4F0 /* PBXContainerItemProxy */;
+		};
+		288F11D3199C6B8800CA8A71 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 287AE08A199290DF00EEE4F0 /* CodeCombat */;
+			targetProxy = 288F11D2199C6B8800CA8A71 /* PBXContainerItemProxy */;
+		};
+		288F11D5199C6B8900CA8A71 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 287AE08A199290DF00EEE4F0 /* CodeCombat */;
+			targetProxy = 288F11D4199C6B8900CA8A71 /* PBXContainerItemProxy */;
+		};
+		288F11D7199C6BD100CA8A71 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 287AE08A199290DF00EEE4F0 /* CodeCombat */;
+			targetProxy = 288F11D6199C6BD100CA8A71 /* PBXContainerItemProxy */;
+		};
+		288F11D9199C6BD100CA8A71 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 287AE08A199290DF00EEE4F0 /* CodeCombat */;
+			targetProxy = 288F11D8199C6BD100CA8A71 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -693,11 +850,20 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/CodeCombat",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Applications/Xcode6-Beta5.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include",
+				);
 				INFOPLIST_FILE = CodeCombat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "CodeCombat/CodeCombat-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/CodeCombat/CocoaOniguruma/**";
 			};
 			name = Debug;
 		};
@@ -707,10 +873,19 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/CodeCombat",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Applications/Xcode6-Beta5.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include",
+				);
 				INFOPLIST_FILE = CodeCombat/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "CodeCombat/CodeCombat-Bridging-Header.h";
+				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/CodeCombat/CocoaOniguruma/**";
 			};
 			name = Release;
 		};
