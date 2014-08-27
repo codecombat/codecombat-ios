@@ -12,6 +12,8 @@
 		280D7E5C19AE2807004F95D4 /* DocumentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280D7E5B19AE2807004F95D4 /* DocumentNode.swift */; };
 		280D7E5D19AE2807004F95D4 /* DocumentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280D7E5B19AE2807004F95D4 /* DocumentNode.swift */; };
 		280D7E5F19AE283B004F95D4 /* DocumentNodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280D7E5E19AE283B004F95D4 /* DocumentNodeTests.swift */; };
+		280D7E6119AE4E19004F95D4 /* DocumentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280D7E6019AE4E19004F95D4 /* DocumentParser.swift */; };
+		280D7E6219AE4E19004F95D4 /* DocumentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280D7E6019AE4E19004F95D4 /* DocumentParser.swift */; };
 		282FC3BE19986F8700EB78A1 /* TomeInventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 282FC3BD19986F8700EB78A1 /* TomeInventory.swift */; };
 		285A5426199C34BD00932DDE /* OnigRegexp.m in Sources */ = {isa = PBXBuildFile; fileRef = 285A540E199C34BD00932DDE /* OnigRegexp.m */; };
 		285A5427199C34BD00932DDE /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = 285A5411199C34BD00932DDE /* COPYING */; };
@@ -133,6 +135,7 @@
 		280D7E5919AE27A8004F95D4 /* DocumentHighlighterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentHighlighterTests.swift; sourceTree = "<group>"; };
 		280D7E5B19AE2807004F95D4 /* DocumentNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentNode.swift; sourceTree = "<group>"; };
 		280D7E5E19AE283B004F95D4 /* DocumentNodeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentNodeTests.swift; sourceTree = "<group>"; };
+		280D7E6019AE4E19004F95D4 /* DocumentParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentParser.swift; sourceTree = "<group>"; };
 		282FC3BD19986F8700EB78A1 /* TomeInventory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventory.swift; sourceTree = "<group>"; };
 		285A540C199C34BD00932DDE /* OnigRegexp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OnigRegexp.h; path = CocoaOniguruma/OnigRegexp.h; sourceTree = "<group>"; };
 		285A540D199C34BD00932DDE /* OnigRegexpUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OnigRegexpUtility.h; path = CocoaOniguruma/OnigRegexpUtility.h; sourceTree = "<group>"; };
@@ -523,6 +526,7 @@
 				28DE0CE3199AA84300C6699D /* Syntax.swift */,
 				286A24E319AE21BF003D2269 /* DocumentHighlighter.swift */,
 				280D7E5B19AE2807004F95D4 /* DocumentNode.swift */,
+				280D7E6019AE4E19004F95D4 /* DocumentParser.swift */,
 			);
 			name = Text;
 			sourceTree = "<group>";
@@ -725,6 +729,7 @@
 				C827D1D51994784E00B5724C /* TomeInventoryItem.swift in Sources */,
 				285A542A199C34BD00932DDE /* utf16_le.c in Sources */,
 				287AE0CE1992927300EEE4F0 /* LevelPlaybackViewController.swift in Sources */,
+				280D7E6119AE4E19004F95D4 /* DocumentParser.swift in Sources */,
 				287AE0D71992927300EEE4F0 /* StoreItemDetailViewController.swift in Sources */,
 				285A5434199C34BD00932DDE /* st.c in Sources */,
 				285A542C199C34BD00932DDE /* regenc.c in Sources */,
@@ -756,6 +761,7 @@
 				280D7E5F19AE283B004F95D4 /* DocumentNodeTests.swift in Sources */,
 				280D7E5D19AE2807004F95D4 /* DocumentNode.swift in Sources */,
 				287AE0A4199290DF00EEE4F0 /* CodeCombatTests.swift in Sources */,
+				280D7E6219AE4E19004F95D4 /* DocumentParser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
