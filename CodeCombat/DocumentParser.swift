@@ -66,27 +66,53 @@ class LanguageProvider {
   var mutex:Bool = false //currently does nothing, learn how iOS mutexes work
   var scope:[String:String] = Dictionary<String,String>()
   
-  func getLanguage(id:String) -> Language {
-    
-  }
-  
-  func languageFromScope(id:String) -> Language {
-    let fileContentsString = scope[id]
-    if fileContentsString != nil {
-      
+  func getLanguage(id:String) -> Language? {
+    if let lang = languageFromScope(id) {
+      return lang
+    } else {
+      return languageFromFile(id)
     }
   }
   
-  func languageFromFile(languageFileName:String) -> Language {
+  func languageFromScope(id:String) -> Language? {
+    let fileName = scope[id]
+    if fileName != nil {
+      return languageFromFile(fileName!)
+    } else {
+      return nil
+    }
+  }
+  
+  func languageFromFile(languageFileName:String) -> Language? {
     let languageFilePath = NSBundle.mainBundle().pathForResource(languageFileName, ofType: "tmLanguageJSON")
     let error:NSErrorPointer = nil
     let languageFileContents = String.stringWithContentsOfFile(languageFilePath!, encoding: NSUTF8StringEncoding, error: error)
-    let languageFileJSON = JSON.parse(languageFileContents)
+    if error == nil || languageFileContents == nil {
+      return nil
+    }
     
+    let languageFileJSON = JSON.parse(languageFileContents!)
+    return parseLanguageFileJSON(languageFileJSON)
   }
   
-  private func parseLanguageFileJSON(data:JSON) -> Language {
+  private func parseLanguageFileJSON(data:JSON) -> Language? {
+    let newUnpatchedLanguage = UnpatchedLanguage()
+    if let fileTypesArray = data["fileTypes"].asArray {
+      for fileType in fileTypesArray {
+        newUnpatchedLanguage.fileTypes.append(fileType.asString!)
+      }
+    }
+    newUnpatchedLanguage.firstLineMatch = data["firstLineMatch"].asString
+    newUnpatchedLanguage.scopeName = data["scopeName"].asString!
+    if let repository = data["repository"].asDictionary {
+      
+    }
+    if let patterns = data["patterns"].asArray {
+      //parse the root pattern here
+      
+    }
     
+    return Language(lang: newUnpatchedLanguage)
   }
   
   /*
@@ -162,6 +188,8 @@ class UnpatchedLanguage {
   var fileTypes:[String] = []
   var firstLineMatch:String!
   var rootPattern:RootPattern!
+  var repository:[String:Pattern] = Dictionary<String,Pattern>()
+  var scopeName:String = ""
 
 }
 

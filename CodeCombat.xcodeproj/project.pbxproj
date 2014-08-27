@@ -68,6 +68,22 @@
 		287AE109199294CC00EEE4F0 /* ParticleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE105199294CC00EEE4F0 /* ParticleView.swift */; };
 		287AE10A199294CC00EEE4F0 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 287AE106199294CC00EEE4F0 /* spark.png */; };
 		287AE10B199294CC00EEE4F0 /* TestParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 287AE107199294CC00EEE4F0 /* TestParticle.sks */; };
+		28B3E3A419AE687300C6B12A /* json.swift in Sources */ = {isa = PBXBuildFile; fileRef = C827D1D01994726600B5724C /* json.swift */; };
+		28B3E3A519AE688600C6B12A /* OnigRegexp.m in Sources */ = {isa = PBXBuildFile; fileRef = 285A540E199C34BD00932DDE /* OnigRegexp.m */; };
+		28B3E3A619AE68A200C6B12A /* st.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5423199C34BD00932DDE /* st.c */; };
+		28B3E3A719AE68A600C6B12A /* regversion.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5422199C34BD00932DDE /* regversion.c */; };
+		28B3E3A819AE68A900C6B12A /* regtrav.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5421199C34BD00932DDE /* regtrav.c */; };
+		28B3E3A919AE68AC00C6B12A /* regsyntax.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5420199C34BD00932DDE /* regsyntax.c */; };
+		28B3E3AA19AE68B300C6B12A /* regparse.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A541E199C34BD00932DDE /* regparse.c */; };
+		28B3E3AB19AE68BC00C6B12A /* regerror.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A541A199C34BD00932DDE /* regerror.c */; };
+		28B3E3AC19AE68BC00C6B12A /* regexec.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A541B199C34BD00932DDE /* regexec.c */; };
+		28B3E3AD19AE68BC00C6B12A /* regext.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A541C199C34BD00932DDE /* regext.c */; };
+		28B3E3AE19AE68C000C6B12A /* regcomp.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5417199C34BD00932DDE /* regcomp.c */; };
+		28B3E3AF19AE68C000C6B12A /* regenc.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5418199C34BD00932DDE /* regenc.c */; };
+		28B3E3B019AE68C800C6B12A /* ascii.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5413199C34BD00932DDE /* ascii.c */; };
+		28B3E3B119AE68C800C6B12A /* unicode.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5414199C34BD00932DDE /* unicode.c */; };
+		28B3E3B219AE68C800C6B12A /* utf16_le.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5415199C34BD00932DDE /* utf16_le.c */; };
+		28B3E3B319AE68CE00C6B12A /* OnigRegexpUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 285A5425199C34BD00932DDE /* OnigRegexpUtility.m */; };
 		28BA9B561992D5DA006ACB3A /* NewPlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B551992D5DA006ACB3A /* NewPlayViewController.swift */; };
 		28C96DF71993D09C009FCD9E /* EditorTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C96DF61993D09C009FCD9E /* EditorTextView.swift */; };
 		28C96DFE1993FF3B009FCD9E /* Editor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C96DFD1993FF3B009FCD9E /* Editor.swift */; };
@@ -756,12 +772,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28B3E3A619AE68A200C6B12A /* st.c in Sources */,
+				28B3E3AF19AE68C000C6B12A /* regenc.c in Sources */,
+				28B3E3AC19AE68BC00C6B12A /* regexec.c in Sources */,
+				28B3E3B219AE68C800C6B12A /* utf16_le.c in Sources */,
 				280D7E5619AE2655004F95D4 /* DocumentHighlighter.swift in Sources */,
+				28B3E3B019AE68C800C6B12A /* ascii.c in Sources */,
 				280D7E5A19AE27A8004F95D4 /* DocumentHighlighterTests.swift in Sources */,
+				28B3E3AE19AE68C000C6B12A /* regcomp.c in Sources */,
+				28B3E3AB19AE68BC00C6B12A /* regerror.c in Sources */,
+				28B3E3A719AE68A600C6B12A /* regversion.c in Sources */,
+				28B3E3B119AE68C800C6B12A /* unicode.c in Sources */,
 				280D7E5F19AE283B004F95D4 /* DocumentNodeTests.swift in Sources */,
+				28B3E3A419AE687300C6B12A /* json.swift in Sources */,
+				28B3E3AD19AE68BC00C6B12A /* regext.c in Sources */,
+				28B3E3AA19AE68B300C6B12A /* regparse.c in Sources */,
 				280D7E5D19AE2807004F95D4 /* DocumentNode.swift in Sources */,
 				287AE0A4199290DF00EEE4F0 /* CodeCombatTests.swift in Sources */,
 				280D7E6219AE4E19004F95D4 /* DocumentParser.swift in Sources */,
+				28B3E3B319AE68CE00C6B12A /* OnigRegexpUtility.m in Sources */,
+				28B3E3A919AE68AC00C6B12A /* regsyntax.c in Sources */,
+				28B3E3A519AE688600C6B12A /* OnigRegexp.m in Sources */,
+				28B3E3A819AE68A900C6B12A /* regtrav.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -943,6 +975,7 @@
 				INFOPLIST_FILE = CodeCombatTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "CodeCombat/CodeCombat-Bridging-Header.h";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CodeCombat.app/CodeCombat";
 			};
 			name = Debug;
@@ -957,6 +990,7 @@
 				INFOPLIST_FILE = CodeCombatTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "CodeCombat/CodeCombat-Bridging-Header.h";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CodeCombat.app/CodeCombat";
 			};
 			name = Release;

@@ -11,5 +11,7 @@ import Foundation
 class DocumentHighlighter {
   var rootNode:DocumentNode!
   var lastScopeNode:DocumentNode!
-  
+  init() {
+    
+  }
 }
