@@ -23,7 +23,7 @@ class PlayViewController: UIViewController {
   var spellBeforeLoad:String?
   var interfaceNotificationCenter:NSNotificationCenter?
   
-  required init(coder aDecoder: NSCoder!)  {
+  required init(coder aDecoder: NSCoder)  {
     super.init(coder: aDecoder)
   }
   

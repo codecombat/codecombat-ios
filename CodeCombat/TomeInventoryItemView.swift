@@ -13,7 +13,7 @@ class TomeInventoryItemView: UIView {
   var item: TomeInventoryItem!
   var showsProperties = false
   
-  required init(coder aDecoder: NSCoder!) {
+  required init(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
   

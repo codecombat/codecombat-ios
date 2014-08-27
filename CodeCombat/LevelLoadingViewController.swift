@@ -131,12 +131,14 @@ class LevelLoadingViewController: UIViewController {
   }
   
   func handleProgressUpdate(notification:NSNotification) {
-    let UserInfoDictionary = notification.userInfo as NSDictionary
-    let Progress = UserInfoDictionary["progress"] as Float
-    let ProgressScalingFactor = 0.8
-    let scaledProgress = CGFloat(Progress) * CGFloat(ProgressScalingFactor)
-    println("Progress updated")
-    levelLoadingProgressView.setProgress(Float(scaledProgress), animated: true)
+    if let UserInfoDictionary = notification.userInfo {
+      let Progress = UserInfoDictionary["progress"]! as Float
+      let ProgressScalingFactor = 0.8
+      let scaledProgress = CGFloat(Progress) * CGFloat(ProgressScalingFactor)
+      println("Progress updated")
+      levelLoadingProgressView.setProgress(Float(scaledProgress), animated: true)
+    }
+    
   }
   
   func handleLevelStarted() {
@@ -145,16 +147,20 @@ class LevelLoadingViewController: UIViewController {
   }
   
   func handleDialogue(notification:NSNotification) {
-    let messageBody = notification.userInfo as NSDictionary
-    println("Setting speech before unveil!")
-    spriteMessageBeforeUnveil  = SpriteDialogue(
-      image: UIImage(named: "AnyaPortrait"),
-      spriteMessage: messageBody["message"] as String,
-      spriteName: messageBody["spriteID"] as String)
+    if let messageBody = notification.userInfo {
+      println("Setting speech before unveil!")
+      spriteMessageBeforeUnveil  = SpriteDialogue(
+        image: UIImage(named: "AnyaPortrait"),
+        spriteMessage: messageBody["message"]! as String,
+        spriteName: messageBody["spriteID"]! as String)
+    }
   }
   func handleTomeSpellLoaded(notification:NSNotification) {
-    let messageBody = notification.userInfo as NSDictionary
-    spellBeforeUnveil = messageBody["spellSource"] as? String
+    if let messageBody = notification.userInfo {
+      spellBeforeUnveil = messageBody["spellSource"]! as? String
+    }
+    
+    
   }
   
   func injectListeners() {
@@ -168,7 +174,7 @@ class LevelLoadingViewController: UIViewController {
     var error:NSError? = nil
     let scriptFilePath = NSBundle.mainBundle()
       .pathForResource("progressListener", ofType: "js")
-    let scriptFromFile = NSString.stringWithContentsOfFile(scriptFilePath,
+    let scriptFromFile = NSString.stringWithContentsOfFile(scriptFilePath!,
       encoding: NSUTF8StringEncoding,
       error: &error)
     

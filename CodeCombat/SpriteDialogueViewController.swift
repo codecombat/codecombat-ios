@@ -39,12 +39,14 @@ class SpriteDialogueViewController: PlayViewChildViewController {
   }
   
   func handleDialogue(notification:NSNotification) {
-    let messageBody = notification.userInfo as NSDictionary
-    let dialogue = SpriteDialogue(
-      image: UIImage(named: "AnyaPortrait"),
-      spriteMessage: messageBody["message"] as String,
-      spriteName: messageBody["spriteID"] as String)
-    self.currentDialogue = dialogue
+    if let messageBody = notification.userInfo {
+      let dialogue = SpriteDialogue(
+        image: UIImage(named: "AnyaPortrait"),
+        spriteMessage: messageBody["message"]! as String,
+        spriteName: messageBody["spriteID"]! as String)
+      self.currentDialogue = dialogue
+    }
+    
   }
   
   func setSpriteDialogue(dialogue:SpriteDialogue) {

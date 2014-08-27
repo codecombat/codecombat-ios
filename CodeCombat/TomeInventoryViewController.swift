@@ -21,7 +21,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
     super.init(nibName: "", bundle: nil)
   }
   
-  required convenience init(coder aDecoder: NSCoder!) {
+  required convenience init(coder aDecoder: NSCoder) {
     self.init()
   }
   

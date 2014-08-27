@@ -65,10 +65,13 @@ class EditorTextViewController: PlayViewChildViewController, UITextViewDelegate,
   }
   
   func handleInsertTextNotification(notification:NSNotification) {
-    let userInfoDictionary = notification.userInfo as NSDictionary
-    let TextToInsert = userInfoDictionary["textToInsert"] as String
+    if let userInfoDictionary = notification.userInfo {
+      let TextToInsert = userInfoDictionary["textToInsert"]! as String
+      appendString(NSMutableAttributedString(string:TextToInsert))
+    }
     
-    appendString(NSMutableAttributedString(string:TextToInsert))
+    
+    
   }
   
   func setContentsToString(string:NSMutableAttributedString) {
@@ -113,7 +116,7 @@ class EditorTextViewController: PlayViewChildViewController, UITextViewDelegate,
   }
   
   func handleTomeSourceRequest(){
-    var escapedString = NSString(string:editorStorage!.string()?.stringByReplacingOccurrencesOfString("\"", withString: "\\\""))
+    var escapedString = NSString(string:editorStorage!.string()!.stringByReplacingOccurrencesOfString("\"", withString: "\\\""))
     escapedString = escapedString.stringByReplacingOccurrencesOfString("\n", withString: "\\n")
     webView?.evaluateJavaScript("currentView.tome.spellView.ace.setValue(\"\(escapedString)\");", completionHandler: nil)
   }

@@ -61,7 +61,7 @@ class LoginViewController: UIViewController {
     NSURLConnection.sendAsynchronousRequest(LoginRequest,
       queue: OperationQueue,
       completionHandler: { [weak self] response, data, requestError -> Void in
-      if requestError {
+      if (requestError != nil) {
         //This will trigger on unauthorized.
         var jsonError:NSError?
         var errorObject:AnyObject! = NSJSONSerialization.JSONObjectWithData(data,

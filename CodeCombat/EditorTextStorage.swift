@@ -29,9 +29,9 @@ class EditorTextStorage: NSTextStorage {
   func setEditorTextView(tv:UITextView) {
     editorTextView = tv
   }
-  override func attributesAtIndex(location: Int,
-    effectiveRange range: NSRangePointer) -> [NSObject : AnyObject]! {
-    return attributedString?.attributesAtIndex(location, effectiveRange: range)
+  
+  override func attributesAtIndex(location: Int, effectiveRange range: NSRangePointer) -> [NSObject : AnyObject] {
+    return attributedString!.attributesAtIndex(location, effectiveRange: range)
   }
   override func replaceCharactersInRange(range: NSRange,
     withString str: String!) {

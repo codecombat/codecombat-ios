@@ -10,7 +10,7 @@ class StoreViewController: UIViewController, UICollectionViewDataSource, UIColle
     dismissViewControllerAnimated(true, completion: nil)
   }
   
-  required init(coder aDecoder: NSCoder!) {
+  required init(coder aDecoder: NSCoder) {
     products = []
     super.init(coder: aDecoder)
   }

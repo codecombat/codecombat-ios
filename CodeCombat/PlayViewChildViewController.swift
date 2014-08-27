@@ -14,7 +14,7 @@ class PlayViewChildViewController: UIViewController, BackbonePublisher {
   var webView:WKWebView?
   var notificationCenter:NSNotificationCenter?
   
-  required init(coder aDecoder: NSCoder!) {
+  required init(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
   
@@ -34,7 +34,7 @@ class PlayViewChildViewController: UIViewController, BackbonePublisher {
     var serialized:NSData?
     var error:NSError?
     if data != nil {
-      serialized = NSJSONSerialization.dataWithJSONObject(data,
+      serialized = NSJSONSerialization.dataWithJSONObject(data!,
         options: NSJSONWritingOptions(0),
         error: &error)
     } else {

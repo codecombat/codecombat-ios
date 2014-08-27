@@ -22,12 +22,14 @@ class LevelPlaybackViewController: PlayViewChildViewController {
   }
 
   func handleSurfaceFrameChangedNotification(notification:NSNotification) {
-    let MessageBody = notification.userInfo as NSDictionary
-    totalFrames = MessageBody["totalFrames"] as Int
-    currentFrame = MessageBody["frame"] as Int
-    frameRate = MessageBody["frameRate"] as Int
-    playbackSlider.maximumValue = Float(totalFrames)
-    playbackSlider.value = Float(currentFrame)
+    if let MessageBody = notification.userInfo {
+      totalFrames = MessageBody["totalFrames"]! as Int
+      currentFrame = MessageBody["frame"]! as Int
+      frameRate = MessageBody["frameRate"]! as Int
+      playbackSlider.maximumValue = Float(totalFrames)
+      playbackSlider.value = Float(currentFrame)
+    }
+    
   }
   
   @IBAction func togglePlay(sender:AnyObject?) {
