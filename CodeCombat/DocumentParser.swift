@@ -63,9 +63,7 @@ class Language {
 
 //The language provider is responsible for parsing files into languages
 class LanguageProvider {
-  var mutex:Bool = false //currently does nothing, learn how iOS mutexes work
   var scope:[String:String] = Dictionary<String,String>()
-  
   func getLanguage(id:String) -> Language? {
     if let lang = languageFromScope(id) {
       return lang
@@ -84,15 +82,23 @@ class LanguageProvider {
   }
   
   func languageFromFile(languageFileName:String) -> Language? {
-    let languageFilePath = NSBundle.mainBundle().pathForResource(languageFileName, ofType: "tmLanguageJSON")
+    //TODO: Verify that this doesn't screw up the app, I changed it from mainBundle for test compatibility
+    let languageFilePath = NSBundle(forClass: LanguageProvider.self).pathForResource(languageFileName, ofType: "tmLanguageJSON")
+    if languageFilePath == nil {
+      return nil
+    }
     let error:NSErrorPointer = nil
     let languageFileContents = String.stringWithContentsOfFile(languageFilePath!, encoding: NSUTF8StringEncoding, error: error)
-    if error == nil || languageFileContents == nil {
+    if error != nil || languageFileContents == nil {
       return nil
     }
     
     let languageFileJSON = JSON.parse(languageFileContents!)
-    return parseLanguageFileJSON(languageFileJSON)
+    let parsedLanguage = parseLanguageFileJSON(languageFileJSON)
+    if parsedLanguage != nil {
+      scope[parsedLanguage!.unpatchedLanguage.scopeName] = languageFileName
+    }
+    return parsedLanguage
   }
   
   private func parseLanguageFileJSON(data:JSON) -> Language? {
@@ -138,6 +144,7 @@ class LanguageProvider {
         capture.name = captureData["name"].asString
         pattern.captures.append(capture)
       }
+      pattern.captures = sorted(pattern.captures, {$0.key < $1.key })
     }
     if let beginData = data["begin"].asString {
       let begin = Regex()
@@ -150,6 +157,7 @@ class LanguageProvider {
         capture.name = captureData["name"].asString
         pattern.beginCaptures.append(capture)
       }
+      pattern.beginCaptures = sorted(pattern.beginCaptures, {$0.key < $1.key })
     }
     if let endData = data["end"].asString {
       let end = Regex()
@@ -162,6 +170,7 @@ class LanguageProvider {
         capture.name = captureData["name"].asString
         pattern.endCaptures.append(capture)
       }
+      pattern.endCaptures = sorted(pattern.endCaptures, {$0.key < $1.key })
     }
     if let patterns = data["patterns"].asArray {
       for patternData in patterns {
