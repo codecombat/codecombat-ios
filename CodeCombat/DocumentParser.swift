@@ -29,9 +29,13 @@ class Regex {
     lastIndex = pos
     while lastFound < data.length {
       let result = regex.search(data, start: Int32(lastFound))
+      //find(b []byte, n int, offset int) https://github.com/moovweb/rubex/blob/go1/regex.go#L169
+      //ret := r.re.FindStringSubmatchIndex(data[r.lastFound:])
+      //match = re.find(b, len(b), 0)
       if result == nil {
         break
         //i have no idea what the rubex ret[0] means
+        //the match is beginning, end
         
       } else if result.rangeAt(0).location < pos {
         let wtfrubex = result.rangeAt(0).location
@@ -182,6 +186,12 @@ class Language {
   var repository:[String:Pattern] = Dictionary<String,Pattern>()
   var scopeName:String = ""
 
+  func tweak() {
+    rootPattern.tweak(self)
+    for (patternID, pattern) in repository {
+      pattern.tweak(self)
+    }
+  }
 }
 
 class Capture {
