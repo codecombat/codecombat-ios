@@ -49,15 +49,15 @@ class LanguageProviderTests: XCTestCase {
   
   func testLanguageParsing() {
     let lang = defaultProvider.getLanguage("javascript")!
-    XCTAssertEqual(lang.unpatchedLanguage.fileTypes, ["js","htc","jsx"], "The filetypes should be set properly")
-    XCTAssertEqual(lang.unpatchedLanguage.firstLineMatch, "^#!/.*\\b(node|js)", "The firstLineMatch should be set properly")
+    XCTAssertEqual(lang.fileTypes, ["js","htc","jsx"], "The filetypes should be set properly")
+    XCTAssertEqual(lang.firstLineMatch, "^#!/.*\\b(node|js)", "The firstLineMatch should be set properly")
     //just a test of whether the regexes compile out of the box
-    let compiledFirstLineMatch = OnigRegexp.compile(lang.unpatchedLanguage.firstLineMatch)
+    let compiledFirstLineMatch = OnigRegexp.compile(lang.firstLineMatch)
     XCTAssertEqual(compiledFirstLineMatch.search("#!/env/node").bodyRange().location, 0, "The firstLineMatch should match")
-    XCTAssertEqual(lang.unpatchedLanguage.scopeName, "source.js", "The scopeName should be set")
-    XCTAssertEqual(lang.unpatchedLanguage.rootPattern.patterns.count, 4, "There should be 4 root patterns")
+    XCTAssertEqual(lang.scopeName, "source.js", "The scopeName should be set")
+    XCTAssertEqual(lang.rootPattern.patterns.count, 4, "There should be 4 root patterns")
     //now test the repository parsing
-    let testRepositoryPattern = lang.unpatchedLanguage.repository["literal-arrow-function-storage"]!
+    let testRepositoryPattern = lang.repository["literal-arrow-function-storage"]!
     XCTAssertEqual(testRepositoryPattern.patterns.count, 1)
     let testNestedPattern = testRepositoryPattern.patterns[0]
     XCTAssertEqual(testNestedPattern.endCaptures[0].name, "storage.type.function.arrow.js")

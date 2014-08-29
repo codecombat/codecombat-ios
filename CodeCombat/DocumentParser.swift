@@ -54,13 +54,6 @@ class Regex {
   
 }
 
-class Language {
-  var unpatchedLanguage:UnpatchedLanguage
-  init(lang:UnpatchedLanguage) {
-    unpatchedLanguage = lang
-  }
-}
-
 //The language provider is responsible for parsing files into languages
 class LanguageProvider {
   var scope:[String:String] = Dictionary<String,String>()
@@ -96,23 +89,23 @@ class LanguageProvider {
     let languageFileJSON = JSON.parse(languageFileContents!)
     let parsedLanguage = parseLanguageFileJSON(languageFileJSON)
     if parsedLanguage != nil {
-      scope[parsedLanguage!.unpatchedLanguage.scopeName] = languageFileName
+      scope[parsedLanguage!.scopeName] = languageFileName
     }
     return parsedLanguage
   }
   
   private func parseLanguageFileJSON(data:JSON) -> Language? {
-    let newUnpatchedLanguage = UnpatchedLanguage()
+    let lang = Language()
     if let fileTypesArray = data["fileTypes"].asArray {
       for fileType in fileTypesArray {
-        newUnpatchedLanguage.fileTypes.append(fileType.asString!)
+        lang.fileTypes.append(fileType.asString!)
       }
     }
-    newUnpatchedLanguage.firstLineMatch = data["firstLineMatch"].asString
-    newUnpatchedLanguage.scopeName = data["scopeName"].asString!
+    lang.firstLineMatch = data["firstLineMatch"].asString
+    lang.scopeName = data["scopeName"].asString!
     if let repository = data["repository"].asDictionary {
       for (patternName, pattern) in repository {
-        newUnpatchedLanguage.repository[patternName] = parsePattern(pattern)
+        lang.repository[patternName] = parsePattern(pattern)
       }
     }
     
@@ -122,9 +115,9 @@ class LanguageProvider {
       for pattern in patterns {
         rootPattern.patterns.append(parsePattern(pattern))
       }
-      newUnpatchedLanguage.rootPattern = rootPattern
+      lang.rootPattern = rootPattern
     }
-    return Language(lang: newUnpatchedLanguage)
+    return lang
   }
   
   private func parsePattern(data:JSON) -> Pattern {
@@ -182,7 +175,7 @@ class LanguageProvider {
   }
 }
 
-class UnpatchedLanguage {
+class Language {
   var fileTypes:[String] = []
   var firstLineMatch:String!
   var rootPattern:Pattern!
