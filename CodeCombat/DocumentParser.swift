@@ -172,6 +172,34 @@ class Language {
   }
 }
 
+class LanguageParser {
+  var language:Language!
+  var data:NSString!
+  let maxIterations = 10000
+  
+  init(scope:String, data:NSString, provider:LanguageProvider) {
+    let lang = provider.getLanguage(scope)
+    if lang != nil {
+      language = lang
+      self.data = data
+    }
+  }
+  
+  func parse() -> DocumentNode {
+    let rootNode = DocumentNode()
+    rootNode.sourceText = data
+    rootNode.name = language.scopeName
+    var iterations = maxIterations
+    for var i =0; i < data.length && iterations > 0; iterations-- {
+      //Not instituting caching mechanics until later
+      var newLineLocation = data.rangeOfCharacterFromSet(NSCharacterSet.newlineCharacterSet(), options: nil, range: NSRange(location: i, length: data.length - i)).location
+      
+      
+    }
+    return rootNode
+  }
+}
+
 class Capture {
   var key:Int
   var name:String!
@@ -193,10 +221,10 @@ class Pattern {
   var endCaptures:[Capture] = []
   var patterns:[Pattern] = []
   var owner:Language!
-  var cachedData:String!
+  var cachedData:NSString!
   var cachedPattern:Pattern!
   var cachedPatterns:[Pattern] = []
-  var cachedMatch:[Int] = []
+  var cachedMatch:OnigResult!
   var hits:Int = 0
   var misses:Int = 0
   
@@ -208,12 +236,58 @@ class Pattern {
     }
   }
   
-  /*func firstMatch(data:NSString, pos:Int) -> (pat:Pattern, ret:MatchObject) {
-  var startIndex = -1
-  for var i=0; i < cachedPatterns.count;; {
-  
+  func cache(data:NSString, position:Int) -> (pat:Pattern?, result:OnigResult?) {
+    if cachedData === data {
+      if cachedMatch == nil {
+        return (nil,nil)
+      }
+      if cachedMatch.bodyRange().location >= position && cachedPattern.cachedPattern != nil {
+        hits++
+        return (cachedPattern, cachedMatch)
+      }
+    } else {
+      cachedPatterns = []
+    }
+    if cachedPatterns.count == 0 {
+      for pattern in patterns {
+        cachedPatterns.append(pattern)
+      }
+    }
+    misses++
+    var pat:Pattern? = nil
+    var result:OnigResult?
+    if match.regex != nil {
+      pat = self
+      result = match.find(data, pos: position)
+    } else if begin.regex != nil {
+      pat = self
+      result = begin.find(data, pos: position)
+    } else if include != nil {
+      let includePrefix = Array(include)[0]
+      if includePrefix == "#" {
+        let key = include.substringFromIndex(include.startIndex.successor())
+        let includePattern = owner.repository[key]
+        if includePattern != nil {
+          (pat, result) = includePattern!.cache(data, position: position)
+        } else {
+          println("The pattern \(key) wasn't found!")
+        }
+      } else if includePrefix == "$" {
+        println("Include prefix $ isn't handled")
+        //Also handle alternative languages
+      }
+    } else {
+      (pat, result) = firstMatch(data, pos: position)
+    }
+    cachedData = data
+    cachedMatch = result
+    cachedPattern = pat
+    return (pat, result)
   }
-  }*/
+  
+  func firstMatch(data:NSString, pos:Int) -> (pat:Pattern?, ret:OnigResult?) {
+    return (nil, nil)
+  }
   
   
 }
