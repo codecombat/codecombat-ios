@@ -86,6 +86,7 @@
 		28B3E3B319AE68CE00C6B12A /* OnigRegexpUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 285A5425199C34BD00932DDE /* OnigRegexpUtility.m */; };
 		28B3E3B619AE750800C6B12A /* LanguageProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B3E3B519AE750800C6B12A /* LanguageProviderTests.swift */; };
 		28B3E3B819AE791100C6B12A /* javascript.tmLanguageJSON in Resources */ = {isa = PBXBuildFile; fileRef = 28B3E3B719AE791100C6B12A /* javascript.tmLanguageJSON */; };
+		28B3E3BA19B0D7B000C6B12A /* RegexTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B3E3B919B0D7B000C6B12A /* RegexTests.swift */; };
 		28BA9B561992D5DA006ACB3A /* NewPlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B551992D5DA006ACB3A /* NewPlayViewController.swift */; };
 		28C96DF71993D09C009FCD9E /* EditorTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C96DF61993D09C009FCD9E /* EditorTextView.swift */; };
 		28C96DFE1993FF3B009FCD9E /* Editor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C96DFD1993FF3B009FCD9E /* Editor.swift */; };
@@ -228,6 +229,7 @@
 		287AE107199294CC00EEE4F0 /* TestParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TestParticle.sks; sourceTree = "<group>"; };
 		28B3E3B519AE750800C6B12A /* LanguageProviderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LanguageProviderTests.swift; sourceTree = "<group>"; };
 		28B3E3B719AE791100C6B12A /* javascript.tmLanguageJSON */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = javascript.tmLanguageJSON; sourceTree = "<group>"; };
+		28B3E3B919B0D7B000C6B12A /* RegexTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegexTests.swift; sourceTree = "<group>"; };
 		28BA9B551992D5DA006ACB3A /* NewPlayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPlayViewController.swift; sourceTree = "<group>"; };
 		28C96DF61993D09C009FCD9E /* EditorTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorTextView.swift; sourceTree = "<group>"; };
 		28C96DFD1993FF3B009FCD9E /* Editor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Editor.swift; sourceTree = "<group>"; };
@@ -363,6 +365,7 @@
 				280D7E5E19AE283B004F95D4 /* DocumentNodeTests.swift */,
 				28B3E3B519AE750800C6B12A /* LanguageProviderTests.swift */,
 				28B3E3B719AE791100C6B12A /* javascript.tmLanguageJSON */,
+				28B3E3B919B0D7B000C6B12A /* RegexTests.swift */,
 			);
 			path = CodeCombatTests;
 			sourceTree = "<group>";
@@ -788,6 +791,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				28B3E3A619AE68A200C6B12A /* st.c in Sources */,
+				28B3E3BA19B0D7B000C6B12A /* RegexTests.swift in Sources */,
 				28B3E3AF19AE68C000C6B12A /* regenc.c in Sources */,
 				28B3E3AC19AE68BC00C6B12A /* regexec.c in Sources */,
 				28B3E3B219AE68C800C6B12A /* utf16_le.c in Sources */,

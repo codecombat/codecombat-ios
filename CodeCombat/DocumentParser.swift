@@ -15,6 +15,9 @@ class Regex {
   var lastIndex:Int = 0
   var lastFound:Int = 0
   
+  init() {
+    
+  }
   func description() -> String {
     if regex == nil {
       return "nil"
@@ -27,7 +30,9 @@ class Regex {
       lastFound = 0
     }
     lastIndex = pos
-    return regex.search(data, start: Int32(lastFound))
+    let result = regex.search(data, start: Int32(lastFound))
+    return result
+  }
 }
 
 //The language provider is responsible for parsing files into languages
@@ -40,6 +45,7 @@ class LanguageProvider {
       return languageFromFile(id)
     }
   }
+  
   
   func languageFromScope(id:String) -> Language? {
     let fileName = scope[id]
