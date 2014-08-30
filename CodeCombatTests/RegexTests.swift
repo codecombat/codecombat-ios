@@ -28,6 +28,15 @@ class RegexTests: XCTestCase {
     XCTAssertEqual(result!.body(), "var", "The body should be the matched text")
   }
   
+  func testRegexCount() {
+    let regex = Regex()
+    regex.regex = OnigRegexp.compile("(a)(b)(c)(d)")
+    let result = regex.regex.search("abcd")
+    //XCTAssertEqual(result.count(), 4, "The count should be four")
+    //[abcd, a, b, c, d]
+    XCTAssertEqual(result.locationAt(0), 0, "The range should be correct")
+  }
+  
   func testPerformanceExample() {
     // This is an example of a performance test case.
     self.measureBlock() {

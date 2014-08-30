@@ -307,5 +307,14 @@ class Pattern {
     return (nil, nil)
   }
   
+  func createCaptureNodes(data:NSString, pos:Int, d:NSString, result:OnigResult, parent:DocumentNode, capt:[Capture]) {
+    var ranges:[NSRange] = []
+    var parentIndex:[Int] = []
+    var parents:[DocumentNode] = []
+    for var i = 0; UInt(i) < result.count(); i++ {
+      
+    }
+  }
+  
   
 }
