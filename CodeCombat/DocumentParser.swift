@@ -190,7 +190,7 @@ class LanguageParser {
     rootNode.sourceText = data
     rootNode.name = language.scopeName
     var iterations = maxIterations
-    for var i =0; i < data.length && iterations > 0; iterations-- {
+    for var i = 0; i < data.length && iterations > 0; iterations-- {
       //Not instituting caching mechanics until later
       var newLineLocation = data.rangeOfCharacterFromSet(NSCharacterSet.newlineCharacterSet(), options: nil, range: NSRange(location: i, length: data.length - i)).location
       
@@ -286,6 +286,24 @@ class Pattern {
   }
   
   func firstMatch(data:NSString, pos:Int) -> (pat:Pattern?, ret:OnigResult?) {
+    var startIndex = -1
+    for var i=0; i < patterns.count; {
+      let (ip, im) = patterns[i].cache(data, position: pos)
+      if im != nil {
+        if startIndex < 0 || startIndex > im!.bodyRange().location {
+          startIndex = im!.bodyRange().location
+          var pat = ip
+          var ret = im
+          if startIndex == pos {
+            break
+          }
+        }
+        i++
+      } else {
+        //pop the cached pattern
+        cachedPatterns.removeAtIndex(i)
+      }
+    }
     return (nil, nil)
   }
   
