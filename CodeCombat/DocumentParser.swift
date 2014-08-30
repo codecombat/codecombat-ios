@@ -163,7 +163,7 @@ class Language {
   var rootPattern:Pattern!
   var repository:[String:Pattern] = Dictionary<String,Pattern>()
   var scopeName:String = ""
-
+  
   func tweak() {
     rootPattern.tweak(self)
     for (patternID, pattern) in repository {
@@ -349,4 +349,69 @@ class Pattern {
       p.children.append(child)
     }
   }
+  
+  func createNode(data:NSString, pos:Int, d:NSString, result:OnigResult) -> DocumentNode {
+    let createdNode = DocumentNode()
+    createdNode.name = name
+    createdNode.range = result.rangeAt(0)
+    createdNode.sourceText = data
+    //createdNode.updateRange() MUST be deferred
+    if match.regex != nil {
+      createCaptureNodes(data, pos: pos, d: d, result: result, parent: createdNode, capt: captures)
+    }
+    if begin == nil || begin.regex == nil {
+      createdNode.updateRange()
+      return createdNode
+    }
+    if beginCaptures.count > 0 {
+      createCaptureNodes(data, pos: pos, d: d, result: result, parent: createdNode, capt: beginCaptures)
+    } else {
+      createCaptureNodes(data, pos: pos, d: d, result: result, parent: createdNode, capt: captures)
+    }
+    if self.end == nil || self.end.regex == nil {
+      createdNode.updateRange()
+      return createdNode
+    }
+    var found = false
+    var i = NSMaxRange(createdNode.range)
+    var end = data.length
+    while i < data.length {
+      let endMatch = self.end.find(data, pos: i)
+      if endMatch != nil {
+        end = Int(endMatch!.lengthAt(0))
+      } else {
+        if !found {
+          //no end found, set to next line
+          let substringToSearch = NSString(string:data.substringFromIndex(i))
+          let newlineLocation = substringToSearch.rangeOfCharacterFromSet(NSCharacterSet.newlineCharacterSet()).location
+          if newlineLocation == NSNotFound {
+            end = i + newlineLocation
+          } else {
+            end = data.length
+          }
+        } else {
+          end = i
+        }
+        break
+      }
+      if cachedPatterns.count > 0 {
+        let (pattern2, result2) = firstMatch(data, pos: i)
+        if result2 != nil && ((endMatch == nil && result2!.locationAt(0) < UInt(end))) {// || (endMatch != nil && (result2!.locationAt(0) < endMatch!.locationAt(0) || result2!.locationAt(0) == endMatch!.locationAt(0) && createdNode.range.length = 0))) {
+          found = true
+          let r = pattern2?.createNode(data, pos: i, d: d, result: result2!)
+          createdNode.children.append(r!)
+          i = NSMaxRange(r!.range)
+          continue
+        }
+      }
+      if endMatch != nil {
+        if endCaptures.count > 0 {
+          createCaptureNodes(data, pos: i, d: d, result: endMatch!, parent: createdNode, capt: endCaptures)
+        } else {
+          createCaptureNodes(data, pos: i, d: d, result: endMatch!, parent: createdNode, capt: captures)
+        }
+      }
+    }
+    
+    
 }

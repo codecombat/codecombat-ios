@@ -46,4 +46,17 @@ class DocumentNode {
     }
   }
   
+  func updateRange() -> NSRange {
+    for child in children {
+      let currentRange = child.updateRange()
+      if currentRange.location < range.location {
+        range.location = currentRange.location
+      }
+      if NSMaxRange(currentRange) > NSMaxRange(range) {
+        range.length = NSMaxRange(currentRange) - range.location
+      }
+    }
+    return range
+  }
+  
 }
