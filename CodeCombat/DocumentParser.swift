@@ -308,13 +308,45 @@ class Pattern {
   }
   
   func createCaptureNodes(data:NSString, pos:Int, d:NSString, result:OnigResult, parent:DocumentNode, capt:[Capture]) {
+    //I think the captures are probably unnecessary and can be refactored out
     var ranges:[NSRange] = []
     var parentIndex:[Int] = []
     var parents:[DocumentNode] = []
-    for var i = 0; UInt(i) < result.count(); i++ {
-      
+    for var i:UInt = 0; i < result.count(); i++ {
+      ranges.insert(result.rangeAt(i), atIndex: Int(i))
+      if i < 2 { //what is the significance of the first two entries?
+        parents.insert(parent, atIndex: Int(i))
+        continue
+      }
+      let range = ranges[Int(i)]
+      for var j = i - 1; j >= 0; j-- {
+        if NSIntersectionRange(ranges[Int(j)], range).length == range.length {
+          parentIndex[Int(i)] = Int(j)
+          break
+        }
+      }
+    }
+    for capture in capt {
+      var captureKey = capture.key
+      // I think due to the ranges being nil and the captures perhaps not, this might screw up
+      if captureKey >= parents.count || ranges[captureKey].location == NSNotFound {
+        continue
+      }
+      let child = DocumentNode()
+      child.name = capture.name
+      child.range = ranges[captureKey]
+      child.sourceText = data
+      parents[captureKey] = child
+      if captureKey == 0 {
+        parent.children.append(child)
+        continue
+      }
+      var p:DocumentNode! = nil
+      while p == nil {
+        captureKey = parentIndex[captureKey]
+        p = parents[captureKey]
+      }
+      p.children.append(child)
     }
   }
-  
-  
 }
