@@ -396,7 +396,7 @@ class Pattern {
       }
       if cachedPatterns.count > 0 {
         let (pattern2, result2) = firstMatch(data, pos: i)
-        if result2 != nil && ((endMatch == nil && result2!.locationAt(0) < UInt(end))) {// || (endMatch != nil && (result2!.locationAt(0) < endMatch!.locationAt(0) || result2!.locationAt(0) == endMatch!.locationAt(0) && createdNode.range.length = 0))) {
+        if result2 != nil && ((endMatch == nil && result2!.locationAt(0) < UInt(end)) || (endMatch != nil && (result2!.locationAt(0) < endMatch!.locationAt(0) || result2!.locationAt(0) == endMatch!.locationAt(0) && createdNode.range.length == 0))) {
           found = true
           let r = pattern2?.createNode(data, pos: i, d: d, result: result2!)
           createdNode.children.append(r!)
@@ -411,7 +411,10 @@ class Pattern {
           createCaptureNodes(data, pos: i, d: d, result: endMatch!, parent: createdNode, capt: captures)
         }
       }
+      break
     }
-    
-    
+    createdNode.range.length = end - createdNode.range.location
+    createdNode.updateRange()
+    return createdNode
+  }
 }
