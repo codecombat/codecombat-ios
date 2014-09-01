@@ -185,18 +185,52 @@ class LanguageParser {
     }
   }
   
-  func parse() -> DocumentNode {
+  func parse() -> DocumentNode! {
     let rootNode = DocumentNode()
-    rootNode.sourceText = data
+    let sdata = data
+    rootNode.sourceText = sdata
     rootNode.name = language.scopeName
     var iterations = maxIterations
-    for var i = 0; i < data.length && iterations > 0; iterations-- {
-      //Not instituting caching mechanics until later
-      var newLineLocation = data.rangeOfCharacterFromSet(NSCharacterSet.newlineCharacterSet(), options: nil, range: NSRange(location: i, length: data.length - i)).location
-      
-      
+    for var i = 0; i < sdata.length && iterations > 0; iterations-- {
+      var (pat, result) = language.rootPattern.cache(sdata, position: i)
+      var newLineLocation = sdata.rangeOfCharacterFromSet(NSCharacterSet.newlineCharacterSet(), options: nil, range: NSRange(location: i, length: sdata.length - i)).location
+      if result == nil {
+        break
+      } else if newLineLocation > 0 && newLineLocation <= Int(result!.locationAt(0)) {
+        i = newLineLocation
+        while i < sdata.length && sdata.substringWithRange(NSRange(location: i, length: 1)) == "\n" || sdata.substringWithRange(NSRange(location: i, length: 1)) == "\r" {
+          i++
+        }
+      } else {
+        let n = pat!.createNode(sdata, pos: i, d: sdata, result: result!)
+        rootNode.children.append(n)
+        i = NSMaxRange(n.range)
+      }
+    }
+    rootNode.updateRange()
+    if sdata.length != 0 {
+      var lut:[Int] = []
+      var j = 0
+      for var i = 0; i < sdata.length; i++ {
+        lut.append(j)
+        j++
+      }
+      lut.append(data.length)
+      self.patch(lut, node: rootNode)
+    }
+    if iterations == 0 {
+      println("REACHED MAXIMUM NUMBER OF ITERATIONS")
+      return nil
     }
     return rootNode
+  }
+  
+  func patch(lut:[Int], node:DocumentNode) {
+    node.range.location = lut[node.range.location]
+    node.range.length = lut[NSMaxRange(node.range)] - node.range.location
+    for child in node.children {
+      self.patch(lut, node: child)
+    }
   }
 }
 
