@@ -33,7 +33,7 @@ class DocumentNodeTests: XCTestCase {
   }
   
   func testInitialRangeNil() {
-    XCTAssertTrue(defaultNode.range.location == NSNotFound, "The range should initially be nil")
+    XCTAssertTrue(defaultNode.range.location == 0, "The range should initially be 0")
   }
   
   func testInitialSourceTextNil() {

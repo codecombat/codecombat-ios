@@ -196,6 +196,7 @@ class LanguageParser {
     var iterations = maxIterations
     for var i = 0; i < sdata.length && iterations > 0; iterations-- {
       var (pat, result) = language.rootPattern.cache(sdata, position: i)
+      println(result)
       var newLineLocation = sdata.rangeOfCharacterFromSet(NSCharacterSet.newlineCharacterSet(), options: nil, range: NSRange(location: i, length: sdata.length - i)).location
       if result == nil {
         break
@@ -305,8 +306,9 @@ class Pattern {
     if cachedPatterns.count == 0 {
       for pattern in patterns {
         cachedPatterns.append(pattern)
+        println(cachedPatterns.count)
       }
-    }
+    } 
     misses++
     var pat:Pattern? = nil
     var result:OnigResult?
@@ -341,13 +343,15 @@ class Pattern {
   
   func firstMatch(data:NSString, pos:Int) -> (pat:Pattern?, ret:OnigResult?) {
     var startIndex = -1
+    var pat:Pattern? = nil
+    var ret:OnigResult? = nil
     for var i=0; i < cachedPatterns.count; {
       let (ip, im) = cachedPatterns[i].cache(data, position: pos)
       if im != nil {
         if startIndex < 0 || startIndex > im!.bodyRange().location {
           startIndex = im!.bodyRange().location
-          var pat = ip
-          var ret = im
+          pat = ip
+          ret = im
           if startIndex == pos {
             break
           }
@@ -358,7 +362,7 @@ class Pattern {
         cachedPatterns.removeAtIndex(i)
       }
     }
-    return (nil, nil)
+    return (pat, ret)
   }
   
   func createCaptureNodes(data:NSString, pos:Int, d:NSString, result:OnigResult, parent:DocumentNode, capt:[Capture]) {

@@ -1,0 +1,28 @@
+{
+"name":"Example grammar",
+"scopeName":"example.source",
+"patterns":
+[
+{
+"name": "storage",
+"match": "char"
+},
+{
+"name": "modifier",
+"match": "const"
+},
+{
+"name": "operator",
+"match": "[=*]"
+},
+{
+"name": "string",
+"begin": "\"",
+"end": "\"",
+"patterns": [{
+"name": "constant",
+"match": "\\\\."
+}]
+}
+]
+}
