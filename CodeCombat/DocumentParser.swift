@@ -262,6 +262,23 @@ class Pattern {
   var hits:Int = 0
   var misses:Int = 0
   
+  func description() -> String {
+    var desc = "---------------------------------------\n"
+    desc += "Name:    \(name)\n"
+    desc += "Match:   \(match.description())\n"
+    desc += "Begin:   \(begin.description())\n"
+    desc += "End:     \(end.description())\n"
+    desc += "Include: \(include)\n"
+    desc += "<Sub-Patterns>\n"
+    for pat in patterns {
+      var inner = pat.description()
+      inner = inner.stringByReplacingOccurrencesOfString("\t", withString: "\t\t", options: nil, range: nil)
+      inner = inner.stringByReplacingOccurrencesOfString("\n", withString: "\n\t", options: nil, range: nil)
+      desc +=  "\t\(inner)\n"
+    }
+    desc += "</Sub-Patterns>\n---------------------------------------"
+    return desc
+  }
   func tweak(l:Language) {
     owner = l
     name = name.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
