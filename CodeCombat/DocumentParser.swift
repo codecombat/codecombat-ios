@@ -40,9 +40,12 @@ class LanguageProvider {
   var scope:[String:String] = Dictionary<String,String>()
   func getLanguage(id:String) -> Language? {
     if let lang = languageFromScope(id) {
+      lang.tweak()
       return lang
     } else {
-      return languageFromFile(id)
+      let lang = languageFromFile(id)
+      lang?.tweak()
+      return lang
     }
   }
   
@@ -265,9 +268,9 @@ class Pattern {
   func description() -> String {
     var desc = "---------------------------------------\n"
     desc += "Name:    \(name)\n"
-    desc += "Match:   \(match.description())\n"
-    desc += "Begin:   \(begin.description())\n"
-    desc += "End:     \(end.description())\n"
+    desc += "Match:   \(match?.description())\n"
+    desc += "Begin:   \(begin?.description())\n"
+    desc += "End:     \(end?.description())\n"
     desc += "Include: \(include)\n"
     desc += "<Sub-Patterns>\n"
     for pat in patterns {
@@ -281,7 +284,7 @@ class Pattern {
   }
   func tweak(l:Language) {
     owner = l
-    name = name.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+    name = name?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
     for pattern in patterns {
       pattern.tweak(l)
     }
@@ -307,10 +310,10 @@ class Pattern {
     misses++
     var pat:Pattern? = nil
     var result:OnigResult?
-    if match.regex != nil {
+    if match?.regex != nil {
       pat = self
       result = match.find(data, pos: position)
-    } else if begin.regex != nil {
+    } else if begin?.regex != nil {
       pat = self
       result = begin.find(data, pos: position)
     } else if include != nil {
@@ -338,8 +341,8 @@ class Pattern {
   
   func firstMatch(data:NSString, pos:Int) -> (pat:Pattern?, ret:OnigResult?) {
     var startIndex = -1
-    for var i=0; i < patterns.count; {
-      let (ip, im) = patterns[i].cache(data, position: pos)
+    for var i=0; i < cachedPatterns.count; {
+      let (ip, im) = cachedPatterns[i].cache(data, position: pos)
       if im != nil {
         if startIndex < 0 || startIndex > im!.bodyRange().location {
           startIndex = im!.bodyRange().location

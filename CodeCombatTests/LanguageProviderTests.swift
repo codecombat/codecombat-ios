@@ -69,6 +69,12 @@ class LanguageProviderTests: XCTestCase {
     XCTAssertEqual(testNestedPattern.patterns[0].include, "#function-declaration-parameters")
   }
   
+  func testPatternDescription() {
+    let lang = defaultProvider.getLanguage("javascript")!
+    let pat = lang.repository["leading-space"]
+    println(pat!.description())
+  }
+  
   func testLanguageParsePerformance() {
     self.measureBlock() {
       let lang = self.defaultProvider.getLanguage("javascript")!

@@ -28,6 +28,13 @@ class DocumentHighlighterTests: XCTestCase {
     XCTAssert(true, "Pass")
   }
   
+  func testFunctionality() {
+    let provider = LanguageProvider()
+    let parser = LanguageParser(scope: "javascript", data: "console.log(\"Hello World\");", provider: provider)
+    let parseRootNode = parser.parse()
+    XCTAssertTrue(parseRootNode != nil, "The parse root node shouldn't be false ")
+  }
+  
   func testPerformanceExample() {
     // This is an example of a performance test case.
     self.measureBlock() {

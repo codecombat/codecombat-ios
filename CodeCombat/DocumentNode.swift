@@ -9,7 +9,7 @@
 import Foundation
 
 class DocumentNode {
-  var range:NSRange!
+  var range:NSRange = NSRange(location: NSNotFound, length: 0)
   var name:String = ""
   var children:[DocumentNode] = []
   var sourceText:NSString!
@@ -25,7 +25,7 @@ class DocumentNode {
   }
   
   func format(var indent:String!) -> String {
-    if range == nil || sourceText == nil {
+    if range.location == NSNotFound || sourceText == nil {
       return ""
     }
     if indent == nil {
