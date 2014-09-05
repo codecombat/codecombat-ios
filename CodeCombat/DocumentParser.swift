@@ -196,7 +196,6 @@ class LanguageParser {
     var iterations = maxIterations
     for var i = 0; i < sdata.length && iterations > 0; iterations-- {
       var (pat, result) = language.rootPattern.cache(sdata, position: i)
-      println(result)
       var newLineLocation = sdata.rangeOfCharacterFromSet(NSCharacterSet.newlineCharacterSet(), options: nil, range: NSRange(location: i, length: sdata.length - i)).location
       if result == nil {
         break
@@ -306,7 +305,6 @@ class Pattern {
     if cachedPatterns.count == 0 {
       for pattern in patterns {
         cachedPatterns.append(pattern)
-        println(cachedPatterns.count)
       }
     } 
     misses++
@@ -352,7 +350,7 @@ class Pattern {
           startIndex = im!.bodyRange().location
           pat = ip
           ret = im
-          if startIndex == pos {
+          if im!.bodyRange().location == pos {
             break
           }
         }
