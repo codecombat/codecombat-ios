@@ -26,11 +26,12 @@ class Regex {
   }
   
   func find(data:NSString, pos:Int) -> OnigResult? {
+    //the first few lines of this code effectively do nothing, refactor
     if lastIndex > pos {
       lastFound = 0
     }
     lastIndex = pos
-    let result = regex.search(data, start: Int32(lastFound))
+    let result = regex.search(data, start: Int32(pos))
     return result
   }
 }
@@ -177,14 +178,14 @@ class Language {
 
 class LanguageParser {
   var language:Language!
-  var data:NSString!
+  var data:NSString
   let maxIterations = 10000
   
   init(scope:String, data:NSString, provider:LanguageProvider) {
     let lang = provider.getLanguage(scope)
+    self.data = data
     if lang != nil {
       language = lang
-      self.data = data
     }
   }
   
@@ -197,9 +198,10 @@ class LanguageParser {
     for var i = 0; i < sdata.length && iterations > 0; iterations-- {
       var (pat, result) = language.rootPattern.cache(sdata, position: i)
       var newLineLocation = sdata.rangeOfCharacterFromSet(NSCharacterSet.newlineCharacterSet(), options: nil, range: NSRange(location: i, length: sdata.length - i)).location
+      println(newLineLocation)
       if result == nil {
         break
-      } else if newLineLocation > 0 && newLineLocation <= Int(result!.locationAt(0)) {
+      } else if newLineLocation != NSNotFound && newLineLocation <= Int(result!.locationAt(0)) {
         i = newLineLocation
         while i < sdata.length && sdata.substringWithRange(NSRange(location: i, length: 1)) == "\n" || sdata.substringWithRange(NSRange(location: i, length: 1)) == "\r" {
           i++
@@ -345,6 +347,7 @@ class Pattern {
     var ret:OnigResult? = nil
     for var i=0; i < cachedPatterns.count; {
       let (ip, im) = cachedPatterns[i].cache(data, position: pos)
+      println("Trying to find match from position \(pos) for data \(data) using pattern \(ip?.name), found one at \(im?.bodyRange().location)")
       if im != nil {
         if startIndex < 0 || startIndex > im!.bodyRange().location {
           startIndex = im!.bodyRange().location
