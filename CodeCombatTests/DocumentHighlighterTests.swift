@@ -75,7 +75,14 @@ class DocumentHighlighterTests: XCTestCase {
   }
   
   func testSimpleJavascriptParsing2() {
-    let documentString = "function blah(parameterOne, parameterTwo) {\n return 5; }\n"
+    let documentString = "function blah(parameterOne, parameterTwo) {\n return 5; };\n"
+    let parser = LanguageParser(scope: "javascript", data: documentString, provider: provider)
+    let rootNode = parser.parse()
+    println(rootNode.description())
+  }
+  
+  func testJavascriptStringParsing() {
+    let documentString = "\"Hello World\";"
     let parser = LanguageParser(scope: "javascript", data: documentString, provider: provider)
     let rootNode = parser.parse()
     println(rootNode.description())
