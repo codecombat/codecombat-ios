@@ -198,7 +198,6 @@ class LanguageParser {
     for var i = 0; i < sdata.length && iterations > 0; iterations-- {
       var (pat, result) = language.rootPattern.cache(sdata, position: i)
       var newLineLocation = sdata.rangeOfCharacterFromSet(NSCharacterSet.newlineCharacterSet(), options: nil, range: NSRange(location: i, length: sdata.length - i)).location
-      println(newLineLocation)
       if result == nil {
         break
       } else if newLineLocation != NSNotFound && newLineLocation <= Int(result!.locationAt(0)) {
@@ -347,7 +346,7 @@ class Pattern {
     var ret:OnigResult? = nil
     for var i=0; i < cachedPatterns.count; {
       let (ip, im) = cachedPatterns[i].cache(data, position: pos)
-      println("Trying to find match from position \(pos) for data \(data) using pattern \(ip?.name), found one at \(im?.bodyRange().location)")
+      //println("Trying to find match from position \(pos) for data \(data) using pattern \(ip?.name), found one at \(im?.bodyRange().location)")
       if im != nil {
         if startIndex < 0 || startIndex > im!.bodyRange().location {
           startIndex = im!.bodyRange().location
@@ -412,7 +411,10 @@ class Pattern {
   func createNode(data:NSString, pos:Int, d:NSString, result:OnigResult) -> DocumentNode {
     let createdNode = DocumentNode()
     println("Creating node for pattern \(name), include \(include)")
-    createdNode.name = name
+    if name == nil {
+      println("The begin is \(begin.regex.expression())")
+    }
+    createdNode.name = name != nil ? name : "" //Some patterns don't have names
     createdNode.range = result.rangeAt(0)
     createdNode.sourceText = data
     //createdNode.updateRange() MUST be deferred
