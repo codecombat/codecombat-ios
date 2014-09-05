@@ -33,7 +33,7 @@ class DocumentHighlighterTests: XCTestCase {
     let parser = LanguageParser(scope: "example", data: "char const* str = \"Hello world\\n\"", provider: provider)
     let parseRootNode = parser.parse()
     println("PARSE ROOT NODE DESCRIPTION")
-    println(parseRootNode.range)
+    println(parseRootNode.description())
     XCTAssertTrue(parseRootNode != nil, "The parse root node shouldn't be false ")
   }
   

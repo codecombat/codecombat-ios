@@ -415,7 +415,7 @@ class Pattern {
     createdNode.range = result.rangeAt(0)
     createdNode.sourceText = data
     //createdNode.updateRange() MUST be deferred
-    if match.regex != nil {
+    if match?.regex != nil {
       createCaptureNodes(data, pos: pos, d: d, result: result, parent: createdNode, capt: captures)
     }
     if begin == nil || begin.regex == nil {
