@@ -368,12 +368,12 @@ class Pattern {
   
   func createCaptureNodes(data:NSString, pos:Int, d:NSString, result:OnigResult, parent:DocumentNode, capt:[Capture]) {
     //I think the captures are probably unnecessary and can be refactored out
-    var ranges:[NSRange] = []
-    var parentIndex:[Int] = []
-    var parents:[DocumentNode] = []
+    var ranges:[NSRange] = [NSRange](count: Int(result.count()), repeatedValue: NSRange(location: NSNotFound, length: 0))
+    var parentIndex:[Int] = [Int](count: ranges.count, repeatedValue: 0)
+    var parents = [DocumentNode?](count: parentIndex.count, repeatedValue:nil)
     for var i:UInt = 0; i < result.count(); i++ {
-      ranges.insert(result.rangeAt(i), atIndex: Int(i))
-      if i < 2 { //what is the significance of the first two entries?
+      ranges[Int(i)] = result.rangeAt(i)
+      if i == 0 { //what is the significance of the first two entries?
         parents.insert(parent, atIndex: Int(i))
         continue
       }
@@ -411,6 +411,7 @@ class Pattern {
   
   func createNode(data:NSString, pos:Int, d:NSString, result:OnigResult) -> DocumentNode {
     let createdNode = DocumentNode()
+    println("Creating node for pattern \(name), include \(include)")
     createdNode.name = name
     createdNode.range = result.rangeAt(0)
     createdNode.sourceText = data

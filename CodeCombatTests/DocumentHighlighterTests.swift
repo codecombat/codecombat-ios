@@ -23,18 +23,19 @@ class DocumentHighlighterTests: XCTestCase {
     super.tearDown()
   }
   
-  func testExample() {
-    // This is an example of a functional test case.
-    XCTAssert(true, "Pass")
-  }
-  
-  func testFunctionality() {
+  func testSimpleExampleParsing() {
     let provider = LanguageProvider()
     let parser = LanguageParser(scope: "example", data: "char const* str = \"Hello world\\n\"", provider: provider)
     let parseRootNode = parser.parse()
-    println("PARSE ROOT NODE DESCRIPTION")
-    println(parseRootNode.description())
-    XCTAssertTrue(parseRootNode != nil, "The parse root node shouldn't be false ")
+    //write more tests here for example
+    XCTAssertTrue(parseRootNode != nil, "The parse root node shouldn't be nil")
+  }
+  
+  func testSimpleJavascriptParsing() {
+    let provider = LanguageProvider()
+    let parser = LanguageParser(scope: "javascript", data: "var blah = 5; var test = function() { console.log(\"Hello World\");};", provider: provider)
+    let parseRootNode = parser.parse()
+    XCTAssertTrue(parseRootNode != nil, "The parse root node shouldn't be nil.")
   }
   
   func testPerformanceExample() {
