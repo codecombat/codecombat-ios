@@ -38,7 +38,7 @@ class EditorTextView: UITextView {
     for regexMatch in matches {
       let match = regexMatch as NSTextCheckingResult
       let start = positionFromPosition(beginningOfDocument, offset: match.range.location)
-      let end =  positionFromPosition(start, offset: match.range.length)
+      let end =  positionFromPosition(start!, offset: match.range.length)
       let textRange = textRangeFromPosition(start, toPosition: end)
       
       let resultRect = firstRectForRange(textRange)

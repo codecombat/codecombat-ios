@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6205" systemVersion="13E28" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="mL5-Kq-7bx">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6206.9" systemVersion="13E28" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="mL5-Kq-7bx">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6198"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7026.1"/>
     </dependencies>
     <scenes>
         <!--Play View Controller-->
@@ -146,12 +146,12 @@
                     <connections>
                         <outlet property="backgroundImageView" destination="lLD-Nr-SMq" id="qOY-fB-V7b"/>
                         <outlet property="levelLoadingProgressView" destination="uym-aY-mxE" id="YvP-yn-xSE"/>
-                        <segue destination="BYZ-38-t0r" kind="show" identifier="levelStartedSegue" id="5Qd-vs-tiD"/>
+                        <segue destination="mL5-Kq-7bx" kind="show" identifier="levelStartedSegue" id="beg-Wy-cQC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qec-gR-TzP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2676" y="1446"/>
+            <point key="canvasLocation" x="257" y="2022"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="47c-jN-OdT">
@@ -295,14 +295,14 @@
                         <viewControllerLayoutGuide type="bottom" id="r7h-op-gb1"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="GQf-52-blM">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tKE-jg-OcU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="323" y="1138"/>
+            <point key="canvasLocation" x="257" y="2933"/>
         </scene>
         <!--Main Menu Controller-->
         <scene sceneID="hee-hl-gCq">
@@ -495,7 +495,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="37U-oT-5zi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1464" y="2022"/>
+            <point key="canvasLocation" x="1483" y="2022"/>
         </scene>
         <!--Store Item Detail View Controller-->
         <scene sceneID="3WW-3q-oUd">
@@ -609,7 +609,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Nwx-ik-waF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1671" y="3002"/>
+            <point key="canvasLocation" x="1483" y="2933"/>
         </scene>
         <!--Sprite Dialogue View Controller-->
         <scene sceneID="qmD-DS-Pan">

@@ -39,13 +39,15 @@ class StoreViewController: UIViewController, UICollectionViewDataSource, UIColle
     println("Should update store view here...")
   }
   
-  func collectionView(collectionView: UICollectionView!, numberOfItemsInSection section: Int) -> Int {
+  func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return products.count
   }
-  func numberOfSectionsInCollectionView(collectionView: UICollectionView!) -> Int  {
+
+  func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
     return 1
   }
-  func collectionView(collectionView: UICollectionView!, cellForItemAtIndexPath indexPath: NSIndexPath!) -> UICollectionViewCell! {
+  
+  func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCellWithReuseIdentifier("InventoryCell", forIndexPath: indexPath) as InventoryCell
     cell.backgroundColor = UIColor.whiteColor()
     let product = products[indexPath.row]
@@ -59,11 +61,11 @@ class StoreViewController: UIViewController, UICollectionViewDataSource, UIColle
     return cell
   }
   
-  func collectionView(collectionView: UICollectionView!, didDeselectItemAtIndexPath indexPath: NSIndexPath!)  {
+  func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
     
   }
   
-  func collectionView(collectionView: UICollectionView!, didSelectItemAtIndexPath indexPath: NSIndexPath!) {
+  func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
     let product = products[indexPath.row]
     
     performSegueWithIdentifier("ShowStoreItemDetails", sender: product)
@@ -71,18 +73,17 @@ class StoreViewController: UIViewController, UICollectionViewDataSource, UIColle
     
   }
   
-  func collectionView(collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, sizeForItemAtIndexPath indexPath: NSIndexPath!) -> CGSize {
+  func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
     let product = products[indexPath.row]
     let retval = CGSizeMake(100, 100)
     return retval
   }
   
-  func collectionView(collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
+  func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
     return UIEdgeInsetsMake(50, 20, 50, 20)
-    
   }
   
-  override func prepareForSegue(segue: UIStoryboardSegue!, sender: AnyObject!) {
+  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
     if segue.identifier == "ShowStoreItemDetails" {
       let storeItemDetailViewController = segue.destinationViewController as StoreItemDetailViewController
       storeItemDetailViewController.product = sender as SKProduct

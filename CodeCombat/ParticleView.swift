@@ -12,7 +12,7 @@ import SpriteKit
 class ParticleView: SKView {
 
     var particleScene:SKScene?
-    required init(coder aDecoder: NSCoder!)  {
+    required init(coder aDecoder: NSCoder)  {
         super.init(coder: aDecoder)
         startParticles()
     }
@@ -44,7 +44,7 @@ class ParticleView: SKView {
     }
     */
     
-    override func hitTest(point: CGPoint, withEvent event: UIEvent!) -> UIView! {
+    override func hitTest(point: CGPoint, withEvent event: UIEvent!) -> UIView? {
         let hitView:UIView = super.hitTest(point, withEvent: event)!
         if hitView == self {
             return nil

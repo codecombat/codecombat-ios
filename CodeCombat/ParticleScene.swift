@@ -11,7 +11,7 @@ import SpriteKit
 
 class ParticleScene: SKScene {
   
-  required init(coder aDecoder: NSCoder!) {
+  required init(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
     override init(size: CGSize) {
@@ -34,7 +34,7 @@ class ParticleScene: SKScene {
         return emitter
     }
     
-    override func touchesBegan(touches: NSSet!, withEvent event: UIEvent!) {
+    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
         for touch in touches {
             let location = touch.locationInNode(self)
             self.addChild(self.newExplosion(location.x, posY: location.y))

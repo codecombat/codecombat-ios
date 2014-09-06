@@ -33,40 +33,24 @@ class LevelLoadingViewController: UIViewController {
   }
   
   private func addScriptMessageNotificationObservers() {
-    let WebManagerInstance = WebManager.sharedInstance
-    struct ScriptMessageObserver {
-      var selector:Selector = Selector()
-      var handlerName = ""
-    }
-    
-    let scriptMessageObservers = [
-      ScriptMessageObserver(
-        selector: Selector("handleProgressUpdate:"),
-        handlerName: "supermodelUpdateProgressHandler"),
-      ScriptMessageObserver(
-        selector: Selector("handleLevelStarted"),
-        handlerName: "levelStartedHandler"),
-      ScriptMessageObserver(
-        selector: Selector("handleDialogue:"),
-        handlerName: "spriteSpeechUpdatedHandler"),
-      ScriptMessageObserver(
-        selector: Selector("handleTomeSpellLoaded:"),
-        handlerName: "tomeSpellLoadedHandler")
-    ]
-    for observer in scriptMessageObservers {
-      WebManagerInstance.scriptMessageNotificationCenter?.addObserver(self,
-        selector: observer.selector,
-        name: observer.handlerName,
-        object: WebManager.sharedInstance)
-    }
+    let webManager = WebManager.sharedInstance
+    webManager.subscribe(self, channel: "level:loading-view-unveiled", selector: Selector("onLevelStarted:"))
+    webManager.subscribe(self, channel: "supermodel:update-progress", selector: Selector("onProgressUpdate:"))
+    //webManager.subscribe(self, channel: "sprite:speech-updated", selector: Selector("onSpriteSpeechUpdated:"))
+    webManager.subscribe(self, channel: "tome:spell-loaded", selector: Selector("onTomeSpellLoaded:"))
     //NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("loginMichael"), name: "allListenersLoaded", object: nil)
   }
   
-   private func instantiateWebView() {
+  deinit {
+    WebManager.sharedInstance.unsubscribe(self)
+  }
+  
+  private func instantiateWebView() {
     let WebViewFrame = CGRectMake(0, 0, 563 , 359)
     let WebManagerInstance = WebManager.sharedInstance
     webView = WKWebView(frame:WebViewFrame,
       configuration:WebManager.sharedInstance.webViewConfiguration)
+    WebManagerSharedInstance.webView = webView
   }
   
   private func loadLevel(levelSlug:String) {
@@ -93,13 +77,13 @@ class LevelLoadingViewController: UIViewController {
     // Dispose of any resources that can be recreated.
   }
   
-  override func prepareForSegue(segue: UIStoryboardSegue!, sender: AnyObject!) {
+  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
     let DestinationViewController =
-      segue.destinationViewController as PlayViewController
+      segue.destinationViewController as NewPlayViewController
     DestinationViewController.webView = webView
-    let nc = WebManager.sharedInstance.scriptMessageNotificationCenter!
-    nc.removeObserver(self)
+    WebManager.sharedInstance.unsubscribe(self)
     
+    /*
     if spriteMessageBeforeUnveil != nil {
       DestinationViewController.currentSpriteDialogue =
         spriteMessageBeforeUnveil
@@ -107,6 +91,7 @@ class LevelLoadingViewController: UIViewController {
     if spellBeforeUnveil != nil {
       DestinationViewController.spellBeforeLoad = spellBeforeUnveil
     }
+    */
   }
   
   override func observeValueForKeyPath(
@@ -115,10 +100,10 @@ class LevelLoadingViewController: UIViewController {
     change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<()>) {
     if context == WebViewContextPointer {
       switch keyPath! {
-      case NSStringFromSelector(Selector("estimatedProgress")):
-        if webView!.estimatedProgress > 0.8 && !injectedListeners {
-          injectListeners()
-        }
+      //case NSStringFromSelector(Selector("estimatedProgress")):
+        //if webView!.estimatedProgress > 0.8 && !injectedListeners {
+        //  injectListeners()
+        //}
       default:
         println("\(keyPath) changed")
       }
@@ -130,64 +115,37 @@ class LevelLoadingViewController: UIViewController {
     }
   }
   
-  func handleProgressUpdate(notification:NSNotification) {
-    if let UserInfoDictionary = notification.userInfo {
-      let Progress = UserInfoDictionary["progress"]! as Float
-      let ProgressScalingFactor = 0.8
-      let scaledProgress = CGFloat(Progress) * CGFloat(ProgressScalingFactor)
+  func onProgressUpdate(note: NSNotification) {
+    if let event = note.userInfo {
+      let progress = event["progress"]! as Float
+      let progressScalingFactor = 0.8
+      let scaledProgress = CGFloat(progress) * CGFloat(progressScalingFactor)
       println("Progress updated")
       levelLoadingProgressView.setProgress(Float(scaledProgress), animated: true)
     }
-    
   }
   
-  func handleLevelStarted() {
+  func onLevelStarted(note: NSNotification) {
     println("Level started!")
     performSegueWithIdentifier("levelStartedSegue", sender: self)
   }
   
-  func handleDialogue(notification:NSNotification) {
-    if let messageBody = notification.userInfo {
-      println("Setting speech before unveil!")
-      spriteMessageBeforeUnveil  = SpriteDialogue(
-        image: UIImage(named: "AnyaPortrait"),
-        spriteMessage: messageBody["message"]! as String,
-        spriteName: messageBody["spriteID"]! as String)
+//  func onSpriteSpeechUpdated(note:NSNotification) {
+//    if let event = note.userInfo {
+//      println("Setting speech before unveil!")
+//      spriteMessageBeforeUnveil  = SpriteDialogue(
+//        image: UIImage(named: "AnyaPortrait"),
+//        spriteMessage: event["message"]! as String,
+//        spriteName: event["spriteID"]! as String)
+//    }
+//  }
+  
+  func onTomeSpellLoaded(note:NSNotification) {
+    if let event = note.userInfo {
+      let spell = event["spell"] as NSDictionary
+      spellBeforeUnveil = spell["source"] as? String;
     }
   }
-  func handleTomeSpellLoaded(notification:NSNotification) {
-    if let messageBody = notification.userInfo {
-      spellBeforeUnveil = messageBody["spellSource"]! as? String
-    }
-    
-    
-  }
-  
-  func injectListeners() {
-    injectedListeners = true
-    //injectProgressListener()
-    WebManager.sharedInstance.injectBackboneListeners(webView!)
-    //loginMichael()
-  }
-  
-  func injectProgressListener() {
-    var error:NSError? = nil
-    let scriptFilePath = NSBundle.mainBundle()
-      .pathForResource("progressListener", ofType: "js")
-    let scriptFromFile = NSString.stringWithContentsOfFile(scriptFilePath!,
-      encoding: NSUTF8StringEncoding,
-      error: &error)
-    
-    webView?.evaluateJavaScript(scriptFromFile,
-      completionHandler: { response, error in
-        if error != nil {
-          println("There was an error injecting the progress listener:\(error)")
-        } else {
-          println("Injected the progress listener!")
-        }
-      })
-  }
-  
   
   func loginMichael() {
     let loginScript = "require('/lib/auth').loginUser(" +

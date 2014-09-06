@@ -7,24 +7,42 @@
 //
 
 import UIKit
+import WebKit
 
 class NewPlayViewController: UIViewController, UITextViewDelegate {
   
   let screenshotView = UIImageView(image: UIImage(named: "largeScreenshot"))
+  var webView: WKWebView?
   let editorContainerView = UIView()
-  var codeEditor:Editor? = nil
-  var editorTextView:EditorTextView!
-  var inventoryViewController:TomeInventoryViewController!
-  var inventoryFrame:CGRect!
+  var codeEditor: Editor? = nil
+  var editorTextView: EditorTextView!
+  var inventoryViewController: TomeInventoryViewController!
+  var inventoryFrame: CGRect!
+  let webManager = WebManager.sharedInstance
+  
   override func viewDidLoad() {
     super.viewDidLoad()
+    listenToNotifications()
     setupViews()
+  }
+  
+  func listenToNotifications() {
+    // TODO: listen to stuff
+  }
+  
+  deinit {
+    WebManager.sharedInstance.unsubscribe(self)
+  }
+  
+  func onEvaluateJavaScript(note:NSNotification) {
+    let userInfo:Dictionary<String,String!> = note.userInfo as Dictionary<String,String!>
+    self.webView?.evaluateJavaScript(userInfo["js"], completionHandler: nil)
   }
   
   func setupViews() {
     let frameWidth = view.frame.size.width
     let frameHeight = view.frame.size.height
-    let aspectRatio = screenshotView.image.size.width/screenshotView.image.size.height
+    let aspectRatio = screenshotView.image!.size.width/screenshotView.image!.size.height
     screenshotView.frame = CGRectMake(0, 0, frameWidth, frameWidth / aspectRatio)
     editorContainerView.frame = CGRectMake(0, screenshotView.frame.height, frameWidth, frameHeight)
     editorContainerView.backgroundColor = UIColor.redColor()
@@ -32,6 +50,7 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
     setupScrollView()
     setupInventory()
     setupEditor()
+    //setupWebView()
   }
   
   func setupScrollView() {
@@ -71,4 +90,10 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
     editorContainerView.addSubview(editorTextView)
   }
 
+  func setupWebView() {
+    let webViewFrame = CGRectMake(0, 0, 563 , 359)
+    webView!.hidden = false
+    self.view.addSubview(webView!)
+    webManager.webView = webView
+  }
 }

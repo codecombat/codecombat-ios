@@ -11,120 +11,103 @@ import WebKit
 class WebManager: NSObject, WKScriptMessageHandler {
   
   var webViewConfiguration:WKWebViewConfiguration!
-  var urlSesssionConfiguration:NSURLSessionConfiguration?
+  var urlSesssionConfiguration: NSURLSessionConfiguration?
   let rootURL = NSURL(scheme: "http", host: "localhost:3000", path: "/")
-  var operationQueue:NSOperationQueue?
-  var listenersInjectedSoFar = 0
+  var operationQueue: NSOperationQueue?
+  var webView: WKWebView?  // Assign this if we create one, so that we can evaluate JS in its context.
   
   var scriptMessageNotificationCenter:NSNotificationCenter!
   class var sharedInstance:WebManager {
     return WebManagerSharedInstance
   }
-  
-  struct listenerData {
-    var additionalJS = ""
-    var javascriptMessageFormat = ""
-    var backboneEvent = ""
-    var scriptMessageHandlerName = ""
-  }
-  
-  let BackboneListeners = [
-    listenerData(
-      additionalJS: "",
-      javascriptMessageFormat: "{}",
-      backboneEvent: "level:loading-view-unveiled",
-      scriptMessageHandlerName: "levelStartedHandler"),
-    listenerData(
-      additionalJS: "if (!e.message) return; ",
-      javascriptMessageFormat: "{'spriteID':e.sprite.thang.id," +
-        "'message':e.message}",
-      backboneEvent: "sprite:speech-updated",
-      scriptMessageHandlerName: "spriteSpeechUpdatedHandler"),
-    listenerData(
-      additionalJS: "",
-      javascriptMessageFormat: "{'frame':e.frame,'frameRate':" +
-        "e.world.frameRate,'totalFrames':e.world.totalFrames}",
-      backboneEvent: "surface:frame-changed",
-      scriptMessageHandlerName: "surfaceFrameChangedHandler"),
-    listenerData(
-      additionalJS: "",
-      javascriptMessageFormat: "{'spellSource':e.spell.source}",
-      backboneEvent: "tome:spell-loaded",
-      scriptMessageHandlerName: "tomeSpellLoadedHandler"),
-    listenerData(
-      additionalJS: "",
-      javascriptMessageFormat:"{'propGroups':e.propGroups,'allDocs':e.allDocs}",
-      backboneEvent: "tome:update-snippets",
-      scriptMessageHandlerName: "tomeUpdateSnippetsHandler"),
-    listenerData(
-      additionalJS: "",
-      javascriptMessageFormat: "{}",
-      backboneEvent: "tome:source-request",
-      scriptMessageHandlerName: "tomeSourceRequestHandler"),
-    listenerData(
-      additionalJS: "",
-      javascriptMessageFormat: "{'progress':e}",
-      backboneEvent: "supermodel:update-progress",
-      scriptMessageHandlerName: "supermodelUpdateProgressHandler"
-    )
-  ]
-  
+
   override init() {
     super.init()
     operationQueue = NSOperationQueue()
     webViewConfiguration = WKWebViewConfiguration()
     scriptMessageNotificationCenter = NSNotificationCenter()
-    
+    subscribe(self, channel: "application:error", selector: "onJSError:")
   }
+  
+  func subscribe(observer: AnyObject, channel: String, selector: Selector) {
+    scriptMessageNotificationCenter.addObserver(observer, selector: selector, name: channel, object: self)
+  }
+  
+  func unsubscribe(observer: AnyObject) {
+    scriptMessageNotificationCenter.removeObserver(self)
+  }
+  
+  func publish(channel: String, event: Dictionary<String, AnyObject>) {
+    let serializedEvent = serializeData(event)
+    evaluateJavaScript("Backbone.Mediator.publish('\(event)', \(serializedEvent)", onJSEvaluated)
+  }
+  
+  func evaluateJavaScript(js: String, completionHandler: ((AnyObject!, NSError!) -> Void)!) {
+    self.webView?.evaluateJavaScript(js, completionHandler: completionHandler)  // This isn't documented, so is it being added or removed or what?
+  }
+  
+  func onJSEvaluated(response: AnyObject!, error: NSError?) {
+    if error != nil {
+      println("There was an error evaluating JS: \(error), response: \(response)")
+    } else {
+      println("Got response from evaluating JS: \(response)")
+    }
+  }
+  
+  func onJSError(note: NSNotification) {
+    if let event = note.userInfo {
+      let message = event["message"]! as String
+      println("💔💔💔 Unhandled JS error in application: \(message)")
+    }
+  }
+  
+  private func serializeData(data:NSDictionary?) -> String {
+    var serialized:NSData?
+    var error:NSError?
+    if data != nil {
+      serialized = NSJSONSerialization.dataWithJSONObject(data!,
+        options: NSJSONWritingOptions(0),
+        error: &error)
+    } else {
+      let EmptyObjectString = NSString(string: "{}")
+      serialized = EmptyObjectString.dataUsingEncoding(NSUTF8StringEncoding)
+    }
+    return NSString(data: serialized!, encoding: NSUTF8StringEncoding)
+  }
+
   
   func userContentController(userContentController: WKUserContentController!,
     didReceiveScriptMessage message: WKScriptMessage!) {
-    scriptMessageNotificationCenter.postNotificationName(message.name,
-      object: self, userInfo: message.body as? NSDictionary)
+      if message.name == "backboneEventHandler" {
+        // Turn Backbone events into NSNotifications
+        let body = (message.body as NSDictionary) as Dictionary  // You... It... So help me...
+        let channel = body["channel"] as NSString
+        let event = (body["event"] as NSDictionary) as Dictionary
+        //println("got backbone event: \(channel): \(event)")
+        scriptMessageNotificationCenter.postNotificationName(channel, object: self, userInfo: event)
+      } else if message.name == "consoleLogHandler" {
+        let body = (message.body as NSDictionary) as Dictionary
+        let level = body["level"] as NSString
+        let arguments = body["arguments"] as NSArray
+        let message = arguments.componentsJoinedByString(" ")
+        println("\(colorEmoji[level]!) \(level): \(message)")
+      }
+      else {
+        println("got message: \(message.name): \(message.body)")
+        scriptMessageNotificationCenter.postNotificationName(message.name, object: self, userInfo: message.body as? NSDictionary)
+      }
   }
+  
   
   func addScriptMessageHandlers() {
     let contentController = self.webViewConfiguration!.userContentController
-    for listener in BackboneListeners {
-      contentController.addScriptMessageHandler(self,
-        name: listener.scriptMessageHandlerName)
-    }
-    //contentController.addScriptMessageHandler(self, name: "progressHandler")
-  }
-  
-  func injectBackboneListeners(webView:WKWebView!) {
-    for listener in BackboneListeners {
-      injectBackboneListenerIntoWebView(webView,
-        additionalJS: listener.additionalJS,
-        javascriptMessageFormat: listener.javascriptMessageFormat,
-        backboneEvent: listener.backboneEvent,
-        scriptMessageHandlerName: listener.scriptMessageHandlerName)
-    }
-  }
-  
-  func injectBackboneListenerIntoWebView(webView:WKWebView!,
-    additionalJS:String, javascriptMessageFormat:String,
-    backboneEvent:String, scriptMessageHandlerName:String ) {
-      let script =
-      "Backbone.Mediator.subscribe('\(backboneEvent)'," +
-        "function(e){ \(additionalJS) try " +
-        "{webkit.messageHandlers.\(scriptMessageHandlerName)" +
-      ".postMessage(\(javascriptMessageFormat));} catch (err) {throw(err)}});"
-      println("Injecting the \(scriptMessageHandlerName)")
-      webView.evaluateJavaScript(script,
-        completionHandler: backboneInjectionCompletionHandler)
-  }
-  
-  func backboneInjectionCompletionHandler(response:AnyObject!, error:NSError?) {
-    if error != nil {
-      println("There was an error injecting the progress listener: \(error)")
-    }
-    listenersInjectedSoFar += 1
-    if listenersInjectedSoFar == BackboneListeners.count {
-      println("All have been injected!")
-      NSNotificationCenter.defaultCenter().postNotificationName("allListenersLoaded", object: self)
-    }
+    contentController.addScriptMessageHandler(self, name: "backboneEventHandler")
+    contentController.addScriptMessageHandler(self, name: "consoleLogHandler")
+    println("Just added the Backbone event and console logging handlers.")
   }
 
 }
 let WebManagerSharedInstance = WebManager()
+
+let colorEmoji = ["debug": "📘", "log": "📓", "info": "📔", "warn": "📙", "error": "📕"]
+//var emoji = "↖↗↘↙⏩⏪▶◀☀☁☎☔☕☝☺♈♉♊♋♌♍♎♏♐♑♒♓♠♣♥♦♨♿⚠⚡⚽⚾⛄⛎⛪⛲⛳⛵⛺⛽✂✈✊✋✌✨✳✴❌❎❓❔❕❗❤➡➿⬅⬆⬇⭐⭕〽㊗㊙🀄🅰🅱🅾🅿🆎🆒🆔🆕🆗🆙🆚🈁🈂🈚🈯🈳🈵🈶🈷🈸🈹🈺🉐🌀🌂🌃🌄🌅🌆🌇🌈🌊🌙🌟🌴🌵🌷🌸🌹🌺🌻🌾🍀🍁🍂🍃🍅🍆🍉🍊🍎🍓🍔🍘🍙🍚🍛🍜🍝🍞🍟🍡🍢🍣🍦🍧🍰🍱🍲🍳🍴🍵🍶🍸🍺🍻🎀🎁🎂🎃🎄🎅🎆🎇🎈🎉🎌🎍🎎🎏🎐🎑🎒🎓🎡🎢🎤🎥🎦🎧🎨🎩🎫🎬🎯🎰🎱🎵🎶🎷🎸🎺🎾🎿🏀🏁🏃🏄🏆🏈🏊🏠🏢🏣🏥🏦🏧🏨🏩🏪🏫🏬🏭🏯🏰🐍🐎🐑🐒🐔🐗🐘🐙🐚🐛🐟🐠🐤🐦🐧🐨🐫🐬🐭🐮🐯🐰🐱🐳🐴🐵🐶🐷🐸🐹🐺🐻👀👂👃👄👆👇👈👉👊👋👌👍👎👏👐👑👒👔👕👗👘👙👜👟👠👡👢👣👦👧👨👩👫👮👯👱👲👳👴👵👶👷👸👻👼👽👾👿💀💁💂💃💄💅💆💇💈💉💊💋💍💎💏💐💑💒💓💔💗💘💙💚💛💜💝💟💡💢💣💤💦💨💩💪💰💱💹💺💻💼💽💿📀📖📝📠📡📢📣📩📫📮📱📲📳📴📶📷📺📻📼🔊🔍🔑🔒🔓🔔🔝🔞🔥🔨🔫🔯🔰🔱🔲🔳🔴🕐🕑🕒🕓🕔🕕🕖🕗🕘🕙🕚🕛🗻🗼🗽😁😂😃😄😉😊😌😍😏😒😓😔😖😘😚😜😝😞😠😡😢😣😥😨😪😭😰😱😲😳😷🙅🙆🙇🙌🙏🚀🚃🚄🚅🚇🚉🚌🚏🚑🚒🚓🚕🚗🚙🚚🚢🚤🚥🚧🚬🚭🚲🚶🚹🚺🚻🚼🚽🚾🛀⏫⏬⏰⏳✅➕➖➗➰🃏🆑🆓🆖🆘🇦🇧🇨🇩🇪🇫🇬🇭🇮🇯🇰🇱🇲🇳🇴🇵🇶🇷🇸🇹🇺🇻🇼🇽🇾🇿🈲🈴🉑🌁🌉🌋🌌🌏🌑🌓🌔🌕🌛🌠🌰🌱🌼🌽🌿🍄🍇🍈🍌🍍🍏🍑🍒🍕🍖🍗🍠🍤🍥🍨🍩🍪🍫🍬🍭🍮🍯🍷🍹🎊🎋🎠🎣🎪🎭🎮🎲🎳🎴🎹🎻🎼🎽🏂🏡🏮🐌🐜🐝🐞🐡🐢🐣🐥🐩🐲🐼🐽🐾👅👓👖👚👛👝👞👤👪👰👹👺💌💕💖💞💠💥💧💫💬💮💯💲💳💴💵💸💾📁📂📃📄📅📆📇📈📉📊📋📌📍📎📏📐📑📒📓📔📕📗📘📙📚📛📜📞📟📤📥📦📧📨📪📰📹🔃🔋🔌🔎🔏🔐🔖🔗🔘🔙🔚🔛🔜🔟🔠🔡🔢🔣🔤🔦🔧🔩🔪🔮🔵🔶🔷🔸🔹🔼🔽🗾🗿😅😆😋😤😩😫😵😸😹😺😻😼😽😾😿🙀🙈🙉🙊🙋🙍🙎🚨🚩🚪🚫"

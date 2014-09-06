@@ -18,7 +18,7 @@ class EditorTextStorage: NSTextStorage {
     attributedString = NSMutableAttributedString()
   }
   
-  required init(coder aDecoder: NSCoder!) {
+  required init(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
   
@@ -33,8 +33,7 @@ class EditorTextStorage: NSTextStorage {
   override func attributesAtIndex(location: Int, effectiveRange range: NSRangePointer) -> [NSObject : AnyObject] {
     return attributedString!.attributesAtIndex(location, effectiveRange: range)
   }
-  override func replaceCharactersInRange(range: NSRange,
-    withString str: String!) {
+  override func replaceCharactersInRange(range: NSRange, withString str: String) {
     attributedString!.replaceCharactersInRange(range, withString: str)
     //find a more efficient way of getting string length that isn't buggy
     let changeInLength:NSInteger = (NSString(string: str).length - range.length)
