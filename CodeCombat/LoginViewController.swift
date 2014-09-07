@@ -16,24 +16,67 @@ class LoginViewController: UIViewController {
   @IBOutlet weak var usernameTextField: UITextField!
   @IBOutlet weak var loginActivityIndicatorView: UIActivityIndicatorView!
   
+  var loginProtectionSpace: NSURLProtectionSpace?
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     drawBackgroundGradient()
+    createLoginProtectionSpace()
+  }
+  
+  override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    rememberUser()
+  }
+  
+  func createLoginProtectionSpace() {
+    // http://stackoverflow.com/a/17997943/540620
+    let url = WebManager.sharedInstance.rootURL
+    loginProtectionSpace = NSURLProtectionSpace(host: url.host!, port: url.port!.integerValue, `protocol`: url.scheme!, realm: nil, authenticationMethod: nil)  //.HTTPDigest)
+  }
+  
+  func rememberUser() {
+    let credentialsValues = getCredentials()
+    if !credentialsValues.isEmpty {
+      let credential = credentialsValues.first! as NSURLCredential
+      println("User \(credential.user) already connected with saved password; logging in.")
+      //User.sharedInstance.name = userJSON["name"] as? String
+      User.sharedInstance.email = credential.user!
+      User.sharedInstance.password = credential.password!
+      segueToMainMenu()
+    }
+  }
+  
+  func saveUser() {
+    let credential = NSURLCredential.credentialWithUser(User.sharedInstance.email!, password: User.sharedInstance.password!, persistence: .Permanent)
+    NSURLCredentialStorage.sharedCredentialStorage().setCredential(credential, forProtectionSpace: loginProtectionSpace!)
+  }
+  
+  func clearCredentials() {
+    let credentialsValues = getCredentials()
+    for credential in credentialsValues {
+      NSURLCredentialStorage.sharedCredentialStorage().removeCredential(credential, forProtectionSpace: loginProtectionSpace!)
+    }
+  }
+  
+  func getCredentials() -> [NSURLCredential] {
+    let credentialsDictionary = NSURLCredentialStorage.sharedCredentialStorage().credentialsForProtectionSpace(loginProtectionSpace!)
+    if credentialsDictionary == nil {
+      return []
+    }
+    return credentialsDictionary!.values.array as [NSURLCredential]
   }
   
   @IBAction func login(button:UIButton) {
     loginActivityIndicatorView.startAnimating()
-    let Username = usernameTextField.text
-    let Password = passwordTextField.text
-    let ValidationResults = validateLoginCredentials(
-      username:Username,
-      password: Password)
-    
-    if ValidationResults.isValid {
-      performLoginRequest(username:Username, password: Password)
+    let username = usernameTextField.text
+    let password = passwordTextField.text
+    let validationResults = validateLoginCredentials(username: username, password: password)
+    if validationResults.isValid {
+      performLoginRequest(username: username, password: password)
     } else {
       loginActivityIndicatorView.stopAnimating()
-      showInvalidCredentialsAlert(ValidationResults.errorMessage)
+      showInvalidCredentialsAlert(validationResults.errorMessage)
     }
   }
   
@@ -49,40 +92,40 @@ class LoginViewController: UIViewController {
     LoginRequest.setValue("application/json",
       forHTTPHeaderField: "Content-Type")
     let LoginCredentials: [String:String] = [
-      "username":username,
-      "password":password
+      "username": username,
+      "password": password
     ]
-    var postData = NSJSONSerialization.dataWithJSONObject(LoginCredentials,
-      options:NSJSONWritingOptions(0),
-      error:nil)
+    var postData = NSJSONSerialization.dataWithJSONObject(LoginCredentials, options: NSJSONWritingOptions(0), error: nil)
     LoginRequest.HTTPBody = postData
     let OperationQueue:NSOperationQueue = NSOperationQueue()
+    println("Going to send post data \(postData) for \(LoginCredentials)")
     
-    NSURLConnection.sendAsynchronousRequest(LoginRequest,
-      queue: OperationQueue,
-      completionHandler: { [weak self] response, data, requestError -> Void in
+    NSURLConnection.sendAsynchronousRequest(LoginRequest, queue: OperationQueue, completionHandler: { [weak self] response, data, requestError -> Void in
       if (requestError != nil) {
         //This will trigger on unauthorized.
-        var jsonError:NSError?
-        var errorObject:AnyObject! = NSJSONSerialization.JSONObjectWithData(data,
-          options: NSJSONReadingOptions.MutableContainers,
-          error: &jsonError)
         var errorMessage:String
-        if jsonError != nil {
-          errorMessage = "There was an unknown error logging in."
-        } else {
-          let ErrorDictionaries = errorObject as? [[String:String]]
-          if ErrorDictionaries![0]["property"] == "password" {
-            errorMessage = "The password for your account is incorrect."
-          } else if ErrorDictionaries![0]["property"] == "email" {
-            errorMessage = "We couldn't find an account for that email."
+        if data == nil {
+          errorMessage = "There was a request error: \(requestError)."
+        }
+        else {
+          var jsonError:NSError?
+          var errorObject:AnyObject = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &jsonError)!
+          if jsonError != nil {
+            errorMessage = "There was an unknown error logging in."
           } else {
-            errorMessage = "Your credentials are incorrect."
+            let ErrorDictionaries = errorObject as? [[String:String]]
+            if ErrorDictionaries![0]["property"] == "password" {
+              errorMessage = "The password for your account is incorrect."
+            } else if ErrorDictionaries![0]["property"] == "email" {
+              errorMessage = "We couldn't find an account for that email."
+            } else {
+              errorMessage = "Your credentials are incorrect."
+            }
           }
         }
         dispatch_async(dispatch_get_main_queue(), {
           self!.handleLoginFailure(errorMessage)
-          })
+        })
       } else {
         var jsonError:NSError?
         var userJSON = NSJSONSerialization.JSONObjectWithData(data,
@@ -96,15 +139,18 @@ class LoginViewController: UIViewController {
         } else {
           User.sharedInstance.name = userJSON["name"] as? String
           User.sharedInstance.email = userJSON["email"] as? String
+          User.sharedInstance.password = password
           dispatch_async(dispatch_get_main_queue(), {
+            self!.saveUser()
             self!.segueToMainMenu()
-            })
+          })
         }
       }
-      })
-    
+    })
   }
+  
   func segueToMainMenu() {
+    WebManager.sharedInstance.logIn(email: User.sharedInstance.email!, password: User.sharedInstance.password!)
     self.performSegueWithIdentifier("successfulLoginSegue", sender:self)
   }
   

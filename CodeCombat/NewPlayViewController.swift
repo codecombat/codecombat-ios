@@ -96,6 +96,7 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
   }
 
   func setupWebView() {
+    webView = WebManager.sharedInstance.webView!
     webView!.hidden = false
     webManager.webView = webView
   }
