@@ -31,30 +31,4 @@ class Editor : NSObject, UITextViewDelegate {
   func textViewDidChange(textView: UITextView!) {
     self.textView.resizeLineNumberGutter()
   }
-
-  private func addScriptMessageNotificationObservers() {
-    WebManager.sharedInstance.scriptMessageNotificationCenter?.addObserver(self,
-      selector: Selector("handleTomeSpellLoadedNotification:"),
-      name: "tomeSpellLoadedHandler",
-      object: nil)
-    
-    WebManager.sharedInstance.scriptMessageNotificationCenter?.addObserver(self, selector: Selector("handleTomeSourceRequest"), name: "tomeSourceRequest", object: nil)
-  }
-
-  private func handleTomeSpellLoadedNotification(notification:NSNotification){
-    println("THe spell loaded!!!")
-  }
-
-  @IBAction func cast() {
-    handleTomeSourceRequest()
-    sendBackboneEvent("tome:manual-cast", NSDictionary())
-  }
-
-  func handleTomeSourceRequest(){
-    var escapedString = textView.text!.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
-    escapedString = escapedString.stringByReplacingOccurrencesOfString("\n", withString: "\\n")
-    let js = "currentView.tome.spellView.ace.setValue(\"\(escapedString)\");"
-    evaluateJavaScript(js)
-  }
-
 }

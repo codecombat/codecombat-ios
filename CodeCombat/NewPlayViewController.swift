@@ -16,6 +16,7 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
   let editorContainerView = UIView()
   var codeEditor: Editor? = nil
   var editorTextView: EditorTextView!
+  var codeBeforeLoad:String?
   var inventoryViewController: TomeInventoryViewController!
   var inventoryFrame: CGRect!
   let webManager = WebManager.sharedInstance
@@ -34,11 +35,6 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
     WebManager.sharedInstance.unsubscribe(self)
   }
   
-  func onEvaluateJavaScript(note:NSNotification) {
-    let userInfo:Dictionary<String,String!> = note.userInfo as Dictionary<String,String!>
-    self.webView?.evaluateJavaScript(userInfo["js"], completionHandler: nil)
-  }
-  
   func setupViews() {
     let frameWidth = view.frame.size.width
     let frameHeight = view.frame.size.height
@@ -47,20 +43,23 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
     editorContainerView.frame = CGRectMake(0, screenshotView.frame.height, frameWidth, frameHeight)
     editorContainerView.backgroundColor = UIColor.redColor()
     
+    setupWebView()
     setupScrollView()
     setupInventory()
     setupEditor()
-    //setupWebView()
   }
   
   func setupScrollView() {
     let scrollView = UIScrollView(frame: view.frame)
     scrollView.addSubview(screenshotView)
+    if webView != nil {
+      scrollView.addSubview(webView!)
+    }
     scrollView.contentSize = CGSizeMake(view.frame.size.width, screenshotView.frame.height + view.frame.size.height)
     scrollView.addSubview(editorContainerView)
     scrollView.bounces = false
-    scrollView.contentOffset = CGPoint(x: 0, y: 500)  // Helps for testing.
-    view.addSubview(scrollView)
+    scrollView.contentOffset = CGPoint(x: 0, y: 200)  // Helps for testing.
+    view.insertSubview(scrollView, atIndex: 0)
   }
   
   func setupInventory() {
@@ -88,12 +87,29 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
     editorTextView.delegate = codeEditor!
     editorTextView.showLineNumbers()
     editorContainerView.addSubview(editorTextView)
+    
+    if codeBeforeLoad != nil {
+      textStorage.replaceCharactersInRange(NSMakeRange(0, 0), withAttributedString: NSMutableAttributedString(string: codeBeforeLoad!))
+      editorTextView.setNeedsDisplay()
+      println("set code before load to \(codeBeforeLoad!)")
+    }
   }
 
   func setupWebView() {
-    let webViewFrame = CGRectMake(0, 0, 563 , 359)
     webView!.hidden = false
-    self.view.addSubview(webView!)
     webManager.webView = webView
+  }
+  
+  @IBAction func onCast(sender: UIButton) {
+    handleTomeSourceRequest()
+    WebManager.sharedInstance.publish("tome:manual-cast", event: [:])
+  }
+  
+  func handleTomeSourceRequest(){
+    var escapedString = editorTextView.text!.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
+    escapedString = escapedString.stringByReplacingOccurrencesOfString("\n", withString: "\\n")
+    var js = "if(currentView.tome.spellView) { currentView.tome.spellView.ace.setValue(\"\(escapedString)\"); } else { console.log('damn, no one was selected!'); }"
+    println(js)
+    WebManager.sharedInstance.evaluateJavaScript(js, completionHandler: nil)
   }
 }

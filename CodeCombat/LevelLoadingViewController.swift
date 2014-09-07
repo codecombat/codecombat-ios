@@ -19,7 +19,7 @@ class LevelLoadingViewController: UIViewController {
   let WebViewContextPointer = UnsafeMutablePointer<()>()
   var injectedListeners: Bool = false
   var spriteMessageBeforeUnveil: SpriteDialogue?
-  var spellBeforeUnveil:String?
+  var spellBeforeUnveil: String?
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -35,7 +35,7 @@ class LevelLoadingViewController: UIViewController {
   private func addScriptMessageNotificationObservers() {
     let webManager = WebManager.sharedInstance
     webManager.subscribe(self, channel: "level:loading-view-unveiled", selector: Selector("onLevelStarted:"))
-    webManager.subscribe(self, channel: "supermodel:update-progress", selector: Selector("onProgressUpdate:"))
+    webManager.subscribe(self, channel: "supermodel:load-progress-changed", selector: Selector("onProgressUpdate:"))
     //webManager.subscribe(self, channel: "sprite:speech-updated", selector: Selector("onSpriteSpeechUpdated:"))
     webManager.subscribe(self, channel: "tome:spell-loaded", selector: Selector("onTomeSpellLoaded:"))
     //NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("loginMichael"), name: "allListenersLoaded", object: nil)
@@ -46,16 +46,16 @@ class LevelLoadingViewController: UIViewController {
   }
   
   private func instantiateWebView() {
-    let WebViewFrame = CGRectMake(0, 0, 563 , 359)
+    let WebViewFrame = CGRectMake(0, 0, 1024, 1024 * (589 / 924))  // Full-width Surface, preserving aspect ratio.
     let WebManagerInstance = WebManager.sharedInstance
     webView = WKWebView(frame:WebViewFrame,
       configuration:WebManager.sharedInstance.webViewConfiguration)
+    webView!.hidden = true
     WebManagerSharedInstance.webView = webView
   }
   
   private func loadLevel(levelSlug:String) {
-    let RequestURL = NSURL(string: "/play/level/\(levelSlug)",
-      relativeToURL: RootURL)
+    let RequestURL = NSURL(string: "/play/level/\(levelSlug)", relativeToURL: RootURL)
     let Request = NSMutableURLRequest(URL: RequestURL)
     webView!.loadRequest(Request)
   }
@@ -78,18 +78,17 @@ class LevelLoadingViewController: UIViewController {
   }
   
   override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
-    let DestinationViewController =
-      segue.destinationViewController as NewPlayViewController
+    let DestinationViewController = segue.destinationViewController as NewPlayViewController
     DestinationViewController.webView = webView
     WebManager.sharedInstance.unsubscribe(self)
+    if spellBeforeUnveil != nil {
+      DestinationViewController.codeBeforeLoad = spellBeforeUnveil
+    }
     
     /*
     if spriteMessageBeforeUnveil != nil {
       DestinationViewController.currentSpriteDialogue =
         spriteMessageBeforeUnveil
-    }
-    if spellBeforeUnveil != nil {
-      DestinationViewController.spellBeforeLoad = spellBeforeUnveil
     }
     */
   }
@@ -120,13 +119,11 @@ class LevelLoadingViewController: UIViewController {
       let progress = event["progress"]! as Float
       let progressScalingFactor = 0.8
       let scaledProgress = CGFloat(progress) * CGFloat(progressScalingFactor)
-      println("Progress updated")
       levelLoadingProgressView.setProgress(Float(scaledProgress), animated: true)
     }
   }
   
   func onLevelStarted(note: NSNotification) {
-    println("Level started!")
     performSegueWithIdentifier("levelStartedSegue", sender: self)
   }
   
@@ -143,7 +140,8 @@ class LevelLoadingViewController: UIViewController {
   func onTomeSpellLoaded(note:NSNotification) {
     if let event = note.userInfo {
       let spell = event["spell"] as NSDictionary
-      spellBeforeUnveil = spell["source"] as? String;
+      spellBeforeUnveil = spell["source"] as? String
+      println("got spell before unveil: \(spellBeforeUnveil)")
     }
   }
   

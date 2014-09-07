@@ -15,6 +15,7 @@ class WebManager: NSObject, WKScriptMessageHandler {
   let rootURL = NSURL(scheme: "http", host: "localhost:3000", path: "/")
   var operationQueue: NSOperationQueue?
   var webView: WKWebView?  // Assign this if we create one, so that we can evaluate JS in its context.
+  var lastJSEvaluated: String?
   
   var scriptMessageNotificationCenter:NSNotificationCenter!
   class var sharedInstance:WebManager {
@@ -34,22 +35,26 @@ class WebManager: NSObject, WKScriptMessageHandler {
   }
   
   func unsubscribe(observer: AnyObject) {
-    scriptMessageNotificationCenter.removeObserver(self)
+    scriptMessageNotificationCenter.removeObserver(observer)
   }
   
   func publish(channel: String, event: Dictionary<String, AnyObject>) {
     let serializedEvent = serializeData(event)
-    evaluateJavaScript("Backbone.Mediator.publish('\(event)', \(serializedEvent)", onJSEvaluated)
+    evaluateJavaScript("Backbone.Mediator.publish('\(channel)', \(serializedEvent))", onJSEvaluated)
   }
   
   func evaluateJavaScript(js: String, completionHandler: ((AnyObject!, NSError!) -> Void)!) {
-    self.webView?.evaluateJavaScript(js, completionHandler: completionHandler)  // This isn't documented, so is it being added or removed or what?
+    var handler = completionHandler == nil ? onJSEvaluated : completionHandler  // There's got to be a more Swifty way of doing this.
+    lastJSEvaluated = js
+    //println(" evaluating JS: \(js)")
+    self.webView?.evaluateJavaScript(js, completionHandler: handler)  // This isn't documented, so is it being added or removed or what?
   }
   
   func onJSEvaluated(response: AnyObject!, error: NSError?) {
     if error != nil {
       println("There was an error evaluating JS: \(error), response: \(response)")
-    } else {
+      println("JS was \(lastJSEvaluated!)")
+    } else if response != nil {
       println("Got response from evaluating JS: \(response)")
     }
   }
