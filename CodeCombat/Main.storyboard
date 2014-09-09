@@ -180,7 +180,7 @@
         <!--New Play View Controller-->
         <scene sceneID="U59-z1-lGZ">
             <objects>
-                <viewController id="mL5-Kq-7bx" customClass="NewPlayViewController" customModule="CodeCombat" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NewPlayViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="mL5-Kq-7bx" customClass="NewPlayViewController" customModule="CodeCombat" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="xB9-Hc-fWF"/>
                         <viewControllerLayoutGuide type="bottom" id="r7h-op-gb1"/>

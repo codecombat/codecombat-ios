@@ -68,6 +68,21 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
     }
     view.addSubview(inventoryView)
     
+    addScriptMessageNotificationObservers()
+  }
+  
+  private func addScriptMessageNotificationObservers() {
+    let webManager = WebManager.sharedInstance
+    webManager.subscribe(self, channel: "tome:palette-cleared", selector: Selector("onInventoryCleared:"))
+    webManager.subscribe(self, channel: "tome:palette-updated", selector: Selector("onInventoryUpdated:"))
+  }
+  
+  func onInventoryCleared(note: NSNotification) {
+    println("inventory cleared: \(note)")
+  }
+  
+  func onInventoryUpdated(note: NSNotification) {
+    println("inventory updated: \(note)")
   }
   
   func gestureRecognizer(gestureRecognizer: UIGestureRecognizer!, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer!) -> Bool {

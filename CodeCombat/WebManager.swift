@@ -51,7 +51,7 @@ class WebManager: NSObject, WKScriptMessageHandler {
     let request = NSMutableURLRequest(URL: requestURL)
     webView!.loadRequest(request)
     //addWebViewKeyValueObservers()
-    println("going to log in to \(requestURL) when web view loads! \(loginScript)")
+    //println("going to log in to \(requestURL) when web view loads! \(loginScript)")
   }
   
   /*

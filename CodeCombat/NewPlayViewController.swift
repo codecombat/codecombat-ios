@@ -16,19 +16,21 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
   let editorContainerView = UIView()
   var codeEditor: Editor? = nil
   var editorTextView: EditorTextView!
-  var codeBeforeLoad:String?
+  var textStorage: EditorTextStorage!
   var inventoryViewController: TomeInventoryViewController!
   var inventoryFrame: CGRect!
   let webManager = WebManager.sharedInstance
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    println("viewDidLoad npvc---------------------------------------------")
     listenToNotifications()
     setupViews()
   }
   
-  func listenToNotifications() {
-    // TODO: listen to stuff
+  private func listenToNotifications() {
+    webManager.subscribe(self, channel: "sprite:speech-updated", selector: Selector("onSpriteSpeechUpdated:"))
+    webManager.subscribe(self, channel: "tome:spell-loaded", selector: Selector("onTomeSpellLoaded:"))
   }
   
   deinit {
@@ -71,7 +73,7 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
   }
   
   func setupEditor() {
-    let textStorage = EditorTextStorage()
+    textStorage = EditorTextStorage()
     let layoutManager = EditorLayoutManager()
     layoutManager.allowsNonContiguousLayout = true
     textStorage.addLayoutManager(layoutManager)
@@ -87,12 +89,6 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
     editorTextView.delegate = codeEditor!
     editorTextView.showLineNumbers()
     editorContainerView.addSubview(editorTextView)
-    
-    if codeBeforeLoad != nil {
-      textStorage.replaceCharactersInRange(NSMakeRange(0, 0), withAttributedString: NSMutableAttributedString(string: codeBeforeLoad!))
-      editorTextView.setNeedsDisplay()
-      println("set code before load to \(codeBeforeLoad!)")
-    }
   }
 
   func setupWebView() {
@@ -100,7 +96,29 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
     webView!.hidden = false
     webManager.webView = webView
   }
+
+  func onSpriteSpeechUpdated(note:NSNotification) {
+//    if let event = note.userInfo {
+//      println("Setting speech before unveil!")
+//      spriteMessageBeforeUnveil  = SpriteDialogue(
+//        image: UIImage(named: "AnyaPortrait"),
+//        spriteMessage: event["message"]! as String,
+//        spriteName: event["spriteID"]! as String)
+//    }
+  }
   
+  func onTomeSpellLoaded(note:NSNotification) {
+    if let event = note.userInfo {
+      let spell = event["spell"] as NSDictionary
+      let startingCode = spell["source"] as? String
+      if startingCode != nil {
+        textStorage.replaceCharactersInRange(NSMakeRange(0, 0), withAttributedString: NSMutableAttributedString(string: startingCode!))
+        editorTextView.setNeedsDisplay()  // Needed?
+        println("set code before load to \(startingCode!)")
+      }
+    }
+  }
+
   @IBAction func onCast(sender: UIButton) {
     handleTomeSourceRequest()
     WebManager.sharedInstance.publish("tome:manual-cast", event: [:])
