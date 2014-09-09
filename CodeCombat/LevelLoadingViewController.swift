@@ -22,6 +22,7 @@ class LevelLoadingViewController: UIViewController {
     playViewController = mainStoryboard.instantiateViewControllerWithIdentifier("NewPlayViewController") as? NewPlayViewController
     playViewController?.view  // Access this early to get it set up and listening for events.
     loadLevel("opportunism")
+    view.addSubview(WebManager.sharedInstance.webView!)  // If it's visible, it processes EaselJS stuff much faster, because EaselJS doesn't deprioritize it due to being hidden.
   }
   
   private func listenToNotifications() {
@@ -55,6 +56,7 @@ class LevelLoadingViewController: UIViewController {
   //  }
   
   func onLevelStarted(note: NSNotification) {
+    playViewController!.setupWebView()
     presentViewController(playViewController!, animated: true, completion: nil)
     //performSegueWithIdentifier("levelStartedSegue", sender: self)
     //let segue = UIStoryboardSegue(identifier: "levelStartedSegue2", source: self, destination: playViewController!)

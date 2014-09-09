@@ -10,7 +10,8 @@ import UIKit
 import WebKit
 
 class NewPlayViewController: UIViewController, UITextViewDelegate {
-  
+
+  var scrollView: UIScrollView!
   let screenshotView = UIImageView(image: UIImage(named: "largeScreenshot"))
   var webView: WKWebView?
   let editorContainerView = UIView()
@@ -23,7 +24,6 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    println("viewDidLoad npvc---------------------------------------------")
     listenToNotifications()
     setupViews()
   }
@@ -45,18 +45,14 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
     editorContainerView.frame = CGRectMake(0, screenshotView.frame.height, frameWidth, frameHeight)
     editorContainerView.backgroundColor = UIColor.redColor()
     
-    setupWebView()
     setupScrollView()
     setupInventory()
     setupEditor()
   }
   
   func setupScrollView() {
-    let scrollView = UIScrollView(frame: view.frame)
+    scrollView = UIScrollView(frame: view.frame)
     scrollView.addSubview(screenshotView)
-    if webView != nil {
-      scrollView.addSubview(webView!)
-    }
     scrollView.contentSize = CGSizeMake(view.frame.size.width, screenshotView.frame.height + view.frame.size.height)
     scrollView.addSubview(editorContainerView)
     scrollView.bounces = false
@@ -92,9 +88,11 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
   }
 
   func setupWebView() {
-    webView = WebManager.sharedInstance.webView!
+    webView = webManager.webView!
     webView!.hidden = false
-    webManager.webView = webView
+    if webView != nil {
+      scrollView.addSubview(webView!)
+    }
   }
 
   func onSpriteSpeechUpdated(note:NSNotification) {
@@ -121,7 +119,7 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
 
   @IBAction func onCast(sender: UIButton) {
     handleTomeSourceRequest()
-    WebManager.sharedInstance.publish("tome:manual-cast", event: [:])
+    webManager.publish("tome:manual-cast", event: [:])
   }
   
   func handleTomeSourceRequest(){
@@ -129,6 +127,6 @@ class NewPlayViewController: UIViewController, UITextViewDelegate {
     escapedString = escapedString.stringByReplacingOccurrencesOfString("\n", withString: "\\n")
     var js = "if(currentView.tome.spellView) { currentView.tome.spellView.ace.setValue(\"\(escapedString)\"); } else { console.log('damn, no one was selected!'); }"
     println(js)
-    WebManager.sharedInstance.evaluateJavaScript(js, completionHandler: nil)
+    webManager.evaluateJavaScript(js, completionHandler: nil)
   }
 }

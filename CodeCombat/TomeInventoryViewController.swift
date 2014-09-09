@@ -9,10 +9,11 @@
 import UIKit
 
 class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
-  private let inventory:TomeInventory!
-  private var inventoryView:UIScrollView!
-  private var draggedView:UIView!
-  private var draggedProperty:TomeInventoryItemProperty!
+  private var inventory: TomeInventory!
+  private var inventoryLoaded = false
+  private var inventoryView: UIScrollView!
+  private var draggedView: UIView!
+  private var draggedProperty: TomeInventoryItemProperty!
   
   override init() {
     inventory = TomeInventory(
@@ -53,22 +54,28 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
     inventoryView.contentSize = CGSize(
       width: inventoryFrame.width,
       height: 2 * inventoryFrame.height)
-    
-    var itemHeight = 0
-    let ItemMargin = 10
-    for item in inventory.items {
-      let Width = Int(inventoryFrame.width) - ItemMargin
-      let Height = Int(inventoryFrame.height) - itemHeight - ItemMargin
-      let ItemFrame = CGRect(x: ItemMargin/2, y: itemHeight + ItemMargin/2, width: Width, height: Height)
-      let ItemView = TomeInventoryItemView(item: item, frame: ItemFrame)
-      if ItemView.showsProperties {
-        inventoryView.addSubview(ItemView)
-        itemHeight += Int(ItemView.frame.height) + ItemMargin
-      }
-    }
     view.addSubview(inventoryView)
     
     addScriptMessageNotificationObservers()
+  }
+  
+  func setUpInventory() {
+    let subviewsToRemove = inventoryView.subviews as [UIView]
+    for var index = subviewsToRemove.count - 1; index >= 0; --index {
+      subviewsToRemove[index].removeFromSuperview()
+    }
+    var itemHeight = 0
+    let itemMargin = 10
+    for item in inventory.items {
+      let width = Int(inventoryView.frame.width) - itemMargin
+      let height = Int(inventoryView.frame.height) - itemHeight - itemMargin
+      let itemFrame = CGRect(x: itemMargin / 2, y: itemHeight + itemMargin / 2, width: width, height: height)
+      let itemView = TomeInventoryItemView(item: item, frame: itemFrame)
+      if itemView.showsProperties {
+        inventoryView.addSubview(itemView)
+        itemHeight += Int(itemView.frame.height) + itemMargin
+      }
+    }
   }
   
   private func addScriptMessageNotificationObservers() {
@@ -78,11 +85,31 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
   }
   
   func onInventoryCleared(note: NSNotification) {
-    println("inventory cleared: \(note)")
+    //println("inventory cleared: \(note)")
   }
   
   func onInventoryUpdated(note: NSNotification) {
-    println("inventory updated: \(note)")
+    if inventoryLoaded { return }
+    inventoryLoaded = true
+    // Fake us up some inventory item data, since we're not separating things into inventory items yet, but we will be.
+    inventory = TomeInventory()
+    let userInfo = note.userInfo as [String: AnyObject]
+    let entryGroupsJSON = userInfo["entryGroups"] as NSString
+    let entryGroups = JSON.parse(entryGroupsJSON)
+    var items: [TomeInventoryItem] = []
+    for (entryGroup, entries) in entryGroups.asDictionary! {
+      var entryNames: [String] = entries.asArray!.map({entry in entry["name"].asString!}) as [String]
+      var entryNamesJSON = "\", \"".join(entryNames)
+      var itemDataJSON = "{\"name\":\"\(entryGroup)\",\"programmableProperties\":[\"\(entryNamesJSON)\"]}"
+      var itemData = JSON.parse(itemDataJSON)
+      var item = TomeInventoryItem(itemData: itemData)
+      for entry in entries.asArray! {
+        var property = TomeInventoryItemProperty(propertyData: entry, primary: true)
+        item.addProperty(property)
+      }
+      inventory.addInventoryItem(item)
+    }
+    setUpInventory()
   }
   
   func gestureRecognizer(gestureRecognizer: UIGestureRecognizer!, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer!) -> Bool {

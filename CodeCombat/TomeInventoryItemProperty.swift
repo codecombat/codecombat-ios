@@ -14,9 +14,9 @@ struct TomeInventoryItemProperty {
   }
   
   func codeSnippetForLanguage(language:String) -> String? {
-    let Snippet = propertyData["snippets"][language]["code"]
-    if Snippet.isString {
-      return Snippet.toString(pretty: false)
+    let snippet = propertyData["snippets"][language]["code"]
+    if snippet.isString {
+      return snippet.toString(pretty: false)
     } else {
       return nil
     }
