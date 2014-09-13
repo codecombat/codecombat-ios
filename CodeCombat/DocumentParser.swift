@@ -285,6 +285,9 @@ class LanguageParser {
   }
   
   func parse() -> DocumentNode! {
+    if data.length == 0 {
+      return DocumentNode()
+    }
     let rootNode = DocumentNode()
     let sdata = data
     rootNode.sourceText = sdata

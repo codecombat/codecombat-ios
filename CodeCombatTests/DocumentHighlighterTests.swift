@@ -93,7 +93,7 @@ class DocumentHighlighterTests: XCTestCase {
     let parser = LanguageParser(scope: "javascript", data: documentString, provider: self.provider)
     let highlighter = NodeHighlighter(parser: parser)
     println(highlighter.scopeName(1))
-    
+    println(highlighter.scopeExtent(1))
   }
   
   func testPythonParsing1() {

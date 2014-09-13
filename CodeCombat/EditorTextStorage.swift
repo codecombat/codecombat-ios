@@ -13,11 +13,13 @@ class EditorTextStorage: NSTextStorage {
   var attributedString:NSMutableAttributedString?
   var editorTextView:UITextView?
   var languageProvider = LanguageProvider()
-  var parser:LanguageParser!
+  var highlighter:NodeHighlighter!
+  let language = "javascript"
   override init() {
     super.init()
     attributedString = NSMutableAttributedString()
-    let language = "javascript"
+    let parser = LanguageParser(scope: language, data: attributedString!.string, provider: languageProvider)
+    highlighter = NodeHighlighter(parser: parser)
   }
   
   required init(coder aDecoder: NSCoder) {
@@ -34,8 +36,26 @@ class EditorTextStorage: NSTextStorage {
   }
   
   override func attributesAtIndex(location: Int, effectiveRange range: NSRangePointer) -> [NSObject : AnyObject] {
-    return attributedString!.attributesAtIndex(location, effectiveRange: range)
+    var attributes = attributedString!.attributesAtIndex(location, effectiveRange: range)
+    let scopeName = highlighter.scopeName(location)
+    //println("Scope name:\(scopeName)")
+    let newAttributes = scopeToAttributes(scopeName)
+    if newAttributes == nil {
+      return attributes
+    } else {
+      attributes[NSForegroundColorAttributeName] = UIColor.redColor()
+    }
+    return attributes
   }
+  
+  func scopeToAttributes(scopeName:String) -> [NSObject : AnyObject]? {
+    let scopes = scopeName.componentsSeparatedByString(" ")
+    if contains(scopes, "storage.type.js") {
+      return [NSForegroundColorAttributeName:UIColor.redColor()]
+    }
+    return nil
+  }
+  
   override func replaceCharactersInRange(range: NSRange, withString str: String) {
     attributedString!.replaceCharactersInRange(range, withString: str)
     //find a more efficient way of getting string length that isn't buggy
@@ -54,10 +74,8 @@ class EditorTextStorage: NSTextStorage {
   
   override func processEditing() {
     super.processEditing()
-    changeColorOfTextWithRegexPattern("self", color: UIColor.redColor())
-    //changeColorOfTextWithRegexPattern("//.*", color: UIColor.greenColor())
-    //drawBoxAroundPattern("\\{{2}.*\\}{2}", color: UIColor.blackColor())
-    
+    let parser = LanguageParser(scope: language, data: attributedString!.string, provider: languageProvider)
+    highlighter = NodeHighlighter(parser: parser)
   }
   
   func changeColorOfTextWithRegexPattern(pattern:String, color:UIColor) {

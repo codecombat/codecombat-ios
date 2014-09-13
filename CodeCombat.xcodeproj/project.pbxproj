@@ -70,6 +70,7 @@
 		287AE109199294CC00EEE4F0 /* ParticleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE105199294CC00EEE4F0 /* ParticleView.swift */; };
 		287AE10A199294CC00EEE4F0 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 287AE106199294CC00EEE4F0 /* spark.png */; };
 		287AE10B199294CC00EEE4F0 /* TestParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 287AE107199294CC00EEE4F0 /* TestParticle.sks */; };
+		28975EC019C4D9330033BA7C /* javascript.tmLanguageJSON in Resources */ = {isa = PBXBuildFile; fileRef = 28B3E3B719AE791100C6B12A /* javascript.tmLanguageJSON */; };
 		28B3E3A419AE687300C6B12A /* json.swift in Sources */ = {isa = PBXBuildFile; fileRef = C827D1D01994726600B5724C /* json.swift */; };
 		28B3E3A519AE688600C6B12A /* OnigRegexp.m in Sources */ = {isa = PBXBuildFile; fileRef = 285A540E199C34BD00932DDE /* OnigRegexp.m */; };
 		28B3E3A619AE68A200C6B12A /* st.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5423199C34BD00932DDE /* st.c */; };
@@ -706,6 +707,7 @@
 				287AE0FF199293FA00EEE4F0 /* Images.xcassets in Resources */,
 				C827D1CD199443AE00B5724C /* properties.json in Resources */,
 				287AE10B199294CC00EEE4F0 /* TestParticle.sks in Resources */,
+				28975EC019C4D9330033BA7C /* javascript.tmLanguageJSON in Resources */,
 				C827D1CB19943FF700B5724C /* items_tharin.json in Resources */,
 				287AE10A199294CC00EEE4F0 /* spark.png in Resources */,
 				28DE0CFF199AE1D600C6699D /* javascriptSyntax.json in Resources */,
