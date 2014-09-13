@@ -48,7 +48,7 @@ class LoginViewController: UIViewController {
   }
   
   func saveUser() {
-    let credential = NSURLCredential.credentialWithUser(User.sharedInstance.email!, password: User.sharedInstance.password!, persistence: .Permanent)
+    let credential = NSURLCredential(user: User.sharedInstance.email!, password: User.sharedInstance.password!, persistence: .Permanent)
     NSURLCredentialStorage.sharedCredentialStorage().setCredential(credential, forProtectionSpace: loginProtectionSpace!)
   }
   
