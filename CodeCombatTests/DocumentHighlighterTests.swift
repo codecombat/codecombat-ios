@@ -88,6 +88,12 @@ class DocumentHighlighterTests: XCTestCase {
     println(rootNode.description())
   }
   
+  func testPythonParsing1() {
+    let documentString = "friends = ['john', 'pat', 'gary', 'michael']\nfor i, name in enumerate(friends):\n\tprint \"iteration {iteration} is {name}\".format(iteration=i, name=name)\n"
+    let parser = LanguageParser(scope: "python", data: documentString, provider: provider)
+    let rootNode = parser.parse()
+    println(rootNode.description())
+  }
   func testPerformanceExample() {
     // This is an example of a performance test case.
     let documentString = "var blah = 5;" as NSString

@@ -108,7 +108,9 @@ class LanguageProvider {
   
   private func parsePattern(data:JSON) -> Pattern {
     let pattern = Pattern()
-    pattern.name = data["name"].asString
+    let patternName = data["name"].asString
+    pattern.name = patternName != nil ? patternName : data["contentName"].asString
+    pattern.contentName = data["contentName"].asString
     pattern.disabled = data["disabled"].asBool
     pattern.include = data["include"].asString
     if let matchData = data["match"].asString {
@@ -249,6 +251,7 @@ class Capture {
 class Pattern {
   //change the implicitly unwrapped optionals once construction is understood
   var name:String!
+  var contentName:String!
   var disabled:Bool! = false
   var include:String!
   var match:Regex!

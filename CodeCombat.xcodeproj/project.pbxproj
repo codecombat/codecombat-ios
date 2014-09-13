@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2809AF5B19C4800B0054477B /* python.tmLanguageJSON in Resources */ = {isa = PBXBuildFile; fileRef = 2809AF5A19C4800B0054477B /* python.tmLanguageJSON */; };
+		2809AF5C19C4800B0054477B /* python.tmLanguageJSON in Resources */ = {isa = PBXBuildFile; fileRef = 2809AF5A19C4800B0054477B /* python.tmLanguageJSON */; };
 		280D7E5619AE2655004F95D4 /* DocumentHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286A24E319AE21BF003D2269 /* DocumentHighlighter.swift */; };
 		280D7E5A19AE27A8004F95D4 /* DocumentHighlighterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280D7E5919AE27A8004F95D4 /* DocumentHighlighterTests.swift */; };
 		280D7E5C19AE2807004F95D4 /* DocumentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280D7E5B19AE2807004F95D4 /* DocumentNode.swift */; };
@@ -152,6 +154,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2809AF5A19C4800B0054477B /* python.tmLanguageJSON */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = python.tmLanguageJSON; sourceTree = "<group>"; };
 		280D7E5919AE27A8004F95D4 /* DocumentHighlighterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentHighlighterTests.swift; sourceTree = "<group>"; };
 		280D7E5B19AE2807004F95D4 /* DocumentNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentNode.swift; sourceTree = "<group>"; };
 		280D7E5E19AE283B004F95D4 /* DocumentNodeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentNodeTests.swift; sourceTree = "<group>"; };
@@ -474,6 +477,7 @@
 				C827D1CE1994457700B5724C /* items_all.json */,
 				C827D1CC199443AE00B5724C /* properties.json */,
 				28DE0CFE199AE1D600C6699D /* javascriptSyntax.json */,
+				2809AF5A19C4800B0054477B /* python.tmLanguageJSON */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -697,6 +701,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2809AF5B19C4800B0054477B /* python.tmLanguageJSON in Resources */,
 				C827D1CF1994457700B5724C /* items_all.json in Resources */,
 				287AE0FF199293FA00EEE4F0 /* Images.xcassets in Resources */,
 				C827D1CD199443AE00B5724C /* properties.json in Resources */,
@@ -715,6 +720,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				28B3E3B819AE791100C6B12A /* javascript.tmLanguageJSON in Resources */,
+				2809AF5C19C4800B0054477B /* python.tmLanguageJSON in Resources */,
 				28B3E3BC19B4F6DD00C6B12A /* example.tmLanguageJSON in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
