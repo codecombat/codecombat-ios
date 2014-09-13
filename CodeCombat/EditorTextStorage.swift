@@ -101,8 +101,12 @@ class EditorTextStorage: NSTextStorage {
         if highlighter.lastScopeNode?.parent?.name == "meta.function-call.method.with-arguments.js" {
           println(highlighter.lastScopeNode.parent.data)
           println("Need to put a box from \(highlighter.lastScopeNode.parent.range.location)")
-          
-          NSNotificationCenter.defaultCenter().postNotificationName("drawParameterBox", object: nil, userInfo: ["rangeValue":NSValue(range: highlighter.lastScopeNode.parent.range) , "functionName":highlighter.lastScopeNode.parent.data])
+          //work with a simple regex
+          let endLocation = NSMaxRange(highlighter.lastScopeNode.parent.range)
+          let openBracketLocation = self.string()!.rangeOfString("(", options: nil, range:NSRange(location: endLocation, length: self.string()!.length - endLocation)).location
+          let closeBracketLocation = self.string()!.rangeOfString(")", options: nil, range: NSRange(location: endLocation, length: self.string()!.length - endLocation)).location
+          //will break horribly, fix this hack
+          NSNotificationCenter.defaultCenter().postNotificationName("drawParameterBox", object: nil, userInfo: ["rangeValue":NSValue(range: NSRange(location: openBracketLocation, length: closeBracketLocation - openBracketLocation + 1)) , "functionName":highlighter.lastScopeNode.parent.data])
         }
         let scopeExtent = highlighter.scopeExtent(charIndex)
         if scopeExtent != nil {

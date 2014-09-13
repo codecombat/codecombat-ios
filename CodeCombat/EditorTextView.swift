@@ -46,7 +46,6 @@ class EditorTextView: UITextView {
     println("Erasing boxes...")
     for v in parameterViews {
       v.removeFromSuperview()
-      v.delete(self)
     }
     parameterViews = []
   }
