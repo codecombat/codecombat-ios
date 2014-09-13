@@ -399,47 +399,6 @@ class Pattern {
       }
       return
     }
-    return
-    //interesting to see what this does
-    var ranges:[NSRange] = [NSRange](count: Int(result.count()), repeatedValue: NSRange(location: NSNotFound, length: 0))
-    var parentIndex:[Int] = [Int](count: ranges.count, repeatedValue: 0)
-    var parents = [DocumentNode?](count: parentIndex.count, repeatedValue:nil)
-    for var i:UInt = 0; i < result.count(); i++ {
-      ranges[Int(i)] = result.rangeAt(i)
-      if i == 0 { //what is the significance of the first two entries?
-        parents.insert(parent, atIndex: Int(i))
-        continue
-      }
-      let range = ranges[Int(i)]
-      for var j = i - 1; j >= 0; j-- {
-        if NSIntersectionRange(ranges[Int(j)], range).length == range.length {
-          parentIndex[Int(i)] = Int(j)
-          break
-        }
-      }
-    }
-    for capture in capt {
-      var captureKey = capture.key
-      // I think due to the ranges being nil and the captures perhaps not, this might screw up
-      if captureKey >= parents.count || ranges[captureKey].location == NSNotFound {
-        continue
-      }
-      let child = DocumentNode()
-      child.name = capture.name
-      child.range = ranges[captureKey]
-      child.sourceText = data
-      parents[captureKey] = child
-      if captureKey == 0 {
-        parent.children.append(child)
-        continue
-      }
-      var p:DocumentNode! = nil
-      while p == nil {
-        captureKey = parentIndex[captureKey]
-        p = parents[captureKey]
-      }
-      p.children.append(child)
-    }
   }
   
   func createNode(data:NSString, pos:Int, d:NSString, result:OnigResult) -> DocumentNode {
