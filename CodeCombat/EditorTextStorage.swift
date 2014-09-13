@@ -81,7 +81,7 @@ class EditorTextStorage: NSTextStorage {
     //the most inefficient way of doing this, optimize later
 
     self.removeAttribute(NSForegroundColorAttributeName, range: editedRange)
-    for var charIndex = 0; charIndex < attributedString!.length; charIndex++ {
+    for var charIndex = editedRange.location; charIndex < NSMaxRange(editedRange); charIndex++ {
       let scopeName = highlighter.scopeName(charIndex)
       let scopes = scopeName.componentsSeparatedByString(" ")
       if contains(scopes, "storage.type.js") {
@@ -89,7 +89,13 @@ class EditorTextStorage: NSTextStorage {
         if scopeExtent != nil {
           println("Highlighting \(scopeExtent!.location) to \(NSMaxRange(scopeExtent!))")
           addAttribute(NSForegroundColorAttributeName, value: UIColor.redColor(), range: scopeExtent!)
-          charIndex = NSMaxRange(scopeExtent!) + 1 //may cause off by one
+          charIndex = NSMaxRange(scopeExtent!) //may cause off by one
+        }
+      } else if contains(scopes, "string.quoted.double.js") {
+        let scopeExtent = highlighter.scopeExtent(charIndex)
+        if scopeExtent != nil {
+          addAttribute(NSForegroundColorAttributeName, value: UIColor.orangeColor(), range: scopeExtent!)
+          charIndex = NSMaxRange(scopeExtent!)
         }
       }
     }
