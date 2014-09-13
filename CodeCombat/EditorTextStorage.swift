@@ -38,16 +38,6 @@ class EditorTextStorage: NSTextStorage {
   override func attributesAtIndex(location: Int, effectiveRange range: NSRangePointer) -> [NSObject : AnyObject] {
     var attributes = attributedString!.attributesAtIndex(location, effectiveRange: range)
     return attributes
-    //the below stuff causes the state to be inconsistent
-    let scopeName = highlighter.scopeName(location)
-    let newAttributes = scopeToAttributes(scopeName)
-    if newAttributes == nil {
-      return attributes
-    } else {
-      println("scope name:\(scopeName)")
-      attributes[NSForegroundColorAttributeName] = UIColor.redColor()
-    }
-    return attributes
   }
   
   func scopeToAttributes(scopeName:String) -> [NSObject : AnyObject]? {
@@ -76,6 +66,7 @@ class EditorTextStorage: NSTextStorage {
   
   override func processEditing() {
     super.processEditing()
+    NSNotificationCenter.defaultCenter().postNotificationName("eraseParameterBoxes", object: nil, userInfo: nil)
     let parser = LanguageParser(scope: language, data: attributedString!.string, provider: languageProvider)
     highlighter = NodeHighlighter(parser: parser)
     //the most inefficient way of doing this, optimize later
@@ -105,8 +96,18 @@ class EditorTextStorage: NSTextStorage {
           addAttribute(NSForegroundColorAttributeName, value: UIColor.purpleColor(), range: scopeExtent!)
           charIndex = NSMaxRange(scopeExtent!)
         }
-      } else if contains(scopes, "meta.function-call.method.with-arguments.js") {
-        println(highlighter.lastScopeNode.description())
+      }
+      if contains(scopes, "entity.name.function.js") {
+        if highlighter.lastScopeNode?.parent?.name == "meta.function-call.method.with-arguments.js" {
+          println(highlighter.lastScopeNode.parent.data)
+          println("Need to put a box from \(highlighter.lastScopeNode.parent.range.location)")
+          
+          NSNotificationCenter.defaultCenter().postNotificationName("drawParameterBox", object: nil, userInfo: ["rangeValue":NSValue(range: highlighter.lastScopeNode.parent.range) , "functionName":highlighter.lastScopeNode.parent.data])
+        }
+        let scopeExtent = highlighter.scopeExtent(charIndex)
+        if scopeExtent != nil {
+          addAttribute(NSForegroundColorAttributeName, value: UIColor.redColor(), range: scopeExtent!)
+        }
       }
     }
   }

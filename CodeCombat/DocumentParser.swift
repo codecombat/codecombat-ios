@@ -491,6 +491,7 @@ class Pattern {
         child.name = cap.name
         child.range = result.rangeAt(UInt(capNumber))
         child.sourceText = data
+        child.parent = parent
         parent.children.append(child)
       }
       return

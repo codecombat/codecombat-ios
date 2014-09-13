@@ -11,6 +11,7 @@ import Foundation
 class DocumentNode {
   var range:NSRange = NSRange(location: 0, length: 0)
   var name:String! = ""
+  var parent:DocumentNode!
   var children:[DocumentNode] = []
   var sourceText:NSString!
   var data:String {
