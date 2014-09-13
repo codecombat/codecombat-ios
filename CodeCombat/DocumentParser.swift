@@ -367,6 +367,37 @@ class Pattern {
   
   func createCaptureNodes(data:NSString, pos:Int, d:NSString, result:OnigResult, parent:DocumentNode, capt:[Capture]) {
     //I think the captures are probably unnecessary and can be refactored out
+    //This function needs a lot of work
+    //create a node per match result
+    if capt.count > 0 {
+      for var capNumber = 1; UInt(capNumber) < result.count(); capNumber++ {
+        if result.stringAt(UInt(capNumber)) == "" {
+          continue
+        }
+        println(result.stringAt(UInt(capNumber)))
+        println("Capture \(capNumber)")
+        let capRange = result.rangeAt(UInt(capNumber))
+        println("Range: Location:\(capRange.location), length: \(capRange.length)")
+        let child = DocumentNode()
+        var cap:Capture! = nil
+        for capture in capt {
+          if capture.key == capNumber {
+            cap = capture
+            break
+          }
+        }
+        if cap == nil {
+          cap = capt[capNumber]
+        }
+        child.name = cap.name
+        child.range = result.rangeAt(UInt(capNumber))
+        child.sourceText = data
+        parent.children.append(child)
+      }
+      return
+    }
+    return
+    //interesting to see what this does
     var ranges:[NSRange] = [NSRange](count: Int(result.count()), repeatedValue: NSRange(location: NSNotFound, length: 0))
     var parentIndex:[Int] = [Int](count: ranges.count, repeatedValue: 0)
     var parents = [DocumentNode?](count: parentIndex.count, repeatedValue:nil)
@@ -411,14 +442,13 @@ class Pattern {
   func createNode(data:NSString, pos:Int, d:NSString, result:OnigResult) -> DocumentNode {
     let createdNode = DocumentNode()
     println("Creating node for pattern \(name), include \(include)")
-    if name == nil {
-      println("The begin is \(begin.regex.expression())")
-    }
-    createdNode.name = name != nil ? name : "" //Some patterns don't have names
+    createdNode.name = name
     createdNode.range = result.rangeAt(0)
     createdNode.sourceText = data
+    println(match)
+    println(match == nil)
     //createdNode.updateRange() MUST be deferred
-    if match?.regex != nil {
+    if match != nil && match!.regex != nil {
       createCaptureNodes(data, pos: pos, d: d, result: result, parent: createdNode, capt: captures)
     }
     if begin == nil || begin.regex == nil {
@@ -440,6 +470,7 @@ class Pattern {
     while i < data.length {
       let endMatch = self.end.find(data, pos: i)
       println(endMatch)
+      println("WOOO")
       if endMatch != nil {
         end = NSMaxRange(endMatch!.rangeAt(0))
       } else {
@@ -447,7 +478,7 @@ class Pattern {
           //no end found, set to next line
           let substringToSearch = NSString(string:data.substringFromIndex(i))
           let newlineLocation = substringToSearch.rangeOfCharacterFromSet(NSCharacterSet.newlineCharacterSet()).location
-          if newlineLocation == NSNotFound {
+          if newlineLocation != NSNotFound {
             end = i + newlineLocation
           } else {
             end = data.length
@@ -469,6 +500,13 @@ class Pattern {
       }
       if endMatch != nil {
         if endCaptures.count > 0 {
+          if (name != nil && name == "string.quoted.double.js") {
+            println("Debug here")
+            println(endMatch!.body())
+            for cap in endCaptures {
+              println("Capture name:\(cap.name), key:\(cap.key)")
+            }
+          }
           createCaptureNodes(data, pos: i, d: d, result: endMatch!, parent: createdNode, capt: endCaptures)
         } else {
           createCaptureNodes(data, pos: i, d: d, result: endMatch!, parent: createdNode, capt: captures)

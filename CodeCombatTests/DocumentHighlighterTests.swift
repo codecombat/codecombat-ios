@@ -32,9 +32,9 @@ class DocumentHighlighterTests: XCTestCase {
   }
   
   func testSimpleJavascriptParsing() {
-    return
     let parser = LanguageParser(scope: "javascript", data: "var blah = 5; var test = function() { console.log(\"Hello World\");};", provider: provider)
     let parseRootNode = parser.parse()
+    println(parseRootNode.description())
     XCTAssertTrue(parseRootNode != nil, "The parse root node shouldn't be nil.")
   }
   
@@ -82,7 +82,7 @@ class DocumentHighlighterTests: XCTestCase {
   }
   
   func testJavascriptStringParsing() {
-    let documentString = "\"Hello World\";"
+    let documentString = "var blah = \"Hello World\";"
     let parser = LanguageParser(scope: "javascript", data: documentString, provider: provider)
     let rootNode = parser.parse()
     println(rootNode.description())

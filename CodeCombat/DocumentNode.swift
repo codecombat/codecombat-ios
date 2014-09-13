@@ -10,7 +10,7 @@ import Foundation
 
 class DocumentNode {
   var range:NSRange = NSRange(location: 0, length: 0)
-  var name:String = ""
+  var name:String! = ""
   var children:[DocumentNode] = []
   var sourceText:NSString!
   var data:String {
@@ -33,7 +33,7 @@ class DocumentNode {
     }
     let begin = range.location
     let end = range.location + range.length
-    let nodeName = name == "" ? "(no name)" : name
+    let nodeName = name == nil || name == "" ? "(no name)" : name
     if children.count == 0 {
       return indent + "\(begin)-\(end): \(nodeName) - Data: \"\(data)\"\n"
     } else {
