@@ -79,9 +79,9 @@ class EditorTextStorage: NSTextStorage {
     let parser = LanguageParser(scope: language, data: attributedString!.string, provider: languageProvider)
     highlighter = NodeHighlighter(parser: parser)
     //the most inefficient way of doing this, optimize later
-
-    self.removeAttribute(NSForegroundColorAttributeName, range: editedRange)
-    for var charIndex = editedRange.location; charIndex < NSMaxRange(editedRange); charIndex++ {
+    let paragraphRange = self.string()!.paragraphRangeForRange(editedRange)
+    self.removeAttribute(NSForegroundColorAttributeName, range: paragraphRange)
+    for var charIndex = paragraphRange.location; charIndex < NSMaxRange(paragraphRange); charIndex++ {
       let scopeName = highlighter.scopeName(charIndex)
       let scopes = scopeName.componentsSeparatedByString(" ")
       if contains(scopes, "storage.type.js") {
@@ -100,9 +100,13 @@ class EditorTextStorage: NSTextStorage {
       } else if contains(scopes, "meta.function.js") {
         let scopeExtent = highlighter.scopeExtent(charIndex)
         if scopeExtent != nil {
+          println(highlighter.rootNode.description())
+          println("Highlighting \(scopeExtent!.location) to \(NSMaxRange(scopeExtent!))")
           addAttribute(NSForegroundColorAttributeName, value: UIColor.purpleColor(), range: scopeExtent!)
           charIndex = NSMaxRange(scopeExtent!)
         }
+      } else if contains(scopes, "meta.function-call.method.with-arguments.js") {
+        println(highlighter.lastScopeNode.description())
       }
     }
   }
