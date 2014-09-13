@@ -38,12 +38,13 @@ class EditorTextStorage: NSTextStorage {
   override func attributesAtIndex(location: Int, effectiveRange range: NSRangePointer) -> [NSObject : AnyObject] {
     var attributes = attributedString!.attributesAtIndex(location, effectiveRange: range)
     return attributes
+    //the below stuff causes the state to be inconsistent
     let scopeName = highlighter.scopeName(location)
-    //println("Scope name:\(scopeName)")
     let newAttributes = scopeToAttributes(scopeName)
     if newAttributes == nil {
       return attributes
     } else {
+      println("scope name:\(scopeName)")
       attributes[NSForegroundColorAttributeName] = UIColor.redColor()
     }
     return attributes
@@ -77,6 +78,21 @@ class EditorTextStorage: NSTextStorage {
     super.processEditing()
     let parser = LanguageParser(scope: language, data: attributedString!.string, provider: languageProvider)
     highlighter = NodeHighlighter(parser: parser)
+    //the most inefficient way of doing this, optimize later
+
+    self.removeAttribute(NSForegroundColorAttributeName, range: editedRange)
+    for var charIndex = 0; charIndex < attributedString!.length; charIndex++ {
+      let scopeName = highlighter.scopeName(charIndex)
+      let scopes = scopeName.componentsSeparatedByString(" ")
+      if contains(scopes, "storage.type.js") {
+        let scopeExtent = highlighter.scopeExtent(charIndex)
+        if scopeExtent != nil {
+          println("Highlighting \(scopeExtent!.location) to \(NSMaxRange(scopeExtent!))")
+          addAttribute(NSForegroundColorAttributeName, value: UIColor.redColor(), range: scopeExtent!)
+          charIndex = NSMaxRange(scopeExtent!) + 1 //may cause off by one
+        }
+      }
+    }
   }
   /*
   func changeColorOfTextWithRegexPattern(pattern:String, color:UIColor) {

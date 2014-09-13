@@ -473,10 +473,10 @@ class Pattern {
         if result.stringAt(UInt(capNumber)) == "" {
           continue
         }
-        println(result.stringAt(UInt(capNumber)))
-        println("Capture \(capNumber)")
+        //println(result.stringAt(UInt(capNumber)))
+        //println("Capture \(capNumber)")
         let capRange = result.rangeAt(UInt(capNumber))
-        println("Range: Location:\(capRange.location), length: \(capRange.length)")
+        //println("Range: Location:\(capRange.location), length: \(capRange.length)")
         let child = DocumentNode()
         var cap:Capture! = nil
         for capture in capt {
@@ -499,12 +499,12 @@ class Pattern {
   
   func createNode(data:NSString, pos:Int, d:NSString, result:OnigResult) -> DocumentNode {
     let createdNode = DocumentNode()
-    println("Creating node for pattern \(name), include \(include)")
+    //println("Creating node for pattern \(name), include \(include)")
     createdNode.name = name
     createdNode.range = result.rangeAt(0)
     createdNode.sourceText = data
-    println(match)
-    println(match == nil)
+    //println(match)
+    //println(match == nil)
     //createdNode.updateRange() MUST be deferred
     if match != nil && match!.regex != nil {
       createCaptureNodes(data, pos: pos, d: d, result: result, parent: createdNode, capt: captures)
@@ -527,8 +527,8 @@ class Pattern {
     var end = data.length
     while i < data.length {
       let endMatch = self.end.find(data, pos: i)
-      println(endMatch)
-      println("WOOO")
+      //println(endMatch)
+      //println("WOOO")
       if endMatch != nil {
         end = NSMaxRange(endMatch!.rangeAt(0))
       } else {
@@ -559,11 +559,6 @@ class Pattern {
       if endMatch != nil {
         if endCaptures.count > 0 {
           if (name != nil && name == "string.quoted.double.js") {
-            println("Debug here")
-            println(endMatch!.body())
-            for cap in endCaptures {
-              println("Capture name:\(cap.name), key:\(cap.key)")
-            }
           }
           createCaptureNodes(data, pos: i, d: d, result: endMatch!, parent: createdNode, capt: endCaptures)
         } else {
