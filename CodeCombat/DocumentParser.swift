@@ -75,7 +75,12 @@ class NodeHighlighter {
           lastScopeName = lastScopeBuf
         }
       }
+      return
     }
+    lastScopeNode = nil
+    lastScopeBuf = ""
+    lastScopeNode = findScope(search, node: rootNode)
+    lastScopeName = lastScopeBuf
   }
   
   func scopeExtent(point:Int) -> NSRange? {

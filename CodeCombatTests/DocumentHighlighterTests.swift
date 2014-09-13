@@ -88,6 +88,14 @@ class DocumentHighlighterTests: XCTestCase {
     println(rootNode.description())
   }
   
+  func testNodeHighlighter() {
+    let documentString = "var blah = \"Hello World\";"
+    let parser = LanguageParser(scope: "javascript", data: documentString, provider: self.provider)
+    let highlighter = NodeHighlighter(parser: parser)
+    println(highlighter.scopeName(1))
+    
+  }
+  
   func testPythonParsing1() {
     let documentString = "friends = ['john', 'pat', 'gary', 'michael']\nfor i, name in enumerate(friends):\n\tprint \"iteration {iteration} is {name}\".format(iteration=i, name=name)\n"
     let parser = LanguageParser(scope: "python", data: documentString, provider: provider)
