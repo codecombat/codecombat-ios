@@ -439,8 +439,9 @@ class Pattern {
     var end = data.length
     while i < data.length {
       let endMatch = self.end.find(data, pos: i)
+      println(endMatch)
       if endMatch != nil {
-        end = Int(endMatch!.lengthAt(0))
+        end = NSMaxRange(endMatch!.rangeAt(0))
       } else {
         if !found {
           //no end found, set to next line
