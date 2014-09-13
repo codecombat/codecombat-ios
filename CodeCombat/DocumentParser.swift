@@ -8,14 +8,75 @@
 
 import Foundation
 
+//I'm going to provide proper attribution later, but most of this code is 
+//translated directly from LimeText
+
+
+func rangeCoversRange(a:NSRange, b:NSRange) -> Bool {
+  let union = NSUnionRange(a, b)
+  return union.location == a.location && union.length == a.length
+}
 class NodeHighlighter {
-  var rootNode:DocumentNode
+  var rootNode:DocumentNode!
   var lastScopeNode:DocumentNode!
   var lastScopeName:String = ""
+  var lastScopeBuf:NSMutableString = ""
   init(parser:LanguageParser) {
     rootNode = parser.parse()
   }
-  
+  // Given a text region, returns the innermost node covering that region.
+  // Side-effects: Writes to nh.lastScopeBuf...
+  func findScope(searchRange:NSRange, node:DocumentNode!) -> DocumentNode! {
+    var idx = 0
+    //TODO:Optimize through binary search
+    for var i = 0; i < node.children.count; i++ {
+      if node.children[i].range.location >= searchRange.location || rangeCoversRange(node.children[i].range,searchRange) {
+        idx = i
+        break
+      }
+    }
+    while idx < node.children.count {
+      let c = node.children[idx]
+      if c.range.location > NSMaxRange(searchRange) {
+        break
+      }
+      if rangeCoversRange(c.range, searchRange) {
+        if node.name != "" && node !== lastScopeNode {
+          if lastScopeBuf.length > 0 {
+            lastScopeBuf.appendString(" ")
+          }
+          lastScopeBuf.appendString(node.name)
+        }
+        return findScope(searchRange, node: node.children[idx])
+      }
+      idx++
+    }
+    if node !== lastScopeNode && rangeCoversRange(node.range, searchRange) && node.name != "" {
+      if lastScopeBuf.length > 0 {
+        lastScopeBuf.appendString(" ")
+      }
+      lastScopeBuf.appendString(node.name)
+      return node
+    }
+    return nil
+  }
+  // Caches the full concatenated nested scope name and the innermost node that covers "point".
+  func updateScope(point:Int) {
+    if rootNode == nil {
+      return
+    }
+    
+    let search = NSRange(location: point, length: 1)
+    if lastScopeNode != nil && rangeCoversRange(lastScopeNode.range, search) {
+      if lastScopeNode.children.count != 0 {
+        let no = findScope(search, node: lastScopeNode)
+        if no != nil && no !== lastScopeNode {
+          lastScopeNode = no
+          lastScopeName = lastScopeBuf
+        }
+      }
+    }
+  }
 }
 class Regex {
   var regex:OnigRegexp!
