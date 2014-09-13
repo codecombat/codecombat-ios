@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		2809AF5B19C4800B0054477B /* python.tmLanguageJSON in Resources */ = {isa = PBXBuildFile; fileRef = 2809AF5A19C4800B0054477B /* python.tmLanguageJSON */; };
 		2809AF5C19C4800B0054477B /* python.tmLanguageJSON in Resources */ = {isa = PBXBuildFile; fileRef = 2809AF5A19C4800B0054477B /* python.tmLanguageJSON */; };
-		280D7E5619AE2655004F95D4 /* DocumentHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286A24E319AE21BF003D2269 /* DocumentHighlighter.swift */; };
 		280D7E5A19AE27A8004F95D4 /* DocumentHighlighterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280D7E5919AE27A8004F95D4 /* DocumentHighlighterTests.swift */; };
 		280D7E5C19AE2807004F95D4 /* DocumentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280D7E5B19AE2807004F95D4 /* DocumentNode.swift */; };
 		280D7E5D19AE2807004F95D4 /* DocumentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280D7E5B19AE2807004F95D4 /* DocumentNode.swift */; };
@@ -33,7 +32,6 @@
 		285A5433199C34BD00932DDE /* regversion.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5422199C34BD00932DDE /* regversion.c */; };
 		285A5434199C34BD00932DDE /* st.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5423199C34BD00932DDE /* st.c */; };
 		285A5435199C34BD00932DDE /* OnigRegexpUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 285A5425199C34BD00932DDE /* OnigRegexpUtility.m */; };
-		286A24E419AE21BF003D2269 /* DocumentHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286A24E319AE21BF003D2269 /* DocumentHighlighter.swift */; };
 		287AE0A4199290DF00EEE4F0 /* CodeCombatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0A3199290DF00EEE4F0 /* CodeCombatTests.swift */; };
 		287AE0B61992926400EEE4F0 /* LevelLoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0AE1992926400EEE4F0 /* LevelLoadingViewController.swift */; };
 		287AE0B71992926400EEE4F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 287AE0AF1992926400EEE4F0 /* Main.storyboard */; };
@@ -185,7 +183,6 @@
 		285A5423199C34BD00932DDE /* st.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = st.c; sourceTree = "<group>"; };
 		285A5424199C34BD00932DDE /* st.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = st.h; sourceTree = "<group>"; };
 		285A5425199C34BD00932DDE /* OnigRegexpUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OnigRegexpUtility.m; path = CocoaOniguruma/OnigRegexpUtility.m; sourceTree = "<group>"; };
-		286A24E319AE21BF003D2269 /* DocumentHighlighter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentHighlighter.swift; sourceTree = "<group>"; };
 		287AE08B199290DF00EEE4F0 /* CodeCombat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodeCombat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		287AE08F199290DF00EEE4F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		287AE09D199290DF00EEE4F0 /* CodeCombatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CodeCombatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -567,7 +564,6 @@
 				287AE0B01992926400EEE4F0 /* EditorTextStorage.swift */,
 				287AE0B41992926400EEE4F0 /* EditorLayoutManager.swift */,
 				28DE0CE3199AA84300C6699D /* Syntax.swift */,
-				286A24E319AE21BF003D2269 /* DocumentHighlighter.swift */,
 			);
 			name = Text;
 			sourceTree = "<group>";
@@ -779,7 +775,6 @@
 				287AE0D71992927300EEE4F0 /* StoreItemDetailViewController.swift in Sources */,
 				285A5434199C34BD00932DDE /* st.c in Sources */,
 				285A542C199C34BD00932DDE /* regenc.c in Sources */,
-				286A24E419AE21BF003D2269 /* DocumentHighlighter.swift in Sources */,
 				285A5426199C34BD00932DDE /* OnigRegexp.m in Sources */,
 				287AE108199294CC00EEE4F0 /* ParticleScene.swift in Sources */,
 				285A542D199C34BD00932DDE /* regerror.c in Sources */,
@@ -807,7 +802,6 @@
 				28B3E3AF19AE68C000C6B12A /* regenc.c in Sources */,
 				28B3E3AC19AE68BC00C6B12A /* regexec.c in Sources */,
 				28B3E3B219AE68C800C6B12A /* utf16_le.c in Sources */,
-				280D7E5619AE2655004F95D4 /* DocumentHighlighter.swift in Sources */,
 				28B3E3B019AE68C800C6B12A /* ascii.c in Sources */,
 				280D7E5A19AE27A8004F95D4 /* DocumentHighlighterTests.swift in Sources */,
 				28B3E3AE19AE68C000C6B12A /* regcomp.c in Sources */,

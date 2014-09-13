@@ -37,6 +37,7 @@ class EditorTextStorage: NSTextStorage {
   
   override func attributesAtIndex(location: Int, effectiveRange range: NSRangePointer) -> [NSObject : AnyObject] {
     var attributes = attributedString!.attributesAtIndex(location, effectiveRange: range)
+    return attributes
     let scopeName = highlighter.scopeName(location)
     //println("Scope name:\(scopeName)")
     let newAttributes = scopeToAttributes(scopeName)
@@ -77,7 +78,7 @@ class EditorTextStorage: NSTextStorage {
     let parser = LanguageParser(scope: language, data: attributedString!.string, provider: languageProvider)
     highlighter = NodeHighlighter(parser: parser)
   }
-  
+  /*
   func changeColorOfTextWithRegexPattern(pattern:String, color:UIColor) {
     let highlightExpression:NSRegularExpression = NSRegularExpression(
       pattern: pattern,
@@ -122,7 +123,7 @@ class EditorTextStorage: NSTextStorage {
       }
     )
 
-  }
+  }*/
   
   
 }

@@ -21,7 +21,7 @@ class EditorTextView: UITextView {
       drawLineNumberBackground()
       drawLineNumbers()
     }
-    drawClickableBoxesOnHello()
+    //drawClickableBoxesOnHello()
     super.drawRect(rect)
   }
   
