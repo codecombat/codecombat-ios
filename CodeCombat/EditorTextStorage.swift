@@ -97,6 +97,12 @@ class EditorTextStorage: NSTextStorage {
           addAttribute(NSForegroundColorAttributeName, value: UIColor.orangeColor(), range: scopeExtent!)
           charIndex = NSMaxRange(scopeExtent!)
         }
+      } else if contains(scopes, "meta.function.js") {
+        let scopeExtent = highlighter.scopeExtent(charIndex)
+        if scopeExtent != nil {
+          addAttribute(NSForegroundColorAttributeName, value: UIColor.purpleColor(), range: scopeExtent!)
+          charIndex = NSMaxRange(scopeExtent!)
+        }
       }
     }
   }

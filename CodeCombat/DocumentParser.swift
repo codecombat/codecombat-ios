@@ -41,7 +41,7 @@ class NodeHighlighter {
         break
       }
       if rangeCoversRange(c.range, searchRange) {
-        if node.name != "" && node !== lastScopeNode {
+        if node.name != nil && node.name != "" && lastScopeNode != nil && node !== lastScopeNode {
           if lastScopeBuf.length > 0 {
             lastScopeBuf.appendString(" ")
           }
@@ -51,7 +51,7 @@ class NodeHighlighter {
       }
       idx++
     }
-    if node !== lastScopeNode && rangeCoversRange(node.range, searchRange) && node.name != "" {
+    if node !== lastScopeNode && rangeCoversRange(node.range, searchRange) && node.name != nil && node.name != "" {
       if lastScopeBuf.length > 0 {
         lastScopeBuf.appendString(" ")
       }
