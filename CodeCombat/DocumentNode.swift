@@ -59,4 +59,20 @@ class DocumentNode {
     return range
   }
   
+  func adjust(position:Int, delta:Int) {
+    if range.location >= position {
+      range.location += delta
+    } else if position + delta - range.location < 0 {
+      range.location += position + delta - range.location
+    }
+    if NSMaxRange(range) >= position {
+      range.length += delta
+    } else if position + delta - NSMaxRange(range) < 0 {
+      range.length += position + delta - NSMaxRange(range)
+    }
+    for child in children {
+      child.adjust(position, delta: delta)
+    }
+  }
+  
 }

@@ -77,6 +77,26 @@ class NodeHighlighter {
       }
     }
   }
+  
+  func scopeExtent(point:Int) -> NSRange? {
+    updateScope(point)
+    if lastScopeNode != nil {
+      let range = lastScopeNode.range
+      return range
+    }
+    return nil
+  }
+  
+  func scopeName(point:Int) -> String {
+    updateScope(point)
+    return lastScopeName
+  }
+  
+  
+  func adjust(position:Int, delta:Int) {
+    rootNode.adjust(position, delta: delta)
+  }
+  
 }
 class Regex {
   var regex:OnigRegexp!
