@@ -12,10 +12,12 @@ import UIKit
 class EditorTextStorage: NSTextStorage {
   var attributedString:NSMutableAttributedString?
   var editorTextView:UITextView?
-  
+  var languageProvider = LanguageProvider()
+  var parser:LanguageParser!
   override init() {
     super.init()
     attributedString = NSMutableAttributedString()
+    let language = "javascript"
   }
   
   required init(coder aDecoder: NSCoder) {
@@ -25,6 +27,7 @@ class EditorTextStorage: NSTextStorage {
   func string() -> NSString? {
     return attributedString!.string
   }
+  
   
   func setEditorTextView(tv:UITextView) {
     editorTextView = tv

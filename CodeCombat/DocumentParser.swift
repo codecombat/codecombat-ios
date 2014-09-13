@@ -8,8 +8,15 @@
 
 import Foundation
 
-typealias MatchObject = [Int]
-
+class NodeHighlighter {
+  var rootNode:DocumentNode
+  var lastScopeNode:DocumentNode!
+  var lastScopeName:String = ""
+  init(parser:LanguageParser) {
+    rootNode = parser.parse()
+  }
+  
+}
 class Regex {
   var regex:OnigRegexp!
   var lastIndex:Int = 0
