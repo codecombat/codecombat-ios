@@ -16,7 +16,6 @@ class ParameterView:UIView {
 
 class EditorTextView: UITextView {
   var shouldShowLineNumbers = false
-  var textAttributes = Dictionary<NSObject, AnyObject>()
   var numberOfCharactersInLineNumberGutter = 0
   var lineNumberWidth = CGFloat(20.0)
   var currentDragView:UIView? = nil
@@ -26,7 +25,7 @@ class EditorTextView: UITextView {
   override func drawRect(rect: CGRect) {
     if shouldShowLineNumbers {
       drawLineNumberBackground()
-      drawLineNumbers()
+      drawLineNumbers(rect)
     }
     super.drawRect(rect)
   }
@@ -51,26 +50,30 @@ class EditorTextView: UITextView {
     parameterViews.append(paramView)
   }
   
-  private func drawLineNumbers() {
-    let Storage = textStorage as EditorTextStorage
+  private func drawLineNumbers(rect:CGRect) {
+    let storage = textStorage as EditorTextStorage
     let Context = UIGraphicsGetCurrentContext()
     let Bounds = bounds
     
-    let textRange = layoutManager.glyphRangeForBoundingRect(Bounds,
+    let textRange = layoutManager.glyphRangeForBoundingRect(rect,
       inTextContainer: textContainer)
-    let GlyphsToShow = layoutManager.glyphRangeForCharacterRange(textRange,
+    let glyphsToShow = layoutManager.glyphRangeForCharacterRange(textRange,
       actualCharacterRange: nil)
-    var lineNumber = 0
-    let FirstLine = 0 //compute this somehow
-    var visibleLines = 0
+    //find number of lines before textRange.location
+    var numberOfLinesBeforeVisible = 0
+    for var index = 0; index < textRange.location; numberOfLinesBeforeVisible++ {
+      index = NSMaxRange(storage.string()!.lineRangeForRange(NSRange(location: index, length: 0)))
+    }
+    var lineNumber = numberOfLinesBeforeVisible
+    let textAttributes = [NSFontAttributeName:font]
+    
     func lineFragmentClosure(aRect:CGRect, aUsedRect:CGRect,
       textContainer:NSTextContainer!, glyphRange:NSRange,
       stop:UnsafeMutablePointer<ObjCBool>) -> Void {
-        let CharacterRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
-        let ParagraphRange = Storage.string()!.paragraphRangeForRange(CharacterRange)
+        let charRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
+        let paraRange = storage.string()!.paragraphRangeForRange(charRange)
         //To avoid drawing numbers on wrapped lines
-        if NSEqualRanges(CharacterRange, ParagraphRange) {
-          visibleLines++
+        if charRange.location == paraRange.location {
           lineNumber++
           let LineNumberString = NSString(string: "\(lineNumber)")
           let Size = LineNumberString.sizeWithAttributes(textAttributes)
@@ -78,7 +81,7 @@ class EditorTextView: UITextView {
           LineNumberString.drawAtPoint(Point, withAttributes: textAttributes)
         }
     }
-    layoutManager.enumerateLineFragmentsForGlyphRange(GlyphsToShow,
+    layoutManager.enumerateLineFragmentsForGlyphRange(glyphsToShow,
       usingBlock: lineFragmentClosure)
   }
   
