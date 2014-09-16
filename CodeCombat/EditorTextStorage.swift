@@ -12,7 +12,6 @@ import UIKit
 
 class EditorTextStorage: NSTextStorage {
   var attributedString:NSMutableAttributedString?
-  var editorTextView:UITextView?
   var languageProvider = LanguageProvider()
   var highlighter:NodeHighlighter!
   let language = "javascript"
@@ -31,10 +30,6 @@ class EditorTextStorage: NSTextStorage {
     return attributedString!.string
   }
   
-  
-  func setEditorTextView(tv:UITextView) {
-    editorTextView = tv
-  }
   
   override func attributesAtIndex(location: Int, effectiveRange range: NSRangePointer) -> [NSObject : AnyObject] {
     var attributes = attributedString!.attributesAtIndex(location, effectiveRange: range)

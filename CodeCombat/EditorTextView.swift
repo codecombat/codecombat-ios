@@ -23,16 +23,6 @@ class EditorTextView: UITextView {
   var currentHighlightingView:UIView? = nil
   var parameterViews:[ParameterView] = []
   
-  override init(frame: CGRect, textContainer: NSTextContainer?) {
-    super.init(frame: frame, textContainer: textContainer)
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleDrawParameterRequest:"), name: "drawParameterBox", object: nil)
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("eraseParameterViews:"), name: "eraseParameterBoxes", object: nil)
-  }
-
-  required init(coder aDecoder: NSCoder) {
-      super.init(coder: aDecoder)
-  }
-  
   override func drawRect(rect: CGRect) {
     if shouldShowLineNumbers {
       drawLineNumberBackground()
@@ -41,7 +31,7 @@ class EditorTextView: UITextView {
     super.drawRect(rect)
   }
   
-  func eraseParameterViews(notification:NSNotification) {
+  func eraseParameterViews() {
     println("Erasing boxes...")
     for v in parameterViews {
       v.removeFromSuperview()
@@ -49,22 +39,16 @@ class EditorTextView: UITextView {
     parameterViews = []
   }
   
-  func handleDrawParameterRequest(notification:NSNotification) {
-    let info = notification.userInfo!
-    let functionName:NSString? = info["functionName"] as? NSString
-    let range:NSRange = (info["rangeValue"] as? NSValue)!.rangeValue
-    println("Should be drawing a box for func \(functionName!)")
+  func drawParameterOverlay(range:NSRange) {
     let start = positionFromPosition(beginningOfDocument, offset: range.location)
     let end = positionFromPosition(start!, offset: range.length)
     let textRange = textRangeFromPosition(start, toPosition: end)
     let resultRect =  firstRectForRange(textRange)
     let paramView = ParameterView(frame: resultRect)
     paramView.range = range
-    paramView.functionName = functionName!
     paramView.backgroundColor = UIColor(hue: CGFloat(drand48()), saturation: 1.0, brightness: 1.0, alpha: 0.1)
     addSubview(paramView)
     parameterViews.append(paramView)
-    
   }
   
   private func drawLineNumbers() {

@@ -12,9 +12,20 @@ class EditorTextViewController: UIViewController, UITextViewDelegate {
   let textStorage = EditorTextStorage()
   let layoutManager = NSLayoutManager()
   let textContainer = NSTextContainer()
-  
-  var textView:EditorTextView!
-  var currentLanguage = "javascript"
+  var textView:EditorTextView! {
+    didSet {
+      textView.delegate = self
+      textView.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
+      textView.selectable = true
+      textView.editable = true
+      textView.showLineNumbers()
+      textView.backgroundColor = UIColor(
+        red: CGFloat(230.0 / 256.0),
+        green: CGFloat(212.0 / 256.0),
+        blue: CGFloat(145.0 / 256.0),
+        alpha: 1)
+    }
+  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -28,25 +39,34 @@ class EditorTextViewController: UIViewController, UITextViewDelegate {
   }
   
   func createTextViewWithFrame(frame:CGRect) {
-    //handle setup of text processing hierarchy
+    setupTextKitHierarchy()
+    textView = EditorTextView(frame: frame, textContainer: textContainer)
+    setupNotificationCenterObservers()
+  }
+  
+  private func setupTextKitHierarchy() {
     layoutManager.allowsNonContiguousLayout = true
     textStorage.addLayoutManager(layoutManager)
     textContainer.lineBreakMode = NSLineBreakMode.ByWordWrapping
     textContainer.widthTracksTextView = true
     layoutManager.addTextContainer(textContainer)
-    
-    textView = EditorTextView(frame: frame, textContainer: textContainer)
-    textView.backgroundColor = UIColor(
-    red: CGFloat(230.0 / 256.0),
-    green: CGFloat(212.0 / 256.0),
-    blue: CGFloat(145.0 / 256.0),
-    alpha: 1)
-    textView.selectable = true
-    textView.editable = true
-    textView.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
-    textView.showLineNumbers()
-    textView.delegate = self
-    
+  }
+
+  private func setupNotificationCenterObservers() {
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleDrawParameterRequest:"), name: "drawParameterBox", object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("eraseParameterViews:"), name: "eraseParameterBoxes", object: nil)
+  }
+  
+  private func handleEraseParameterViewsRequest(notification:NSNotification) {
+    textView.eraseParameterViews()
+  }
+  
+  private func handleDrawParameterRequest(notification:NSNotification) {
+    let info = notification.userInfo!
+    let functionName:NSString? = info["functionName"] as? NSString
+    let range:NSRange = (info["rangeValue"] as? NSValue)!.rangeValue
+    println("Should be drawing a box for func \(functionName!)")
+    textView.drawParameterOverlay(range)
   }
   
   func replaceTextViewContentsWithString(text:String) {

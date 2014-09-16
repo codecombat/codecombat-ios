@@ -68,7 +68,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     let editorTextViewFrame = CGRectMake(inventoryFrame.width, 0, editorContainerView.frame.width - inventoryFrame.width, editorContainerView.frame.height)
     textViewController = EditorTextViewController()
     textViewController.createTextViewWithFrame(editorTextViewFrame)
-    //editorTextView = EditorTextView(frame: editorTextViewFrame, textContainer: textContainer)
+    
     editorContainerView.addSubview(textViewController.textView)
   }
 
