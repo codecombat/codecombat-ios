@@ -243,6 +243,17 @@
                                     <action selector="loginScreenSegue" destination="1Nr-WG-M1D" eventType="touchUpInside" id="pJ6-yF-bG8"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7PG-cy-5Oa">
+                                <rect key="frame" x="690" y="238" width="120" height="41"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="33"/>
+                                <state key="normal" title="English">
+                                    <color key="titleColor" red="0.98039215690000003" green="0.85098039219999999" blue="0.054901960780000002" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="changeLanguage" destination="1Nr-WG-M1D" eventType="touchUpInside" id="xk4-ja-iKT"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>

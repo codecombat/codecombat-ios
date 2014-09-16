@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MainMenuController: UIViewController {
+class MainMenuController: UIViewController, UIActionSheetDelegate {
 
   @IBOutlet weak var playerNameLabel: UILabel!
   @IBOutlet weak var testPlayButton: UIButton!
@@ -27,6 +27,12 @@ class MainMenuController: UIViewController {
   
   @IBAction func loginScreenSegue() {
     self.performSegueWithIdentifier("loginScreenSegue", sender: self)
+  }
+  
+  @IBAction func changeLanguage() {
+    let languages = NSArray(array: ["English","German","Swahili"])
+    ActionSheetStringPicker.showPickerWithTitle("Select language", rows: languages, initialSelection: 0, doneBlock: nil, cancelBlock: nil, origin: self.view)
+    println("Should have shown picker!")
   }
 
 }

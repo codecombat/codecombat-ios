@@ -61,6 +61,14 @@
 		287AE10A199294CC00EEE4F0 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 287AE106199294CC00EEE4F0 /* spark.png */; };
 		287AE10B199294CC00EEE4F0 /* TestParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 287AE107199294CC00EEE4F0 /* TestParticle.sks */; };
 		287E92FC19C7D5F100E68F03 /* EditorTextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287E92FB19C7D5F100E68F03 /* EditorTextViewController.swift */; };
+		287E931119C8C4D100E68F03 /* AbstractActionSheetPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 287E930119C8C4D100E68F03 /* AbstractActionSheetPicker.m */; };
+		287E931219C8C4D100E68F03 /* ActionSheetCustomPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 287E930319C8C4D100E68F03 /* ActionSheetCustomPicker.m */; };
+		287E931319C8C4D100E68F03 /* ActionSheetDatePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 287E930619C8C4D100E68F03 /* ActionSheetDatePicker.m */; };
+		287E931419C8C4D100E68F03 /* ActionSheetDistancePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 287E930819C8C4D100E68F03 /* ActionSheetDistancePicker.m */; };
+		287E931519C8C4D100E68F03 /* ActionSheetLocalePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 287E930A19C8C4D100E68F03 /* ActionSheetLocalePicker.m */; };
+		287E931619C8C4D100E68F03 /* ActionSheetStringPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 287E930C19C8C4D100E68F03 /* ActionSheetStringPicker.m */; };
+		287E931719C8C4D100E68F03 /* DistancePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 287E930E19C8C4D100E68F03 /* DistancePickerView.m */; };
+		287E931819C8C4D100E68F03 /* SWActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 287E931019C8C4D100E68F03 /* SWActionSheet.m */; };
 		28975EC019C4D9330033BA7C /* javascript.tmLanguageJSON in Resources */ = {isa = PBXBuildFile; fileRef = 28B3E3B719AE791100C6B12A /* javascript.tmLanguageJSON */; };
 		28B3E3A419AE687300C6B12A /* json.swift in Sources */ = {isa = PBXBuildFile; fileRef = C827D1D01994726600B5724C /* json.swift */; };
 		28B3E3A519AE688600C6B12A /* OnigRegexp.m in Sources */ = {isa = PBXBuildFile; fileRef = 285A540E199C34BD00932DDE /* OnigRegexp.m */; };
@@ -212,6 +220,24 @@
 		287AE106199294CC00EEE4F0 /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 		287AE107199294CC00EEE4F0 /* TestParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = TestParticle.sks; sourceTree = "<group>"; };
 		287E92FB19C7D5F100E68F03 /* EditorTextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorTextViewController.swift; sourceTree = "<group>"; };
+		287E930019C8C4D100E68F03 /* AbstractActionSheetPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbstractActionSheetPicker.h; sourceTree = "<group>"; };
+		287E930119C8C4D100E68F03 /* AbstractActionSheetPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbstractActionSheetPicker.m; sourceTree = "<group>"; };
+		287E930219C8C4D100E68F03 /* ActionSheetCustomPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSheetCustomPicker.h; sourceTree = "<group>"; };
+		287E930319C8C4D100E68F03 /* ActionSheetCustomPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheetCustomPicker.m; sourceTree = "<group>"; };
+		287E930419C8C4D100E68F03 /* ActionSheetCustomPickerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSheetCustomPickerDelegate.h; sourceTree = "<group>"; };
+		287E930519C8C4D100E68F03 /* ActionSheetDatePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSheetDatePicker.h; sourceTree = "<group>"; };
+		287E930619C8C4D100E68F03 /* ActionSheetDatePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheetDatePicker.m; sourceTree = "<group>"; };
+		287E930719C8C4D100E68F03 /* ActionSheetDistancePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSheetDistancePicker.h; sourceTree = "<group>"; };
+		287E930819C8C4D100E68F03 /* ActionSheetDistancePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheetDistancePicker.m; sourceTree = "<group>"; };
+		287E930919C8C4D100E68F03 /* ActionSheetLocalePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSheetLocalePicker.h; sourceTree = "<group>"; };
+		287E930A19C8C4D100E68F03 /* ActionSheetLocalePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheetLocalePicker.m; sourceTree = "<group>"; };
+		287E930B19C8C4D100E68F03 /* ActionSheetStringPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActionSheetStringPicker.h; sourceTree = "<group>"; };
+		287E930C19C8C4D100E68F03 /* ActionSheetStringPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionSheetStringPicker.m; sourceTree = "<group>"; };
+		287E930D19C8C4D100E68F03 /* DistancePickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DistancePickerView.h; sourceTree = "<group>"; };
+		287E930E19C8C4D100E68F03 /* DistancePickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DistancePickerView.m; sourceTree = "<group>"; };
+		287E930F19C8C4D100E68F03 /* SWActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWActionSheet.h; sourceTree = "<group>"; };
+		287E931019C8C4D100E68F03 /* SWActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWActionSheet.m; sourceTree = "<group>"; };
+		287E931919C8CDB100E68F03 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		28B3E3B519AE750800C6B12A /* LanguageProviderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LanguageProviderTests.swift; sourceTree = "<group>"; };
 		28B3E3B719AE791100C6B12A /* javascript.tmLanguageJSON */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = javascript.tmLanguageJSON; sourceTree = "<group>"; };
 		28B3E3B919B0D7B000C6B12A /* RegexTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegexTests.swift; sourceTree = "<group>"; };
@@ -300,6 +326,7 @@
 		287AE082199290DF00EEE4F0 = {
 			isa = PBXGroup;
 			children = (
+				287E931919C8CDB100E68F03 /* UIKit.framework */,
 				287AE08D199290DF00EEE4F0 /* CodeCombat */,
 				287AE0A0199290DF00EEE4F0 /* CodeCombatTests */,
 				287AE08C199290DF00EEE4F0 /* Products */,
@@ -420,6 +447,7 @@
 		287AE10D1992951800EEE4F0 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				287E92FF19C8C49B00E68F03 /* ActionSheet */,
 				285A540B199C34AF00932DDE /* CocoaOniguruma */,
 				287AE0F0199293B600EEE4F0 /* CodeCombat-Bridging-Header.h */,
 				287AE10E1992952500EEE4F0 /* NimbusKitMarkdown */,
@@ -490,6 +518,30 @@
 				287AE0C01992927300EEE4F0 /* LoginViewController.swift */,
 			);
 			name = Login;
+			sourceTree = "<group>";
+		};
+		287E92FF19C8C49B00E68F03 /* ActionSheet */ = {
+			isa = PBXGroup;
+			children = (
+				287E930019C8C4D100E68F03 /* AbstractActionSheetPicker.h */,
+				287E930119C8C4D100E68F03 /* AbstractActionSheetPicker.m */,
+				287E930219C8C4D100E68F03 /* ActionSheetCustomPicker.h */,
+				287E930319C8C4D100E68F03 /* ActionSheetCustomPicker.m */,
+				287E930419C8C4D100E68F03 /* ActionSheetCustomPickerDelegate.h */,
+				287E930519C8C4D100E68F03 /* ActionSheetDatePicker.h */,
+				287E930619C8C4D100E68F03 /* ActionSheetDatePicker.m */,
+				287E930719C8C4D100E68F03 /* ActionSheetDistancePicker.h */,
+				287E930819C8C4D100E68F03 /* ActionSheetDistancePicker.m */,
+				287E930919C8C4D100E68F03 /* ActionSheetLocalePicker.h */,
+				287E930A19C8C4D100E68F03 /* ActionSheetLocalePicker.m */,
+				287E930B19C8C4D100E68F03 /* ActionSheetStringPicker.h */,
+				287E930C19C8C4D100E68F03 /* ActionSheetStringPicker.m */,
+				287E930D19C8C4D100E68F03 /* DistancePickerView.h */,
+				287E930E19C8C4D100E68F03 /* DistancePickerView.m */,
+				287E930F19C8C4D100E68F03 /* SWActionSheet.h */,
+				287E931019C8C4D100E68F03 /* SWActionSheet.m */,
+			);
+			name = ActionSheet;
 			sourceTree = "<group>";
 		};
 		28B3E3B419AE74BE00C6B12A /* Parser */ = {
@@ -693,10 +745,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				28DE0CDD1999305700C6699D /* TomeInventoryViewController.swift in Sources */,
+				287E931519C8C4D100E68F03 /* ActionSheetLocalePicker.m in Sources */,
 				287AE0DE199292CE00EEE4F0 /* IAPHelper.swift in Sources */,
 				285A5433199C34BD00932DDE /* regversion.c in Sources */,
 				287AE0DC1992927300EEE4F0 /* ColorManager.swift in Sources */,
+				287E931219C8C4D100E68F03 /* ActionSheetCustomPicker.m in Sources */,
 				287AE0D51992927300EEE4F0 /* SpriteDialogue.swift in Sources */,
+				287E931319C8C4D100E68F03 /* ActionSheetDatePicker.m in Sources */,
 				287AE0CF1992927300EEE4F0 /* LoginViewController.swift in Sources */,
 				287AE0DA1992927300EEE4F0 /* wasted_work.swift in Sources */,
 				287AE0FB199293B600EEE4F0 /* MarkdownTokenizer.m in Sources */,
@@ -708,6 +763,7 @@
 				C827D1D11994726600B5724C /* json.swift in Sources */,
 				28BA9B561992D5DA006ACB3A /* PlayViewController.swift in Sources */,
 				287AE0D81992927300EEE4F0 /* StoreViewController.swift in Sources */,
+				287E931419C8C4D100E68F03 /* ActionSheetDistancePicker.m in Sources */,
 				C827D1D91994937C00B5724C /* TomeInventoryItemView.swift in Sources */,
 				287AE0BA1992926400EEE4F0 /* BackbonePublisher.swift in Sources */,
 				C827D1C919943EA500B5724C /* Utilities.swift in Sources */,
@@ -720,17 +776,21 @@
 				285A542B199C34BD00932DDE /* regcomp.c in Sources */,
 				285A5430199C34BD00932DDE /* regparse.c in Sources */,
 				285A5432199C34BD00932DDE /* regtrav.c in Sources */,
+				287E931619C8C4D100E68F03 /* ActionSheetStringPicker.m in Sources */,
 				287AE0B61992926400EEE4F0 /* LevelLoadingViewController.swift in Sources */,
 				285A5431199C34BD00932DDE /* regsyntax.c in Sources */,
 				287AE0B81992926400EEE4F0 /* EditorTextStorage.swift in Sources */,
 				C827D1D51994784E00B5724C /* TomeInventoryItem.swift in Sources */,
 				285A542A199C34BD00932DDE /* utf16_le.c in Sources */,
 				280D7E6119AE4E19004F95D4 /* DocumentParser.swift in Sources */,
+				287E931819C8C4D100E68F03 /* SWActionSheet.m in Sources */,
 				287AE0D71992927300EEE4F0 /* StoreItemDetailViewController.swift in Sources */,
 				285A5434199C34BD00932DDE /* st.c in Sources */,
 				285A542C199C34BD00932DDE /* regenc.c in Sources */,
 				285A5426199C34BD00932DDE /* OnigRegexp.m in Sources */,
 				287AE108199294CC00EEE4F0 /* ParticleScene.swift in Sources */,
+				287E931119C8C4D100E68F03 /* AbstractActionSheetPicker.m in Sources */,
+				287E931719C8C4D100E68F03 /* DistancePickerView.m in Sources */,
 				285A542D199C34BD00932DDE /* regerror.c in Sources */,
 				285A5435199C34BD00932DDE /* OnigRegexpUtility.m in Sources */,
 				285A542E199C34BD00932DDE /* regexec.c in Sources */,
