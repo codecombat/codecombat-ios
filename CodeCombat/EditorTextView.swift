@@ -21,7 +21,7 @@ class EditorTextView: UITextView {
   var currentDragView:UIView? = nil
   var currentHighlightingView:UIView? = nil
   var parameterViews:[ParameterView] = []
-  
+  let lineSpacing:CGFloat = 5
   override func drawRect(rect: CGRect) {
     if shouldShowLineNumbers {
       drawLineNumberBackground()
@@ -137,7 +137,7 @@ class EditorTextView: UITextView {
   }
   
   func handleItemPropertyDragChangedAtLocation(location:CGPoint, code:String) {
-    let currentLine = getLineHeightAtPoint(location)
+    let currentLine = Int(location.y / (font.lineHeight + lineSpacing))
     highlightLines(startingLineNumber: currentLine, numberOfLines: 1)
   }
   
@@ -148,23 +148,16 @@ class EditorTextView: UITextView {
     let GlyphIndex = layoutManager.glyphIndexForPoint(dragPoint,
       inTextContainer: textContainer)
     textStorage.beginEditing()
-    textStorage.insertAttributedString(NSAttributedString(string: code),
-      atIndex: GlyphIndex)
+    textStorage.insertAttributedString(NSAttributedString(string: code), atIndex: GlyphIndex)
     textStorage.endEditing()
     setNeedsDisplay()
     
   }
-  
-  func getLineHeightAtPoint(location:CGPoint) -> Int {
-    let LineHeight = font.lineHeight
-    let EditorHeight = frame.height
-    return Int(location.y / LineHeight)
-  }
   func getLineNumberRect(lineNumber:Int) -> CGRect{
-    let LineHeight = CGFloat(font.lineHeight)
+    let LineHeight = font.lineHeight + lineSpacing
     let LineNumberRect = CGRect(
       x: 0,
-      y: LineHeight * CGFloat(lineNumber),
+      y: LineHeight * CGFloat(lineNumber) + lineSpacing,
       width: frame.width,
       height: LineHeight)
     return LineNumberRect

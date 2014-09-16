@@ -95,6 +95,6 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   }
   
   func layoutManager(layoutManager: NSLayoutManager, lineSpacingAfterGlyphAtIndex glyphIndex: Int, withProposedLineFragmentRect rect: CGRect) -> CGFloat {
-    return 5;
+    return textView.lineSpacing
   }
 }
