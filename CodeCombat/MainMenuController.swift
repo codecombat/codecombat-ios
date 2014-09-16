@@ -14,12 +14,19 @@ class MainMenuController: UIViewController {
   @IBOutlet weak var testPlayButton: UIButton!
     
   override func viewDidLoad() {
+    
     playerNameLabel.text = User.sharedInstance.name
+    if playerNameLabel.text == nil {
+      playerNameLabel.text = "New Player"
+    }
   }
     
   @IBAction func testPlayLevel() {
-    
     self.performSegueWithIdentifier("playLevel", sender: self)
+  }
+  
+  @IBAction func loginScreenSegue() {
+    self.performSegueWithIdentifier("loginScreenSegue", sender: self)
   }
 
 }

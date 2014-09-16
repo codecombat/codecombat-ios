@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6246" systemVersion="14A329r" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="akZ-k3-TF7">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6246" systemVersion="14A329r" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="1Nr-WG-M1D">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6239"/>
     </dependencies>
@@ -100,7 +100,7 @@
                         <viewControllerLayoutGuide type="bottom" id="iHD-XD-Wjd"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="vVG-9u-rMz">
-                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="loginArtBackground" translatesAutoresizingMaskIntoConstraints="NO" id="Hmy-oh-tGR">
@@ -232,6 +232,17 @@
                                 <fontDescription key="fontDescription" name="Baskerville" family="Baskerville" pointSize="24"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g3U-74-N0V">
+                                <rect key="frame" x="912" y="711" width="112" height="43"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="33"/>
+                                <state key="normal" title="Login">
+                                    <color key="titleColor" red="0.98039215686274506" green="0.85098039215686272" blue="0.054901960784313725" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="loginScreenSegue" destination="1Nr-WG-M1D" eventType="touchUpInside" id="pJ6-yF-bG8"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -241,11 +252,12 @@
                         <outlet property="playerNameLabel" destination="HYf-Uk-fO9" id="kKA-B4-5cd"/>
                         <outlet property="testPlayButton" destination="gq0-sX-luI" id="d3N-OX-d2H"/>
                         <segue destination="5YM-c7-CIs" kind="modal" identifier="playLevel" id="po1-G1-E7a"/>
+                        <segue destination="akZ-k3-TF7" kind="modal" identifier="loginScreenSegue" id="4E7-8l-ooG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mhn-qm-r2f" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1898.8800000000001" y="1675.9466666666667"/>
+            <point key="canvasLocation" x="1898" y="1675"/>
         </scene>
         <!--Store View Controller-->
         <scene sceneID="xxm-hx-PYa">
