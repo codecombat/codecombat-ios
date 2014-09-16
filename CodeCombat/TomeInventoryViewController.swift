@@ -121,7 +121,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
     if recognizer == inventoryView.panGestureRecognizer {
       return
     }
-    let Parent = parentViewController as NewPlayViewController
+    let Parent = parentViewController as PlayViewController
     //Change this to reference editor view controller, rather than editor view
     let EditorView = Parent.editorTextView
     let LocationInParentView = recognizer.locationInView(Parent.view)

@@ -13,13 +13,13 @@ class LevelLoadingViewController: UIViewController {
   
   @IBOutlet weak var backgroundImageView: UIImageView!
   @IBOutlet weak var levelLoadingProgressView: UIProgressView!
-  var playViewController: NewPlayViewController?
+  var playViewController: PlayViewController?
   
   override func viewDidLoad() {
     super.viewDidLoad()
     listenToNotifications()
     let mainStoryboard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
-    playViewController = mainStoryboard.instantiateViewControllerWithIdentifier("NewPlayViewController") as? NewPlayViewController
+    playViewController = mainStoryboard.instantiateViewControllerWithIdentifier("PlayViewController") as? PlayViewController
     playViewController?.view  // Access this early to get it set up and listening for events.
     loadLevel("opportunism")
     view.addSubview(WebManager.sharedInstance.webView!)  // If it's visible, it processes EaselJS stuff much faster, because EaselJS doesn't deprioritize it due to being hidden.

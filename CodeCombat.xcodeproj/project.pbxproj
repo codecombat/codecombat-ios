@@ -40,16 +40,10 @@
 		287AE0BA1992926400EEE4F0 /* BackbonePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0B21992926400EEE4F0 /* BackbonePublisher.swift */; };
 		287AE0BB1992926400EEE4F0 /* CodeCombatIAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0B31992926400EEE4F0 /* CodeCombatIAPHelper.swift */; };
 		287AE0BC1992926400EEE4F0 /* EditorLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0B41992926400EEE4F0 /* EditorLayoutManager.swift */; };
-		287AE0BD1992926400EEE4F0 /* EditorTextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0B51992926400EEE4F0 /* EditorTextViewController.swift */; };
-		287AE0CE1992927300EEE4F0 /* LevelPlaybackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0BF1992927300EEE4F0 /* LevelPlaybackViewController.swift */; };
 		287AE0CF1992927300EEE4F0 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0C01992927300EEE4F0 /* LoginViewController.swift */; };
 		287AE0D01992927300EEE4F0 /* MainMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0C11992927300EEE4F0 /* MainMenuController.swift */; };
-		287AE0D11992927300EEE4F0 /* PlayViewChildViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0C21992927300EEE4F0 /* PlayViewChildViewController.swift */; };
-		287AE0D21992927300EEE4F0 /* PlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0C31992927300EEE4F0 /* PlayViewController.swift */; };
 		287AE0D31992927300EEE4F0 /* progressListener.js in Resources */ = {isa = PBXBuildFile; fileRef = 287AE0C41992927300EEE4F0 /* progressListener.js */; };
-		287AE0D41992927300EEE4F0 /* SpellPaletteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0C51992927300EEE4F0 /* SpellPaletteViewController.swift */; };
 		287AE0D51992927300EEE4F0 /* SpriteDialogue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0C61992927300EEE4F0 /* SpriteDialogue.swift */; };
-		287AE0D61992927300EEE4F0 /* SpriteDialogueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0C71992927300EEE4F0 /* SpriteDialogueViewController.swift */; };
 		287AE0D71992927300EEE4F0 /* StoreItemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0C81992927300EEE4F0 /* StoreItemDetailViewController.swift */; };
 		287AE0D81992927300EEE4F0 /* StoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0C91992927300EEE4F0 /* StoreViewController.swift */; };
 		287AE0D91992927300EEE4F0 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0CA1992927300EEE4F0 /* User.swift */; };
@@ -58,7 +52,6 @@
 		287AE0DC1992927300EEE4F0 /* ColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0CD1992927300EEE4F0 /* ColorManager.swift */; };
 		287AE0DE199292CE00EEE4F0 /* IAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0DD199292CE00EEE4F0 /* IAPHelper.swift */; };
 		287AE0E0199292E400EEE4F0 /* InventoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0DF199292E400EEE4F0 /* InventoryCell.swift */; };
-		287AE0E2199292F900EEE4F0 /* EquippedItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0E1199292F900EEE4F0 /* EquippedItemsViewController.swift */; };
 		287AE0FA199293B600EEE4F0 /* fmemopen.c in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0F1199293B600EEE4F0 /* fmemopen.c */; };
 		287AE0FB199293B600EEE4F0 /* MarkdownTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0F3199293B600EEE4F0 /* MarkdownTokenizer.m */; };
 		287AE0FC199293B600EEE4F0 /* MarkdownTokens.m in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0F5199293B600EEE4F0 /* MarkdownTokens.m */; };
@@ -89,12 +82,10 @@
 		28B3E3B819AE791100C6B12A /* javascript.tmLanguageJSON in Resources */ = {isa = PBXBuildFile; fileRef = 28B3E3B719AE791100C6B12A /* javascript.tmLanguageJSON */; };
 		28B3E3BA19B0D7B000C6B12A /* RegexTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B3E3B919B0D7B000C6B12A /* RegexTests.swift */; };
 		28B3E3BC19B4F6DD00C6B12A /* example.tmLanguageJSON in Resources */ = {isa = PBXBuildFile; fileRef = 28B3E3BB19B4F6DD00C6B12A /* example.tmLanguageJSON */; };
-		28BA9B561992D5DA006ACB3A /* NewPlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B551992D5DA006ACB3A /* NewPlayViewController.swift */; };
+		28BA9B561992D5DA006ACB3A /* PlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B551992D5DA006ACB3A /* PlayViewController.swift */; };
 		28C96DF71993D09C009FCD9E /* EditorTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C96DF61993D09C009FCD9E /* EditorTextView.swift */; };
 		28C96DFE1993FF3B009FCD9E /* Editor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C96DFD1993FF3B009FCD9E /* Editor.swift */; };
 		28DE0CDD1999305700C6699D /* TomeInventoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28DE0CDC1999305700C6699D /* TomeInventoryViewController.swift */; };
-		28DE0CE0199959DB00C6699D /* TomeEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28DE0CDF199959DB00C6699D /* TomeEditorViewController.swift */; };
-		28DE0CE4199AA84300C6699D /* Syntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28DE0CE3199AA84300C6699D /* Syntax.swift */; };
 		28DE0CFF199AE1D600C6699D /* javascriptSyntax.json in Resources */ = {isa = PBXBuildFile; fileRef = 28DE0CFE199AE1D600C6699D /* javascriptSyntax.json */; };
 		C827D1C919943EA500B5724C /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C827D1C819943EA500B5724C /* Utilities.swift */; };
 		C827D1CB19943FF700B5724C /* items_tharin.json in Resources */ = {isa = PBXBuildFile; fileRef = C827D1CA19943FF700B5724C /* items_tharin.json */; };
@@ -195,16 +186,10 @@
 		287AE0B21992926400EEE4F0 /* BackbonePublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackbonePublisher.swift; sourceTree = "<group>"; };
 		287AE0B31992926400EEE4F0 /* CodeCombatIAPHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodeCombatIAPHelper.swift; sourceTree = "<group>"; };
 		287AE0B41992926400EEE4F0 /* EditorLayoutManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorLayoutManager.swift; sourceTree = "<group>"; };
-		287AE0B51992926400EEE4F0 /* EditorTextViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorTextViewController.swift; sourceTree = "<group>"; };
-		287AE0BF1992927300EEE4F0 /* LevelPlaybackViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LevelPlaybackViewController.swift; sourceTree = "<group>"; };
 		287AE0C01992927300EEE4F0 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		287AE0C11992927300EEE4F0 /* MainMenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenuController.swift; sourceTree = "<group>"; };
-		287AE0C21992927300EEE4F0 /* PlayViewChildViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayViewChildViewController.swift; sourceTree = "<group>"; };
-		287AE0C31992927300EEE4F0 /* PlayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayViewController.swift; sourceTree = "<group>"; };
 		287AE0C41992927300EEE4F0 /* progressListener.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = progressListener.js; sourceTree = "<group>"; };
-		287AE0C51992927300EEE4F0 /* SpellPaletteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpellPaletteViewController.swift; sourceTree = "<group>"; };
 		287AE0C61992927300EEE4F0 /* SpriteDialogue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpriteDialogue.swift; sourceTree = "<group>"; };
-		287AE0C71992927300EEE4F0 /* SpriteDialogueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpriteDialogueViewController.swift; sourceTree = "<group>"; };
 		287AE0C81992927300EEE4F0 /* StoreItemDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreItemDetailViewController.swift; sourceTree = "<group>"; };
 		287AE0C91992927300EEE4F0 /* StoreViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreViewController.swift; sourceTree = "<group>"; };
 		287AE0CA1992927300EEE4F0 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -213,7 +198,6 @@
 		287AE0CD1992927300EEE4F0 /* ColorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorManager.swift; sourceTree = "<group>"; };
 		287AE0DD199292CE00EEE4F0 /* IAPHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPHelper.swift; sourceTree = "<group>"; };
 		287AE0DF199292E400EEE4F0 /* InventoryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InventoryCell.swift; sourceTree = "<group>"; };
-		287AE0E1199292F900EEE4F0 /* EquippedItemsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EquippedItemsViewController.swift; sourceTree = "<group>"; };
 		287AE0F0199293B600EEE4F0 /* CodeCombat-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CodeCombat-Bridging-Header.h"; sourceTree = "<group>"; };
 		287AE0F1199293B600EEE4F0 /* fmemopen.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fmemopen.c; sourceTree = "<group>"; };
 		287AE0F2199293B600EEE4F0 /* fmemopen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fmemopen.h; sourceTree = "<group>"; };
@@ -233,12 +217,10 @@
 		28B3E3B719AE791100C6B12A /* javascript.tmLanguageJSON */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = javascript.tmLanguageJSON; sourceTree = "<group>"; };
 		28B3E3B919B0D7B000C6B12A /* RegexTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegexTests.swift; sourceTree = "<group>"; };
 		28B3E3BB19B4F6DD00C6B12A /* example.tmLanguageJSON */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = example.tmLanguageJSON; sourceTree = "<group>"; };
-		28BA9B551992D5DA006ACB3A /* NewPlayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPlayViewController.swift; sourceTree = "<group>"; };
+		28BA9B551992D5DA006ACB3A /* PlayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayViewController.swift; sourceTree = "<group>"; };
 		28C96DF61993D09C009FCD9E /* EditorTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorTextView.swift; sourceTree = "<group>"; };
 		28C96DFD1993FF3B009FCD9E /* Editor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Editor.swift; sourceTree = "<group>"; };
 		28DE0CDC1999305700C6699D /* TomeInventoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventoryViewController.swift; sourceTree = "<group>"; };
-		28DE0CDF199959DB00C6699D /* TomeEditorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeEditorViewController.swift; sourceTree = "<group>"; };
-		28DE0CE3199AA84300C6699D /* Syntax.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Syntax.swift; sourceTree = "<group>"; };
 		28DE0CFE199AE1D600C6699D /* javascriptSyntax.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = javascriptSyntax.json; sourceTree = "<group>"; };
 		C827D1C819943EA500B5724C /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		C827D1CA19943FF700B5724C /* items_tharin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = items_tharin.json; sourceTree = "<group>"; };
@@ -430,7 +412,6 @@
 			isa = PBXGroup;
 			children = (
 				28BA9B541992D580006ACB3A /* NewPlayView */,
-				287AE1141992957100EEE4F0 /* Play */,
 				287AE1131992956D00EEE4F0 /* Login */,
 				287AE1121992956800EEE4F0 /* Loading */,
 				287AE1111992956300EEE4F0 /* Main Menu */,
@@ -514,20 +495,6 @@
 			name = Login;
 			sourceTree = "<group>";
 		};
-		287AE1141992957100EEE4F0 /* Play */ = {
-			isa = PBXGroup;
-			children = (
-				287AE0E1199292F900EEE4F0 /* EquippedItemsViewController.swift */,
-				287AE0BF1992927300EEE4F0 /* LevelPlaybackViewController.swift */,
-				287AE0C21992927300EEE4F0 /* PlayViewChildViewController.swift */,
-				287AE0C31992927300EEE4F0 /* PlayViewController.swift */,
-				287AE0C51992927300EEE4F0 /* SpellPaletteViewController.swift */,
-				287AE0C71992927300EEE4F0 /* SpriteDialogueViewController.swift */,
-				287AE0B51992926400EEE4F0 /* EditorTextViewController.swift */,
-			);
-			name = Play;
-			sourceTree = "<group>";
-		};
 		28B3E3B419AE74BE00C6B12A /* Parser */ = {
 			isa = PBXGroup;
 			children = (
@@ -540,9 +507,8 @@
 		28BA9B541992D580006ACB3A /* NewPlayView */ = {
 			isa = PBXGroup;
 			children = (
-				28BA9B551992D5DA006ACB3A /* NewPlayViewController.swift */,
+				28BA9B551992D5DA006ACB3A /* PlayViewController.swift */,
 				28DE0CDC1999305700C6699D /* TomeInventoryViewController.swift */,
-				28DE0CDF199959DB00C6699D /* TomeEditorViewController.swift */,
 			);
 			name = NewPlayView;
 			sourceTree = "<group>";
@@ -563,7 +529,6 @@
 				28C96DFD1993FF3B009FCD9E /* Editor.swift */,
 				287AE0B01992926400EEE4F0 /* EditorTextStorage.swift */,
 				287AE0B41992926400EEE4F0 /* EditorLayoutManager.swift */,
-				28DE0CE3199AA84300C6699D /* Syntax.swift */,
 			);
 			name = Text;
 			sourceTree = "<group>";
@@ -737,18 +702,15 @@
 				287AE0D51992927300EEE4F0 /* SpriteDialogue.swift in Sources */,
 				287AE0CF1992927300EEE4F0 /* LoginViewController.swift in Sources */,
 				287AE0BC1992926400EEE4F0 /* EditorLayoutManager.swift in Sources */,
-				28DE0CE4199AA84300C6699D /* Syntax.swift in Sources */,
 				287AE0DA1992927300EEE4F0 /* wasted_work.swift in Sources */,
 				287AE0FB199293B600EEE4F0 /* MarkdownTokenizer.m in Sources */,
 				C827D1DB19949E0200B5724C /* TomeInventoryItemPropertyView.swift in Sources */,
 				287AE0DB1992927300EEE4F0 /* WebManager.swift in Sources */,
 				287AE0B91992926400EEE4F0 /* AppDelegate.swift in Sources */,
-				287AE0D11992927300EEE4F0 /* PlayViewChildViewController.swift in Sources */,
 				285A542F199C34BD00932DDE /* regext.c in Sources */,
 				C827D1D11994726600B5724C /* json.swift in Sources */,
-				28BA9B561992D5DA006ACB3A /* NewPlayViewController.swift in Sources */,
+				28BA9B561992D5DA006ACB3A /* PlayViewController.swift in Sources */,
 				287AE0D81992927300EEE4F0 /* StoreViewController.swift in Sources */,
-				287AE0D21992927300EEE4F0 /* PlayViewController.swift in Sources */,
 				C827D1D91994937C00B5724C /* TomeInventoryItemView.swift in Sources */,
 				287AE0BA1992926400EEE4F0 /* BackbonePublisher.swift in Sources */,
 				C827D1C919943EA500B5724C /* Utilities.swift in Sources */,
@@ -763,14 +725,10 @@
 				285A5432199C34BD00932DDE /* regtrav.c in Sources */,
 				287AE0B61992926400EEE4F0 /* LevelLoadingViewController.swift in Sources */,
 				285A5431199C34BD00932DDE /* regsyntax.c in Sources */,
-				287AE0D41992927300EEE4F0 /* SpellPaletteViewController.swift in Sources */,
-				287AE0BD1992926400EEE4F0 /* EditorTextViewController.swift in Sources */,
 				287AE0B81992926400EEE4F0 /* EditorTextStorage.swift in Sources */,
 				28C96DFE1993FF3B009FCD9E /* Editor.swift in Sources */,
-				28DE0CE0199959DB00C6699D /* TomeEditorViewController.swift in Sources */,
 				C827D1D51994784E00B5724C /* TomeInventoryItem.swift in Sources */,
 				285A542A199C34BD00932DDE /* utf16_le.c in Sources */,
-				287AE0CE1992927300EEE4F0 /* LevelPlaybackViewController.swift in Sources */,
 				280D7E6119AE4E19004F95D4 /* DocumentParser.swift in Sources */,
 				287AE0D71992927300EEE4F0 /* StoreItemDetailViewController.swift in Sources */,
 				285A5434199C34BD00932DDE /* st.c in Sources */,
@@ -783,10 +741,8 @@
 				287AE0D91992927300EEE4F0 /* User.swift in Sources */,
 				28C96DF71993D09C009FCD9E /* EditorTextView.swift in Sources */,
 				287AE0BB1992926400EEE4F0 /* CodeCombatIAPHelper.swift in Sources */,
-				287AE0D61992927300EEE4F0 /* SpriteDialogueViewController.swift in Sources */,
 				287AE0FA199293B600EEE4F0 /* fmemopen.c in Sources */,
 				287AE0FD199293B600EEE4F0 /* NSAttributedStringMarkdownParser.m in Sources */,
-				287AE0E2199292F900EEE4F0 /* EquippedItemsViewController.swift in Sources */,
 				287AE109199294CC00EEE4F0 /* ParticleView.swift in Sources */,
 				280D7E5C19AE2807004F95D4 /* DocumentNode.swift in Sources */,
 				287AE0D01992927300EEE4F0 /* MainMenuController.swift in Sources */,
@@ -998,7 +954,7 @@
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 				);
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",

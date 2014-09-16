@@ -66,7 +66,7 @@ class EditorTextStorage: NSTextStorage {
   
   override func processEditing() {
     super.processEditing()
-    NSNotificationCenter.defaultCenter().postNotificationName("eraseParameterBoxes", object: nil, userInfo: nil)
+    //NSNotificationCenter.defaultCenter().postNotificationName("eraseParameterBoxes", object: nil, userInfo: nil)
     let parser = LanguageParser(scope: language, data: attributedString!.string, provider: languageProvider)
     highlighter = NodeHighlighter(parser: parser)
     //the most inefficient way of doing this, optimize later
@@ -79,6 +79,7 @@ class EditorTextStorage: NSTextStorage {
         let scopeExtent = highlighter.scopeExtent(charIndex)
         if scopeExtent != nil {
           println("Highlighting \(scopeExtent!.location) to \(NSMaxRange(scopeExtent!))")
+          println(highlighter.rootNode.description())
           addAttribute(NSForegroundColorAttributeName, value: UIColor.redColor(), range: scopeExtent!)
           charIndex = NSMaxRange(scopeExtent!) //may cause off by one
         }
@@ -99,8 +100,8 @@ class EditorTextStorage: NSTextStorage {
       }
       if contains(scopes, "entity.name.function.js") {
         if highlighter.lastScopeNode?.parent?.name == "meta.function-call.method.with-arguments.js" {
-          println(highlighter.lastScopeNode.parent.data)
-          println("Need to put a box from \(highlighter.lastScopeNode.parent.range.location)")
+          //println(highlighter.lastScopeNode.parent.data)
+          //println("Need to put a box from \(highlighter.lastScopeNode.parent.range.location)")
           //work with a simple regex
           let endLocation = NSMaxRange(highlighter.lastScopeNode.parent.range)
           let openBracketLocation = self.string()!.rangeOfString("(", options: nil, range:NSRange(location: endLocation, length: self.string()!.length - endLocation)).location
@@ -115,52 +116,4 @@ class EditorTextStorage: NSTextStorage {
       }
     }
   }
-  /*
-  func changeColorOfTextWithRegexPattern(pattern:String, color:UIColor) {
-    let highlightExpression:NSRegularExpression = NSRegularExpression(
-      pattern: pattern,
-      options: nil,
-      error: nil)
-    let paragraphRange:NSRange = string()!.paragraphRangeForRange(self.editedRange)
-
-    highlightExpression.enumerateMatchesInString(self.string,
-      options: nil,
-      range: paragraphRange,
-      usingBlock: { [weak self] result, flags, stop in
-        let indentedString:NSMutableAttributedString = NSMutableAttributedString()
-        
-        let originalSubstring = self!.attributedString?.attributedSubstringFromRange(result.range)
-        var highlightRange:NSRange?
-        self!.addAttribute(NSForegroundColorAttributeName,
-          value: color,
-          range: result.range)
-        
-    })
-  }
-  
-  func drawBoxAroundPattern(pattern:String, color:UIColor) {
-    let highlightExpression:NSRegularExpression = NSRegularExpression(
-      pattern: pattern,
-      options: nil,
-      error: nil)
-    let paragraphRange:NSRange = string()!.paragraphRangeForRange(self.editedRange)
-    //self.removeAttribute(NSForegroundColorAttributeName, range: paragraphRange)
-    
-    highlightExpression.enumerateMatchesInString(self.string,
-      options: nil,
-      range: paragraphRange, usingBlock: { [weak self] result, flags, stop in
-        var newRange:NSRange = NSRange(location:result.range.location + 2  , length: result.range.length - 4)
-        let originalTemplateContent = self!.attributedSubstringFromRange(newRange)
-        self!.replaceCharactersInRange(result.range, withAttributedString: originalTemplateContent)
-        var finalRange = NSRange(location:newRange.location - 2, length: newRange.length)
-        
-        self!.addAttribute(NSUnderlineStyleAttributeName, value: NSUnderlineStyle.StyleSingle.toRaw(), range: finalRange)
-        self!.addAttribute(NSLinkAttributeName, value: "fillin://blah", range: finalRange)
-
-      }
-    )
-
-  }*/
-  
-  
 }
