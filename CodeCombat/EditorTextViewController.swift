@@ -8,7 +8,7 @@
 
 import UIKit
 
-class EditorTextViewController: UIViewController, UITextViewDelegate {
+class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutManagerDelegate {
   let textStorage = EditorTextStorage()
   let layoutManager = NSLayoutManager()
   let textContainer = NSTextContainer()
@@ -48,6 +48,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate {
   
   private func setupTextKitHierarchy() {
     layoutManager.allowsNonContiguousLayout = true
+    layoutManager.delegate = self
     textStorage.addLayoutManager(layoutManager)
     textContainer.lineBreakMode = NSLineBreakMode.ByWordWrapping
     textContainer.widthTracksTextView = true
@@ -91,5 +92,9 @@ class EditorTextViewController: UIViewController, UITextViewDelegate {
   
   func textViewDidChange(textView: UITextView!) {
     self.textView.resizeLineNumberGutter()
+  }
+  
+  func layoutManager(layoutManager: NSLayoutManager, lineSpacingAfterGlyphAtIndex glyphIndex: Int, withProposedLineFragmentRect rect: CGRect) -> CGFloat {
+    return 5;
   }
 }
