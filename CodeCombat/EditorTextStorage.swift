@@ -14,7 +14,7 @@ class EditorTextStorage: NSTextStorage {
   var attributedString:NSMutableAttributedString?
   var languageProvider = LanguageProvider()
   var highlighter:NodeHighlighter!
-  let language = "javascript"
+  let language = "python"
   override init() {
     super.init()
     attributedString = NSMutableAttributedString()
@@ -38,7 +38,7 @@ class EditorTextStorage: NSTextStorage {
   
   func scopeToAttributes(scopeName:String) -> [NSObject : AnyObject]? {
     let scopes = scopeName.componentsSeparatedByString(" ")
-    if contains(scopes, "storage.type.js") {
+    if contains(scopes, "comment") {
       return [NSForegroundColorAttributeName:UIColor.redColor()]
     }
     return nil
@@ -65,6 +65,7 @@ class EditorTextStorage: NSTextStorage {
     //NSNotificationCenter.defaultCenter().postNotificationName("eraseParameterBoxes", object: nil, userInfo: nil)
     let parser = LanguageParser(scope: language, data: attributedString!.string, provider: languageProvider)
     highlighter = NodeHighlighter(parser: parser)
+    println(highlighter.rootNode.description())
     //the most inefficient way of doing this, optimize later
     let paragraphRange = self.string()!.paragraphRangeForRange(editedRange)
     self.removeAttribute(NSForegroundColorAttributeName, range: paragraphRange)

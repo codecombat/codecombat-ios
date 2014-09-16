@@ -100,6 +100,13 @@ class DocumentHighlighterTests: XCTestCase {
     let rootNode = parser.parse()
     println(rootNode.description())
   }
+  
+  func testPythonParsingComments() {
+    let documentString = "#This is a test comment\n print(\"Hello\")"
+    let parser = LanguageParser(scope: "python", data: documentString, provider: provider)
+    let rootNode = parser.parse()
+    println(rootNode.description())
+  }
   func testPerformanceExample() {
     // This is an example of a performance test case.
     let documentString = "var blah = 5;" as NSString

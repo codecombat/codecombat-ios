@@ -410,9 +410,18 @@ class Pattern {
     misses++
     var pat:Pattern? = nil
     var result:OnigResult?
+    if name != nil && name == "comment.line.number-sign.python" {
+      //println("Found it!")
+    }
     if match?.regex != nil {
       pat = self
+      //println("Searching \(data) from position \(position)")
+      //println("Regex is \(match.regex.expression())")
       result = match.find(data, pos: position)
+      if result != nil {
+        //println(result!.body())
+      }
+      
     } else if begin?.regex != nil {
       pat = self
       result = begin.find(data, pos: position)
