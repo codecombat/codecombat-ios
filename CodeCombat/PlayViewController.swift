@@ -43,8 +43,6 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     let aspectRatio = screenshotView.image!.size.width/screenshotView.image!.size.height
     screenshotView.frame = CGRectMake(0, 0, frameWidth, frameWidth / aspectRatio)
     editorContainerView.frame = CGRectMake(0, screenshotView.frame.height, frameWidth, frameHeight)
-    editorContainerView.backgroundColor = UIColor.redColor()
-    
     setupScrollView()
     setupInventory()
     setupEditor()
@@ -70,7 +68,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   
   func setupEditor() {
     textStorage = EditorTextStorage()
-    let layoutManager = EditorLayoutManager()
+    let layoutManager = NSLayoutManager()
     layoutManager.allowsNonContiguousLayout = true
     textStorage.addLayoutManager(layoutManager)
     let textContainer = NSTextContainer()
@@ -79,14 +77,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     layoutManager.addTextContainer(textContainer)
     let editorTextViewFrame = CGRectMake(inventoryFrame.width, 0, editorContainerView.frame.width - inventoryFrame.width, editorContainerView.frame.height)
     editorTextView = EditorTextView(frame: editorTextViewFrame, textContainer: textContainer)
-    editorTextView.selectable = true
-    editorTextView.editable = true
-    
-    editorTextView.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
-    
     codeEditor = Editor(textView: editorTextView)
-    editorTextView.delegate = codeEditor!
-    editorTextView.showLineNumbers()
     editorContainerView.addSubview(editorTextView)
   }
 

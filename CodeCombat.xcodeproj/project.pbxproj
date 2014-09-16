@@ -39,7 +39,6 @@
 		287AE0B91992926400EEE4F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0B11992926400EEE4F0 /* AppDelegate.swift */; };
 		287AE0BA1992926400EEE4F0 /* BackbonePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0B21992926400EEE4F0 /* BackbonePublisher.swift */; };
 		287AE0BB1992926400EEE4F0 /* CodeCombatIAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0B31992926400EEE4F0 /* CodeCombatIAPHelper.swift */; };
-		287AE0BC1992926400EEE4F0 /* EditorLayoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0B41992926400EEE4F0 /* EditorLayoutManager.swift */; };
 		287AE0CF1992927300EEE4F0 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0C01992927300EEE4F0 /* LoginViewController.swift */; };
 		287AE0D01992927300EEE4F0 /* MainMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0C11992927300EEE4F0 /* MainMenuController.swift */; };
 		287AE0D31992927300EEE4F0 /* progressListener.js in Resources */ = {isa = PBXBuildFile; fileRef = 287AE0C41992927300EEE4F0 /* progressListener.js */; };
@@ -185,7 +184,6 @@
 		287AE0B11992926400EEE4F0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		287AE0B21992926400EEE4F0 /* BackbonePublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackbonePublisher.swift; sourceTree = "<group>"; };
 		287AE0B31992926400EEE4F0 /* CodeCombatIAPHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodeCombatIAPHelper.swift; sourceTree = "<group>"; };
-		287AE0B41992926400EEE4F0 /* EditorLayoutManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorLayoutManager.swift; sourceTree = "<group>"; };
 		287AE0C01992927300EEE4F0 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		287AE0C11992927300EEE4F0 /* MainMenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenuController.swift; sourceTree = "<group>"; };
 		287AE0C41992927300EEE4F0 /* progressListener.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = progressListener.js; sourceTree = "<group>"; };
@@ -388,9 +386,8 @@
 		287AE1021992946C00EEE4F0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				C827D1D71994934D00B5724C /* NewPlayView */,
+				C827D1D71994934D00B5724C /* Play */,
 				287AE0AF1992926400EEE4F0 /* Main.storyboard */,
-				28C96DF61993D09C009FCD9E /* EditorTextView.swift */,
 				287AE0DF199292E400EEE4F0 /* InventoryCell.swift */,
 				287AE1031992948500EEE4F0 /* Effects */,
 			);
@@ -411,7 +408,7 @@
 		287AE10C1992950E00EEE4F0 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				28BA9B541992D580006ACB3A /* NewPlayView */,
+				28BA9B541992D580006ACB3A /* Play */,
 				287AE1131992956D00EEE4F0 /* Login */,
 				287AE1121992956800EEE4F0 /* Loading */,
 				287AE1111992956300EEE4F0 /* Main Menu */,
@@ -504,13 +501,13 @@
 			name = Parser;
 			sourceTree = "<group>";
 		};
-		28BA9B541992D580006ACB3A /* NewPlayView */ = {
+		28BA9B541992D580006ACB3A /* Play */ = {
 			isa = PBXGroup;
 			children = (
 				28BA9B551992D5DA006ACB3A /* PlayViewController.swift */,
 				28DE0CDC1999305700C6699D /* TomeInventoryViewController.swift */,
 			);
-			name = NewPlayView;
+			name = Play;
 			sourceTree = "<group>";
 		};
 		28C96DF91993F0BF009FCD9E /* Editor */ = {
@@ -528,7 +525,6 @@
 				28B3E3B419AE74BE00C6B12A /* Parser */,
 				28C96DFD1993FF3B009FCD9E /* Editor.swift */,
 				287AE0B01992926400EEE4F0 /* EditorTextStorage.swift */,
-				287AE0B41992926400EEE4F0 /* EditorLayoutManager.swift */,
 			);
 			name = Text;
 			sourceTree = "<group>";
@@ -568,13 +564,14 @@
 			name = Inventory;
 			sourceTree = "<group>";
 		};
-		C827D1D71994934D00B5724C /* NewPlayView */ = {
+		C827D1D71994934D00B5724C /* Play */ = {
 			isa = PBXGroup;
 			children = (
+				28C96DF61993D09C009FCD9E /* EditorTextView.swift */,
 				C827D1D81994937C00B5724C /* TomeInventoryItemView.swift */,
 				C827D1DA19949E0200B5724C /* TomeInventoryItemPropertyView.swift */,
 			);
-			name = NewPlayView;
+			name = Play;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -701,7 +698,6 @@
 				287AE0DC1992927300EEE4F0 /* ColorManager.swift in Sources */,
 				287AE0D51992927300EEE4F0 /* SpriteDialogue.swift in Sources */,
 				287AE0CF1992927300EEE4F0 /* LoginViewController.swift in Sources */,
-				287AE0BC1992926400EEE4F0 /* EditorLayoutManager.swift in Sources */,
 				287AE0DA1992927300EEE4F0 /* wasted_work.swift in Sources */,
 				287AE0FB199293B600EEE4F0 /* MarkdownTokenizer.m in Sources */,
 				C827D1DB19949E0200B5724C /* TomeInventoryItemPropertyView.swift in Sources */,

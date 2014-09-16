@@ -18,7 +18,13 @@ class Editor : NSObject, UITextViewDelegate {
       green: CGFloat(212.0 / 256.0),
       blue: CGFloat(145.0 / 256.0),
       alpha: 1)
+    textView.selectable = true
+    textView.editable = true
+    textView.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
+    textView.showLineNumbers()
+    
     super.init()
+    textView.delegate = self
   }
 
   func textView(textView: UITextView!, shouldChangeTextInRange range: NSRange, replacementText text: String!) -> Bool {

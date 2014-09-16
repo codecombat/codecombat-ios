@@ -38,7 +38,6 @@ class EditorTextView: UITextView {
       drawLineNumberBackground()
       drawLineNumbers()
     }
-    //drawClickableBoxesOnHello()
     super.drawRect(rect)
   }
   
@@ -66,29 +65,6 @@ class EditorTextView: UITextView {
     addSubview(paramView)
     parameterViews.append(paramView)
     
-  }
-  
-  private func drawClickableBoxesOnHello() {
-    let helloExpression = NSRegularExpression(
-    pattern: "hello",
-    options: nil,
-    error: nil)
-    let stringToDrawUpon = textStorage.string
-    let range = NSMakeRange(0, stringToDrawUpon.utf16Count)
-    let matches = helloExpression.matchesInString(stringToDrawUpon,
-      options: nil,
-      range: range)
-    for regexMatch in matches {
-      let match = regexMatch as NSTextCheckingResult
-      let start = positionFromPosition(beginningOfDocument, offset: match.range.location)
-      let end =  positionFromPosition(start!, offset: match.range.length)
-      let textRange = textRangeFromPosition(start, toPosition: end)
-      
-      let resultRect = firstRectForRange(textRange)
-      let highlightView = UIView(frame: resultRect)
-      highlightView.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.5)
-      addSubview(highlightView)
-    }
   }
   
   private func drawLineNumbers() {
