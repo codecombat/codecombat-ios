@@ -12,12 +12,14 @@ class EditorTextViewController: UIViewController, UITextViewDelegate {
   let textStorage = EditorTextStorage()
   let layoutManager = NSLayoutManager()
   let textContainer = NSTextContainer()
+  let currentFont = UIFont(name: "Courier", size: 22)
   var textView:EditorTextView! {
     didSet {
       textView.delegate = self
       textView.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
       textView.selectable = true
       textView.editable = true
+      textView.font = currentFont
       textView.showLineNumbers()
       textView.backgroundColor = UIColor(
         red: CGFloat(230.0 / 256.0),
@@ -54,14 +56,15 @@ class EditorTextViewController: UIViewController, UITextViewDelegate {
 
   private func setupNotificationCenterObservers() {
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleDrawParameterRequest:"), name: "drawParameterBox", object: nil)
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("eraseParameterViews:"), name: "eraseParameterBoxes", object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleEraseParameterViewsRequest:"), name: "eraseParameterBoxes", object: nil)
   }
   
-  private func handleEraseParameterViewsRequest(notification:NSNotification) {
+  func handleEraseParameterViewsRequest(notification:NSNotification) {
     textView.eraseParameterViews()
   }
   
-  private func handleDrawParameterRequest(notification:NSNotification) {
+  func handleDrawParameterRequest(notification:NSNotification) {
+    return
     let info = notification.userInfo!
     let functionName:NSString? = info["functionName"] as? NSString
     let range:NSRange = (info["rangeValue"] as? NSValue)!.rangeValue
@@ -69,8 +72,13 @@ class EditorTextViewController: UIViewController, UITextViewDelegate {
     textView.drawParameterOverlay(range)
   }
   
+  private func resetFontToCurrentFont() {
+    textView.font = currentFont
+  }
+  
   func replaceTextViewContentsWithString(text:String) {
     textStorage.replaceCharactersInRange(NSRange(location: 0, length: 0), withString: text)
+    resetFontToCurrentFont()
     textView.setNeedsDisplay()
   }
   
