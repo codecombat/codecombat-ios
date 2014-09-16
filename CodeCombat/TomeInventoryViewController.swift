@@ -123,7 +123,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
     }
     let Parent = parentViewController as PlayViewController
     //Change this to reference editor view controller, rather than editor view
-    let EditorView = Parent.editorTextView
+    let EditorView = Parent.textViewController.textView
     let LocationInParentView = recognizer.locationInView(Parent.view)
     let LocationInEditorContainerView = recognizer.locationInView(Parent.editorContainerView)
     switch recognizer.state {

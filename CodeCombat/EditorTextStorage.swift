@@ -9,6 +9,7 @@
 import UIKit
 
 //Thank you http://www.objc.io/issue-5/getting-to-know-textkit.html
+
 class EditorTextStorage: NSTextStorage {
   var attributedString:NSMutableAttributedString?
   var editorTextView:UITextView?

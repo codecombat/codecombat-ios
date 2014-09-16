@@ -15,9 +15,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   let screenshotView = UIImageView(image: UIImage(named: "largeScreenshot"))
   var webView: WKWebView?
   let editorContainerView = UIView()
-  var codeEditor: Editor? = nil
-  var editorTextView: EditorTextView!
-  var textStorage: EditorTextStorage!
+  var textViewController: EditorTextViewController!
   var inventoryViewController: TomeInventoryViewController!
   var inventoryFrame: CGRect!
   let webManager = WebManager.sharedInstance
@@ -67,18 +65,11 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   }
   
   func setupEditor() {
-    textStorage = EditorTextStorage()
-    let layoutManager = NSLayoutManager()
-    layoutManager.allowsNonContiguousLayout = true
-    textStorage.addLayoutManager(layoutManager)
-    let textContainer = NSTextContainer()
-    textContainer.lineBreakMode = NSLineBreakMode.ByCharWrapping
-    textContainer.widthTracksTextView = true
-    layoutManager.addTextContainer(textContainer)
     let editorTextViewFrame = CGRectMake(inventoryFrame.width, 0, editorContainerView.frame.width - inventoryFrame.width, editorContainerView.frame.height)
-    editorTextView = EditorTextView(frame: editorTextViewFrame, textContainer: textContainer)
-    codeEditor = Editor(textView: editorTextView)
-    editorContainerView.addSubview(editorTextView)
+    textViewController = EditorTextViewController()
+    textViewController.createTextViewWithFrame(editorTextViewFrame)
+    //editorTextView = EditorTextView(frame: editorTextViewFrame, textContainer: textContainer)
+    editorContainerView.addSubview(textViewController.textView)
   }
 
   func setupWebView() {
@@ -104,11 +95,9 @@ class PlayViewController: UIViewController, UITextViewDelegate {
       let spell = event["spell"] as NSDictionary
       let startingCode = spell["source"] as? String
       if startingCode != nil {
-        textStorage.replaceCharactersInRange(NSMakeRange(0, 0), withString: startingCode!)
-        
+        textViewController.replaceTextViewContentsWithString(startingCode!)
         println("set code before load to \(startingCode!)")
       }
-      editorTextView.setNeedsDisplay()  // Needed?
     }
   }
 
@@ -118,7 +107,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   }
   
   func handleTomeSourceRequest(){
-    var escapedString = editorTextView.text!.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
+    var escapedString = textViewController.textView.text!.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
     escapedString = escapedString.stringByReplacingOccurrencesOfString("\n", withString: "\\n")
     var js = "if(currentView.tome.spellView) { currentView.tome.spellView.ace.setValue(\"\(escapedString)\"); } else { console.log('damn, no one was selected!'); }"
     println(js)
