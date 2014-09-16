@@ -10,7 +10,11 @@
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "codecombat_ipad_design.png"
+      "filename" : "codecombat_ipad_design_new.png"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {
