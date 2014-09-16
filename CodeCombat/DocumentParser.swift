@@ -204,6 +204,9 @@ class LanguageProvider {
     let patternName = data["name"].asString
     pattern.name = patternName != nil ? patternName : data["contentName"].asString
     pattern.contentName = data["contentName"].asString
+    if pattern.contentName != nil && pattern.contentName == "meta.function-call.arguments.python" {
+      println("Parsing here!")
+    }
     pattern.disabled = data["disabled"].asBool
     pattern.include = data["include"].asString
     if let matchData = data["match"].asString {
@@ -324,6 +327,7 @@ class LanguageParser {
       println("REACHED MAXIMUM NUMBER OF ITERATIONS")
       return nil
     }
+    rootNode.simplify()
     return rootNode
   }
   
@@ -370,7 +374,9 @@ class Pattern {
     desc += "Name:    \(name)\n"
     desc += "Match:   \(match?.description())\n"
     desc += "Begin:   \(begin?.description())\n"
+    desc += "BeginCaptures \(beginCaptures)\n"
     desc += "End:     \(end?.description())\n"
+    desc += "EndCaptures: \(endCaptures)\n"
     desc += "Include: \(include)\n"
     desc += "<Sub-Patterns>\n"
     for pat in patterns {
@@ -437,6 +443,10 @@ class Pattern {
         }
       } else if includePrefix == "$" {
         println("Include prefix $ isn't handled")
+        if include == "$self" {
+          (pat, result) = owner.rootPattern.cache(data, position: position)
+          println("Attempting to handle self include...")
+        }
         //Also handle alternative languages
       }
     } else {
@@ -537,6 +547,7 @@ class Pattern {
     var end = data.length
     while i < data.length {
       let endMatch = self.end.find(data, pos: i)
+      
       //println(endMatch)
       //println("WOOO")
       if endMatch != nil {
@@ -568,8 +579,6 @@ class Pattern {
       }
       if endMatch != nil {
         if endCaptures.count > 0 {
-          if (name != nil && name == "string.quoted.double.js") {
-          }
           createCaptureNodes(data, pos: i, d: d, result: endMatch!, parent: createdNode, capt: endCaptures)
         } else {
           createCaptureNodes(data, pos: i, d: d, result: endMatch!, parent: createdNode, capt: captures)

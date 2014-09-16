@@ -72,44 +72,22 @@ class EditorTextStorage: NSTextStorage {
     for var charIndex = paragraphRange.location; charIndex < NSMaxRange(paragraphRange); charIndex++ {
       let scopeName = highlighter.scopeName(charIndex)
       let scopes = scopeName.componentsSeparatedByString(" ")
-      if contains(scopes, "storage.type.js") {
+      for scope in scopes {
         let scopeExtent = highlighter.scopeExtent(charIndex)
-        if scopeExtent != nil {
-          println("Highlighting \(scopeExtent!.location) to \(NSMaxRange(scopeExtent!))")
-          println(highlighter.rootNode.description())
+        if scopeExtent == nil {
+          continue
+        }
+        if scope.hasPrefix("comment") {
+          println("Found a comment!")
+          addAttribute(NSForegroundColorAttributeName, value: UIColor.grayColor(), range: scopeExtent!)
+        } else if scope.hasPrefix("meta.function-call.generic") { //function calls
           addAttribute(NSForegroundColorAttributeName, value: UIColor.redColor(), range: scopeExtent!)
-          charIndex = NSMaxRange(scopeExtent!) //may cause off by one
-        }
-      } else if contains(scopes, "string.quoted.double.js") {
-        let scopeExtent = highlighter.scopeExtent(charIndex)
-        if scopeExtent != nil {
-          addAttribute(NSForegroundColorAttributeName, value: UIColor.orangeColor(), range: scopeExtent!)
-          charIndex = NSMaxRange(scopeExtent!)
-        }
-      } else if contains(scopes, "meta.function.js") {
-        let scopeExtent = highlighter.scopeExtent(charIndex)
-        if scopeExtent != nil {
-          println(highlighter.rootNode.description())
-          println("Highlighting \(scopeExtent!.location) to \(NSMaxRange(scopeExtent!))")
+        } else if scope.hasPrefix("variable.language") && highlighter.lastScopeNode.data == "self" { //python self
           addAttribute(NSForegroundColorAttributeName, value: UIColor.purpleColor(), range: scopeExtent!)
-          charIndex = NSMaxRange(scopeExtent!)
+        } else if scope.hasPrefix("meta.function-call.arguments") {
+          
         }
-      }
-      if contains(scopes, "entity.name.function.js") {
-        if highlighter.lastScopeNode?.parent?.name == "meta.function-call.method.with-arguments.js" {
-          //println(highlighter.lastScopeNode.parent.data)
-          //println("Need to put a box from \(highlighter.lastScopeNode.parent.range.location)")
-          //work with a simple regex
-          let endLocation = NSMaxRange(highlighter.lastScopeNode.parent.range)
-          let openBracketLocation = self.string()!.rangeOfString("(", options: nil, range:NSRange(location: endLocation, length: self.string()!.length - endLocation)).location
-          let closeBracketLocation = self.string()!.rangeOfString(")", options: nil, range: NSRange(location: endLocation, length: self.string()!.length - endLocation)).location
-          //will break horribly, fix this hack
-          NSNotificationCenter.defaultCenter().postNotificationName("drawParameterBox", object: nil, userInfo: ["rangeValue":NSValue(range: NSRange(location: openBracketLocation, length: closeBracketLocation - openBracketLocation + 1)) , "functionName":highlighter.lastScopeNode.parent.data])
-        }
-        let scopeExtent = highlighter.scopeExtent(charIndex)
-        if scopeExtent != nil {
-          addAttribute(NSForegroundColorAttributeName, value: UIColor.redColor(), range: scopeExtent!)
-        }
+        charIndex = NSMaxRange(scopeExtent!)
       }
     }
   }

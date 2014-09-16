@@ -102,7 +102,7 @@ class DocumentHighlighterTests: XCTestCase {
   }
   
   func testPythonParsingComments() {
-    let documentString = "#This is a test comment\n print(\"Hello\")"
+    let documentString = "self.attack(hello,goodbye)"
     let parser = LanguageParser(scope: "python", data: documentString, provider: provider)
     let rootNode = parser.parse()
     println(rootNode.description())

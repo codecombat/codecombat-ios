@@ -76,4 +76,16 @@ class DocumentNode {
     }
   }
   
+   func simplify() {
+    for child in children {
+      child.simplify()
+    }
+    if children.count == 1 && NSEqualRanges(children[0].range, range){
+      let child = children[0]
+      self.name = child.name
+      self.sourceText = child.sourceText
+      self.children = child.children
+    }
+  }
+  
 }
