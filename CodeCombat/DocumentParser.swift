@@ -300,7 +300,7 @@ class LanguageParser {
         break
       } else if newLineLocation != NSNotFound && newLineLocation <= Int(result!.locationAt(0)) {
         i = newLineLocation
-        while i < sdata.length + 1 && (sdata.substringWithRange(NSRange(location: i, length: 1)) == "\n" || sdata.substringWithRange(NSRange(location: i, length: 1)) == "\r") {
+        while i + 1 < sdata.length && (sdata.substringWithRange(NSRange(location: i, length: 1)) == "\n" || sdata.substringWithRange(NSRange(location: i, length: 1)) == "\r") {
           i++
         }
       } else {
