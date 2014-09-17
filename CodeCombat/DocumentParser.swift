@@ -204,9 +204,6 @@ class LanguageProvider {
     let patternName = data["name"].asString
     pattern.name = patternName != nil ? patternName : data["contentName"].asString
     pattern.contentName = data["contentName"].asString
-    if pattern.contentName != nil && pattern.contentName == "meta.function-call.arguments.python" {
-      println("Parsing here!")
-    }
     pattern.disabled = data["disabled"].asBool
     pattern.include = data["include"].asString
     if let matchData = data["match"].asString {
@@ -416,9 +413,6 @@ class Pattern {
     misses++
     var pat:Pattern? = nil
     var result:OnigResult?
-    if name != nil && name == "comment.line.number-sign.python" {
-      //println("Found it!")
-    }
     if match?.regex != nil {
       pat = self
       //println("Searching \(data) from position \(position)")
@@ -442,7 +436,6 @@ class Pattern {
           println("The pattern \(key) wasn't found!")
         }
       } else if includePrefix == "$" {
-        println("Include prefix $ isn't handled")
         if include == "$self" {
           (pat, result) = owner.rootPattern.cache(data, position: position)
           println("Attempting to handle self include...")
@@ -526,6 +519,7 @@ class Pattern {
     //println(match)
     //println(match == nil)
     //createdNode.updateRange() MUST be deferred
+    //TODO: Need to fix contentName
     if match != nil && match!.regex != nil {
       createCaptureNodes(data, pos: pos, d: d, result: result, parent: createdNode, capt: captures)
     }

@@ -141,7 +141,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
       let ItemProperty = ItemView.tomeInventoryItemPropertyAtLocation(recognizer.locationInView(ItemView))
       draggedProperty = ItemProperty
       let DragView = UILabel()
-      DragView.font = UIFont(name: "Courier", size: 40)
+      DragView.font = EditorView.font
       DragView.text = ItemProperty!.codeSnippetForLanguage("python")
       DragView.sizeToFit()
       DragView.center = LocationInParentView

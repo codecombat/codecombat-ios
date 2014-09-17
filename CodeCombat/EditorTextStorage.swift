@@ -60,12 +60,17 @@ class EditorTextStorage: NSTextStorage {
       changeInLength: 0)
   }
   
+  func sendOverlayRequest(metaFunctionCallNode:DocumentNode) {
+    println("Function name: \(metaFunctionCallNode.children[0].data)")
+    println("Open bracket: \(metaFunctionCallNode.children[1].children[0].data)")
+    println("Close bracket:\(metaFunctionCallNode.children[1].data)")
+  }
+  
   override func processEditing() {
     super.processEditing()
     //NSNotificationCenter.defaultCenter().postNotificationName("eraseParameterBoxes", object: nil, userInfo: nil)
     let parser = LanguageParser(scope: language, data: attributedString!.string, provider: languageProvider)
     highlighter = NodeHighlighter(parser: parser)
-    println(highlighter.rootNode.description())
     //the most inefficient way of doing this, optimize later
     let paragraphRange = self.string()!.paragraphRangeForRange(editedRange)
     self.removeAttribute(NSForegroundColorAttributeName, range: paragraphRange)
@@ -78,14 +83,14 @@ class EditorTextStorage: NSTextStorage {
           continue
         }
         if scope.hasPrefix("comment") {
-          println("Found a comment!")
           addAttribute(NSForegroundColorAttributeName, value: UIColor.grayColor(), range: scopeExtent!)
         } else if scope.hasPrefix("meta.function-call.generic") { //function calls
           addAttribute(NSForegroundColorAttributeName, value: UIColor.redColor(), range: scopeExtent!)
         } else if scope.hasPrefix("variable.language") && highlighter.lastScopeNode.data == "self" { //python self
           addAttribute(NSForegroundColorAttributeName, value: UIColor.purpleColor(), range: scopeExtent!)
-        } else if scope.hasPrefix("meta.function-call.arguments") {
-          
+        }
+        if scope.hasPrefix("meta.function-call.python") {
+          sendOverlayRequest(highlighter.lastScopeNode)
         }
         charIndex = NSMaxRange(scopeExtent!)
       }

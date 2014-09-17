@@ -144,11 +144,24 @@ class EditorTextView: UITextView {
   func handleItemPropertyDragEndedAtLocation(location:CGPoint, code:String) {
     currentHighlightingView?.removeFromSuperview()
     currentHighlightingView = nil
+    let storage = textStorage as EditorTextStorage
     let dragPoint = CGPoint(x: 0, y: location.y)
     let GlyphIndex = layoutManager.glyphIndexForPoint(dragPoint,
-      inTextContainer: textContainer)
+      inTextContainer: textContainer) //nearest glyph index
+    let draggedOntoLine = Int(location.y / (font.lineHeight + lineSpacing))
+    var numberOfLinesBeforeVisible = 0
+    for var index = 0; index < GlyphIndex; numberOfLinesBeforeVisible++ {
+      index = NSMaxRange(storage.string()!.lineRangeForRange(NSRange(location: index, length: 0)))
+    }
+    println("Dragged onto line measured through coordinates \(draggedOntoLine)")
+    println("Detected \(numberOfLinesBeforeVisible) through glyph index")
+    var stringToInsert = code
+    for var newlinesToInsert = 0; newlinesToInsert < (draggedOntoLine - numberOfLinesBeforeVisible); newlinesToInsert++ {
+      stringToInsert = "\n" + stringToInsert
+    }
     textStorage.beginEditing()
-    textStorage.insertAttributedString(NSAttributedString(string: code), atIndex: GlyphIndex)
+    println("Inserting string \(stringToInsert)")
+    storage.replaceCharactersInRange(NSRange(location: GlyphIndex, length: 0), withString: stringToInsert)
     textStorage.endEditing()
     setNeedsDisplay()
     
