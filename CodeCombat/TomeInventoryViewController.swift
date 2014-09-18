@@ -163,7 +163,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
     case .Ended:
       draggedView.removeFromSuperview()
       var Snippet = draggedProperty.codeSnippetForLanguage("python")
-      if Snippet != nil {
+      if Snippet == nil {
         Snippet = draggedProperty.name
       }
       EditorView.handleItemPropertyDragEndedAtLocation(LocationInEditorContainerView, code: Snippet!)

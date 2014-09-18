@@ -438,7 +438,6 @@ class Pattern {
       } else if includePrefix == "$" {
         if include == "$self" {
           (pat, result) = owner.rootPattern.cache(data, position: position)
-          println("Attempting to handle self include...")
         }
         //Also handle alternative languages
       }

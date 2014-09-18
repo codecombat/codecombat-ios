@@ -72,9 +72,11 @@ class EditorTextStorage: NSTextStorage {
     let parser = LanguageParser(scope: language, data: attributedString!.string, provider: languageProvider)
     highlighter = NodeHighlighter(parser: parser)
     //the most inefficient way of doing this, optimize later
-    let paragraphRange = self.string()!.paragraphRangeForRange(editedRange)
-    self.removeAttribute(NSForegroundColorAttributeName, range: paragraphRange)
-    for var charIndex = paragraphRange.location; charIndex < NSMaxRange(paragraphRange); charIndex++ {
+    let documentRange = NSRange(location: 0, length: string()!.length)
+    println("Edited range loc: \(editedRange.location), length: \(editedRange.length)")
+    println("Document range loc: \(documentRange.location), length: \(documentRange.length)")
+    self.removeAttribute(NSForegroundColorAttributeName, range: documentRange)
+    for var charIndex = documentRange.location; charIndex < NSMaxRange(documentRange); charIndex++ {
       let scopeName = highlighter.scopeName(charIndex)
       let scopes = scopeName.componentsSeparatedByString(" ")
       for scope in scopes {
@@ -92,7 +94,7 @@ class EditorTextStorage: NSTextStorage {
         if scope.hasPrefix("meta.function-call.python") {
           sendOverlayRequest(highlighter.lastScopeNode)
         }
-        charIndex = NSMaxRange(scopeExtent!)
+        //charIndex = NSMaxRange(scopeExtent!)
       }
     }
   }

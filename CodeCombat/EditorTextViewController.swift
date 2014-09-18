@@ -17,8 +17,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     didSet {
       textView.delegate = self
       textView.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
-      textView.selectable = true
-      textView.editable = true
+      textView.selectable = false
+      textView.editable = false
       textView.font = currentFont
       textView.showLineNumbers()
       textView.backgroundColor = UIColor(

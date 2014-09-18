@@ -145,26 +145,42 @@ class EditorTextView: UITextView {
     currentHighlightingView?.removeFromSuperview()
     currentHighlightingView = nil
     let storage = textStorage as EditorTextStorage
+    
     let dragPoint = CGPoint(x: 0, y: location.y)
-    let GlyphIndex = layoutManager.glyphIndexForPoint(dragPoint,
+    let nearestGlyphIndex = layoutManager.glyphIndexForPoint(dragPoint,
       inTextContainer: textContainer) //nearest glyph index
-    let draggedOntoLine = Int(location.y / (font.lineHeight + lineSpacing))
-    var numberOfLinesBeforeVisible = 0
-    for var index = 0; index < GlyphIndex; numberOfLinesBeforeVisible++ {
+    
+    let draggedOntoLine = Int(location.y / (font.lineHeight + lineSpacing)) + 1
+    
+    var numberOfNewlinesBeforeGlyphIndex = 1
+    for var index = 0; index < nearestGlyphIndex; numberOfNewlinesBeforeGlyphIndex++ {
       index = NSMaxRange(storage.string()!.lineRangeForRange(NSRange(location: index, length: 0)))
     }
-    println("Dragged onto line measured through coordinates \(draggedOntoLine)")
-    println("Detected \(numberOfLinesBeforeVisible) through glyph index")
+    
+    var totalLinesInDoc = 1
+    for var index = 0; index < storage.string()!.length; totalLinesInDoc++ {
+      index = NSMaxRange(storage.string()!.lineRangeForRange(NSRange(location: index, length: 0)))
+    }
+    
+    let characterAtGlyphIndex = storage.string()!.characterAtIndex(nearestGlyphIndex)
+    let characterBeforeGlyphIndex = storage.string()!.characterAtIndex(nearestGlyphIndex - 1)
     var stringToInsert = code
-    if draggedOntoLine != numberOfLinesBeforeVisible {
-      for var newlinesToInsert = 0; newlinesToInsert < (draggedOntoLine - numberOfLinesBeforeVisible + 1); newlinesToInsert++ {
+    var newlinesToInsert = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex
+    
+    //Check if dragging onto an empty line in between two other lines of code.
+    if characterAtGlyphIndex == 10 && characterBeforeGlyphIndex == 10 {
+      println("Inserting text on an empty line.")
+    } else if draggedOntoLine == numberOfNewlinesBeforeGlyphIndex && characterAtGlyphIndex != 10 {
+      println("Inserting text onto a line where there is text")
+      stringToInsert = stringToInsert + "\n"
+    } else if draggedOntoLine > numberOfNewlinesBeforeGlyphIndex { //adapt to deal with wrapped lines
+      for var newlinesToInsertBeforeString = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex; newlinesToInsertBeforeString >= 0; newlinesToInsertBeforeString-- {
         stringToInsert = "\n" + stringToInsert
       }
     }
-    
     textStorage.beginEditing()
     println("Inserting string \(stringToInsert)")
-    storage.replaceCharactersInRange(NSRange(location: GlyphIndex, length: 0), withString: stringToInsert)
+    storage.replaceCharactersInRange(NSRange(location: nearestGlyphIndex, length: 0), withString: stringToInsert)
     textStorage.endEditing()
     setNeedsDisplay()
     
