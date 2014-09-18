@@ -166,13 +166,15 @@ class EditorTextView: UITextView {
     let characterBeforeGlyphIndex = storage.string()!.characterAtIndex(nearestGlyphIndex - 1)
     var stringToInsert = code
     var newlinesToInsert = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex
-    
     //Check if dragging onto an empty line in between two other lines of code.
     if characterAtGlyphIndex == 10 && characterBeforeGlyphIndex == 10 {
       println("Inserting text on an empty line.")
     } else if draggedOntoLine == numberOfNewlinesBeforeGlyphIndex && characterAtGlyphIndex != 10 {
       println("Inserting text onto a line where there is text")
       stringToInsert = stringToInsert + "\n"
+    } else if draggedOntoLine == numberOfNewlinesBeforeGlyphIndex && nearestGlyphIndex == storage.string()!.length - 1 {
+      println("Dragged to last character!")
+      stringToInsert = "\n" + stringToInsert
     } else if draggedOntoLine > numberOfNewlinesBeforeGlyphIndex { //adapt to deal with wrapped lines
       for var newlinesToInsertBeforeString = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex; newlinesToInsertBeforeString >= 0; newlinesToInsertBeforeString-- {
         stringToInsert = "\n" + stringToInsert
