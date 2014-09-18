@@ -179,7 +179,6 @@ class EditorTextView: UITextView {
       }
     }
     textStorage.beginEditing()
-    println("Inserting string \(stringToInsert)")
     storage.replaceCharactersInRange(NSRange(location: nearestGlyphIndex, length: 0), withString: stringToInsert)
     textStorage.endEditing()
     setNeedsDisplay()

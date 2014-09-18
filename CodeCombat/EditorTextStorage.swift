@@ -86,15 +86,18 @@ class EditorTextStorage: NSTextStorage {
         }
         if scope.hasPrefix("comment") {
           addAttribute(NSForegroundColorAttributeName, value: UIColor.grayColor(), range: scopeExtent!)
+          charIndex = NSMaxRange(scopeExtent!)
         } else if scope.hasPrefix("meta.function-call.generic") { //function calls
           addAttribute(NSForegroundColorAttributeName, value: UIColor.redColor(), range: scopeExtent!)
+          charIndex = NSMaxRange(scopeExtent!)
         } else if scope.hasPrefix("variable.language") && highlighter.lastScopeNode.data == "self" { //python self
           addAttribute(NSForegroundColorAttributeName, value: UIColor.purpleColor(), range: scopeExtent!)
+          charIndex = NSMaxRange(scopeExtent!)
         }
         if scope.hasPrefix("meta.function-call.python") {
           sendOverlayRequest(highlighter.lastScopeNode)
         }
-        //charIndex = NSMaxRange(scopeExtent!)
+        
       }
     }
   }
