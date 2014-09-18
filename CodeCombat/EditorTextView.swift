@@ -156,9 +156,12 @@ class EditorTextView: UITextView {
     println("Dragged onto line measured through coordinates \(draggedOntoLine)")
     println("Detected \(numberOfLinesBeforeVisible) through glyph index")
     var stringToInsert = code
-    for var newlinesToInsert = 0; newlinesToInsert < (draggedOntoLine - numberOfLinesBeforeVisible); newlinesToInsert++ {
-      stringToInsert = "\n" + stringToInsert
+    if draggedOntoLine != numberOfLinesBeforeVisible {
+      for var newlinesToInsert = 0; newlinesToInsert < (draggedOntoLine - numberOfLinesBeforeVisible + 1); newlinesToInsert++ {
+        stringToInsert = "\n" + stringToInsert
+      }
     }
+    
     textStorage.beginEditing()
     println("Inserting string \(stringToInsert)")
     storage.replaceCharactersInRange(NSRange(location: GlyphIndex, length: 0), withString: stringToInsert)

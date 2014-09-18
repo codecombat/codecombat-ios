@@ -61,9 +61,9 @@ class EditorTextStorage: NSTextStorage {
   }
   
   func sendOverlayRequest(metaFunctionCallNode:DocumentNode) {
-    println("Function name: \(metaFunctionCallNode.children[0].data)")
+    /*println("Function name: \(metaFunctionCallNode.children[0].data)")
     println("Open bracket: \(metaFunctionCallNode.children[1].children[0].data)")
-    println("Close bracket:\(metaFunctionCallNode.children[1].data)")
+    println("Close bracket:\(metaFunctionCallNode.children[1].data)")*/
   }
   
   override func processEditing() {
