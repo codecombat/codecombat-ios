@@ -11,7 +11,7 @@ import UIKit
 class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGestureRecognizerDelegate {
   private var inventory: TomeInventory!
   private var inventoryLoaded = false
-  private var inventoryView: UIScrollView!
+  var inventoryView: UIScrollView!
   private var draggedView: UIView!
   private var draggedProperty: TomeInventoryItemProperty!
   
@@ -138,6 +138,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
         recognizer.enabled = true
         break
       }
+      recognizer.enabled = true
       let ItemProperty = ItemView.tomeInventoryItemPropertyAtLocation(recognizer.locationInView(ItemView))
       draggedProperty = ItemProperty
       let DragView = UILabel()

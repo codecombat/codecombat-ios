@@ -60,6 +60,8 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     inventoryFrame = CGRectMake(0, 0, editorContainerView.frame.width / 3, editorContainerView.frame.height)
     inventoryViewController = TomeInventoryViewController()
     inventoryViewController.view.frame = inventoryFrame
+    //helps to fix a scrolling bug
+    scrollView.panGestureRecognizer.requireGestureRecognizerToFail(inventoryViewController.inventoryView.panGestureRecognizer)
     addChildViewController(inventoryViewController)
     editorContainerView.addSubview(inventoryViewController.view)
   }
