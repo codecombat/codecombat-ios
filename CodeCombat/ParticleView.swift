@@ -31,8 +31,12 @@ class ParticleView: SKView {
         particleScene!.scaleMode = SKSceneScaleMode.AspectFill
         particleScene!.backgroundColor = UIColor.clearColor()
         self.presentScene(particleScene!)
-        
     }
+  
+  override func removeFromSuperview() {
+    self.scene?.removeAllChildren()
+    super.removeFromSuperview()
+  }
     
 
     /*
