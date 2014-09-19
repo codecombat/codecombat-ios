@@ -141,11 +141,12 @@ class EditorTextView: UITextView {
     //create a coloured box on the line past the last line here
     //identify location of last glyph index
     let glyphRange = layoutManager.glyphRangeForTextContainer(textContainer)
-    println("The text has glyph range loc: \(glyphRange.location), len: \(glyphRange.length)")
     var lastLineFragmentRect = layoutManager.lineFragmentRectForGlyphAtIndex(NSMaxRange(glyphRange) - 1, effectiveRange: nil)
     //now add one line height
+    let bufferHeight = 50
     let lineHeight = font.lineHeight + lineSpacing
-    lastLineFragmentRect.origin.y += lineHeight + lineSpacing
+    lastLineFragmentRect.origin.y += lineHeight + lineSpacing - CGFloat(bufferHeight/2)
+    lastLineFragmentRect.size.height = lineHeight + CGFloat(bufferHeight)
     //create a view
     currentDragHintView = ParticleView(frame: lastLineFragmentRect)
     //currentDragHintView = UIView(frame: lastLineFragmentRect)
@@ -187,12 +188,9 @@ class EditorTextView: UITextView {
     var newlinesToInsert = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex
     //Check if dragging onto an empty line in between two other lines of code.
     if characterAtGlyphIndex == 10 && characterBeforeGlyphIndex == 10 {
-      println("Inserting text on an empty line.")
     } else if draggedOntoLine == numberOfNewlinesBeforeGlyphIndex && characterAtGlyphIndex != 10 {
-      println("Inserting text onto a line where there is text")
       stringToInsert = stringToInsert + "\n"
     } else if draggedOntoLine == numberOfNewlinesBeforeGlyphIndex && nearestGlyphIndex == storage.string()!.length - 1 {
-      println("Dragged to last character!")
       stringToInsert = "\n" + stringToInsert
     } else if draggedOntoLine > numberOfNewlinesBeforeGlyphIndex { //adapt to deal with wrapped lines
       for var newlinesToInsertBeforeString = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex; newlinesToInsertBeforeString >= 0; newlinesToInsertBeforeString-- {

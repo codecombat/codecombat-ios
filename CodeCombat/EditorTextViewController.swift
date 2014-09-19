@@ -8,7 +8,7 @@
 
 import UIKit
 
-class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutManagerDelegate {
+class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutManagerDelegate, UIGestureRecognizerDelegate {
   let textStorage = EditorTextStorage()
   let layoutManager = NSLayoutManager()
   let textContainer = NSTextContainer()
