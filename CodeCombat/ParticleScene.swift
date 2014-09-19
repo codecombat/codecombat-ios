@@ -17,11 +17,8 @@ class ParticleScene: SKScene {
     override init(size: CGSize) {
         super.init(size: size)
         self.backgroundColor = SKColor(red: 0.15, green: 0.15, blue: 0.3, alpha: 0.15)
-        let myLabel = SKLabelNode(fontNamed: "Helvetica")
-        myLabel.text = "Test"
-        myLabel.fontSize = 30
-        myLabel.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame))
-        self.addChild(myLabel)
+      self.addChild(newExplosion(size.width/2, posY: size.height/2))
+      
     }
     
     func newExplosion(posX:CGFloat, posY:CGFloat) -> SKEmitterNode {
@@ -32,13 +29,6 @@ class ParticleScene: SKScene {
         emitter.numParticlesToEmit = 1000
         emitter.zPosition=2.0
         return emitter
-    }
-    
-    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
-        for touch in touches {
-            let location = touch.locationInNode(self)
-            self.addChild(self.newExplosion(location.x, posY: location.y))
-        }
     }
     
 }

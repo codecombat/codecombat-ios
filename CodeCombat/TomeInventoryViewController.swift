@@ -149,6 +149,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
       DragView.backgroundColor = UIColor.clearColor()
       Parent.view.addSubview(DragView)
       draggedView = DragView
+      EditorView.handleItemPropertyDragBegan()
       break
     case .Changed:
       draggedView.center = LocationInParentView

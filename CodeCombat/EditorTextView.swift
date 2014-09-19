@@ -19,6 +19,7 @@ class EditorTextView: UITextView {
   var numberOfCharactersInLineNumberGutter = 0
   var lineNumberWidth = CGFloat(20.0)
   var currentDragView:UIView? = nil
+  var currentDragHintView:ParticleView?
   var currentHighlightingView:UIView? = nil
   var parameterViews:[ParameterView] = []
   let lineSpacing:CGFloat = 5
@@ -136,6 +137,22 @@ class EditorTextView: UITextView {
     setNeedsDisplay()
   }
   
+  func handleItemPropertyDragBegan() {
+    //create a coloured box on the line past the last line here
+    //identify location of last glyph index
+    let glyphRange = layoutManager.glyphRangeForTextContainer(textContainer)
+    println("The text has glyph range loc: \(glyphRange.location), len: \(glyphRange.length)")
+    var lastLineFragmentRect = layoutManager.lineFragmentRectForGlyphAtIndex(NSMaxRange(glyphRange) - 1, effectiveRange: nil)
+    //now add one line height
+    let lineHeight = font.lineHeight + lineSpacing
+    lastLineFragmentRect.origin.y += lineHeight + lineSpacing
+    //create a view
+    currentDragHintView = ParticleView(frame: lastLineFragmentRect)
+    //currentDragHintView = UIView(frame: lastLineFragmentRect)
+    //currentDragHintView!.backgroundColor = UIColor.greenColor()
+    addSubview(currentDragHintView!)
+  }
+  
   func handleItemPropertyDragChangedAtLocation(location:CGPoint, code:String) {
     let currentLine = Int(location.y / (font.lineHeight + lineSpacing))
     highlightLines(startingLineNumber: currentLine, numberOfLines: 1)
@@ -143,6 +160,8 @@ class EditorTextView: UITextView {
   
   func handleItemPropertyDragEndedAtLocation(location:CGPoint, code:String) {
     currentHighlightingView?.removeFromSuperview()
+    currentDragHintView?.removeFromSuperview()
+    //currentDragHintView = nil
     currentHighlightingView = nil
     let storage = textStorage as EditorTextStorage
     

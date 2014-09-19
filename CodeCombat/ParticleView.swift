@@ -23,8 +23,8 @@ class ParticleView: SKView {
     }
     
     func startParticles() {
-        self.showsFPS = true
-        self.showsNodeCount = true
+        self.showsFPS = false
+        self.showsNodeCount = false
         self.allowsTransparency = true
         
         particleScene = ParticleScene(size: self.bounds.size)
