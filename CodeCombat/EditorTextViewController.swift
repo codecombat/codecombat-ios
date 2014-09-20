@@ -87,7 +87,12 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       var shouldDelete = false
       if draggedLabel.center.x > parentViewController!.view.bounds.maxX - 50 {
         textStorage.beginEditing()
-        textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
+        if draggedCharacterRange.location != 0 {
+          textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
+        } else {
+          textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "\n")
+        }
+        
         textStorage.endEditing()
         textView.setNeedsDisplay()
       }
