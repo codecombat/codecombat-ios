@@ -54,7 +54,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     //get glyph under point
     var locationInParentView = recognizer.locationInView(parentViewController!.view)
     locationInParentView.y += (textView.lineSpacing + textView.font.lineHeight) / 2
-    let dragLocation = recognizer.locationInView(self.view)
+    let dragLocation = recognizer.locationInView(self.textView)
     
     switch recognizer.state {
     case .Began:
@@ -63,6 +63,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       var lineFragmentRectToDrag = layoutManager.lineFragmentRectForGlyphAtIndex(nearestGlyphIndexToDrag, effectiveRange: &effectiveGlyphRange)
       let glyphRange = layoutManager.glyphRangeForBoundingRect(lineFragmentRectToDrag, inTextContainer: textContainer)
       let characterRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
+      println("Dragging character range loc:\(glyphRange.location), len: \(glyphRange.length)")
       let attributedSubstring = textStorage.attributedString!.attributedSubstringFromRange(characterRange)
       //make a new subview
       //cover the text
@@ -87,8 +88,9 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       var shouldDelete = false
       if draggedLabel.center.x > parentViewController!.view.bounds.maxX - 50 {
         textStorage.beginEditing()
-        textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "\n")
+        textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
         textStorage.endEditing()
+        textView.setNeedsDisplay()
       }
       coverTextView.removeFromSuperview()
       coverTextView = nil
