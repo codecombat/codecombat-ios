@@ -143,7 +143,7 @@ class EditorTextView: UITextView {
     let glyphRange = layoutManager.glyphRangeForTextContainer(textContainer)
     var lastLineFragmentRect = layoutManager.lineFragmentRectForGlyphAtIndex(NSMaxRange(glyphRange) - 1, effectiveRange: nil)
     //now add one line height
-    let bufferHeight = 50
+    let bufferHeight = 100
     let lineHeight = font.lineHeight + lineSpacing
     lastLineFragmentRect.origin.y += lineHeight + lineSpacing - CGFloat(bufferHeight/2)
     lastLineFragmentRect.size.height = lineHeight + CGFloat(bufferHeight)
@@ -223,7 +223,7 @@ class EditorTextView: UITextView {
     if currentHighlightingView == nil {
       currentHighlightingView = UIView(frame: HighlightingRect)
       currentHighlightingView?.backgroundColor = UIColor(
-        red: 1,
+        red: 0,
         green: 0,
         blue: 0,
         alpha: 0.2)
