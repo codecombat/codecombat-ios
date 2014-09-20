@@ -12,6 +12,9 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   let textStorage = EditorTextStorage()
   let layoutManager = NSLayoutManager()
   let textContainer = NSTextContainer()
+  var draggedLabel:UILabel!
+  var draggedCharacterRange:NSRange!
+  var coverTextView:UIView!
   var dragGestureRecognizer:UIPanGestureRecognizer!
   let currentFont = UIFont(name: "Courier", size: 22)
   var textView:EditorTextView! {
@@ -45,13 +48,64 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   }
   
   func handleDrag(recognizer:UIPanGestureRecognizer) {
+    if recognizer == textView.panGestureRecognizer {
+      return
+    }
+    //get glyph under point
+    var locationInParentView = recognizer.locationInView(parentViewController!.view)
+    locationInParentView.y += (textView.lineSpacing + textView.font.lineHeight) / 2
+    let dragLocation = recognizer.locationInView(self.view)
+    
+    switch recognizer.state {
+    case .Began:
+      let nearestGlyphIndexToDrag = layoutManager.glyphIndexForPoint(dragLocation, inTextContainer: textContainer)
+      var effectiveGlyphRange:NSRange = NSRange(location:0, length:0)
+      var lineFragmentRectToDrag = layoutManager.lineFragmentRectForGlyphAtIndex(nearestGlyphIndexToDrag, effectiveRange: &effectiveGlyphRange)
+      let glyphRange = layoutManager.glyphRangeForBoundingRect(lineFragmentRectToDrag, inTextContainer: textContainer)
+      let characterRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
+      let attributedSubstring = textStorage.attributedString!.attributedSubstringFromRange(characterRange)
+      //make a new subview
+      //cover the text
+      draggedLabel = UILabel(frame: lineFragmentRectToDrag)
+      draggedLabel.attributedText = attributedSubstring
+      draggedLabel.sizeToFit()
+      draggedLabel.center = locationInParentView
+      draggedCharacterRange = characterRange
+      //cover the text
+      lineFragmentRectToDrag.size.height = textView.font.lineHeight + textView.lineSpacing
+      lineFragmentRectToDrag.origin.y += textView.lineSpacing
+      coverTextView = UIView(frame: lineFragmentRectToDrag)
+      coverTextView.backgroundColor = textView.backgroundColor
+      //coverTextView.center = dragLocation
+      textView.addSubview(coverTextView)
+      parentViewController!.view.addSubview(draggedLabel)
+      break
+    case .Changed:
+      draggedLabel.center = locationInParentView
+      break
+    case .Ended:
+      var shouldDelete = false
+      if draggedLabel.center.x > parentViewController!.view.bounds.maxX - 50 {
+        textStorage.beginEditing()
+        textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "\n")
+        textStorage.endEditing()
+      }
+      coverTextView.removeFromSuperview()
+      coverTextView = nil
+      draggedLabel.removeFromSuperview()
+      draggedLabel = nil
+      
+      break
+    default:
+      break
+    }
   }
   
-  func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-    return true
-  }
   
   func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+    if draggedLabel != nil {
+      return false
+    }
     return true
   }
   
