@@ -72,7 +72,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     textViewController.view.frame = editorTextViewFrame
     
     textViewController.createTextViewWithFrame(editorTextViewFrame)
-    scrollView.panGestureRecognizer.requireGestureRecognizerToFail(textViewController.textView.panGestureRecognizer)
+    scrollView.panGestureRecognizer.requireGestureRecognizerToFail(textViewController.dragGestureRecognizer)
     addChildViewController(textViewController)
     editorContainerView.addSubview(textViewController.textView)
   }

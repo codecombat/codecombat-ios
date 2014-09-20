@@ -42,9 +42,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     
     
   }
-  
-  func initializeDragGestureRecognizer() {
-    
+  func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    return true
   }
   
   func handleDrag(recognizer:UIPanGestureRecognizer) {
@@ -106,6 +105,13 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   
   func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
     if draggedLabel != nil {
+      return false
+    }
+    //find if the nearest glyph is a newline (aka not dragging on a thing)
+    let nearestGlyphIndexToDrag = layoutManager.glyphIndexForPoint(gestureRecognizer.locationInView(textView), inTextContainer: textContainer)
+    let characterIndex = layoutManager.characterIndexForGlyphAtIndex(nearestGlyphIndexToDrag)
+    let character = textStorage.string()!.characterAtIndex(characterIndex)
+    if character == 10 {
       return false
     }
     return true

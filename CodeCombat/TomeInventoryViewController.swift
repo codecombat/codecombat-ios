@@ -160,6 +160,9 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
           Snippet = draggedProperty.name
         }
         EditorView.handleItemPropertyDragChangedAtLocation(LocationInEditorContainerView, code: Snippet!)
+      } else {
+        EditorView.currentHighlightingView?.removeFromSuperview()
+        EditorView.currentHighlightingView = nil
       }
       break
     case .Ended:
@@ -172,7 +175,9 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
         EditorView.handleItemPropertyDragEndedAtLocation(LocationInEditorContainerView, code: Snippet!)
       } else {
         EditorView.currentDragHintView?.removeFromSuperview()
+        EditorView.currentDragHintView = nil
         EditorView.currentHighlightingView?.removeFromSuperview()
+        EditorView.currentHighlightingView = nil
       }
       draggedView = nil
       
