@@ -162,7 +162,6 @@ class EditorTextView: UITextView {
   func handleItemPropertyDragEndedAtLocation(location:CGPoint, code:String) {
     currentHighlightingView?.removeFromSuperview()
     currentDragHintView?.removeFromSuperview()
-    //currentDragHintView = nil
     currentHighlightingView = nil
     let storage = textStorage as EditorTextStorage
     

@@ -168,8 +168,14 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
       if Snippet == nil {
         Snippet = draggedProperty.name
       }
-      EditorView.handleItemPropertyDragEndedAtLocation(LocationInEditorContainerView, code: Snippet!)
+      if EditorView.frame.contains(LocationInParentView) {
+        EditorView.handleItemPropertyDragEndedAtLocation(LocationInEditorContainerView, code: Snippet!)
+      } else {
+        EditorView.currentDragHintView?.removeFromSuperview()
+        EditorView.currentHighlightingView?.removeFromSuperview()
+      }
       draggedView = nil
+      
       break
     default:
       break
