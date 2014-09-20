@@ -69,8 +69,11 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   func setupEditor() {
     let editorTextViewFrame = CGRectMake(inventoryFrame.width, 0, editorContainerView.frame.width - inventoryFrame.width, editorContainerView.frame.height)
     textViewController = EditorTextViewController()
-    textViewController.createTextViewWithFrame(editorTextViewFrame)
+    textViewController.view.frame = editorTextViewFrame
     
+    textViewController.createTextViewWithFrame(editorTextViewFrame)
+    scrollView.panGestureRecognizer.requireGestureRecognizerToFail(textViewController.textView.panGestureRecognizer)
+    addChildViewController(textViewController)
     editorContainerView.addSubview(textViewController.textView)
   }
 

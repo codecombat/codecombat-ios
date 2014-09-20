@@ -12,7 +12,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   let textStorage = EditorTextStorage()
   let layoutManager = NSLayoutManager()
   let textContainer = NSTextContainer()
-  //var dragGestureRecognizer:
+  var dragGestureRecognizer:UIPanGestureRecognizer!
   let currentFont = UIFont(name: "Courier", size: 22)
   var textView:EditorTextView! {
     didSet {
@@ -32,8 +32,27 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+    //view.addGestureRecognizer(dragGestureRecognizer)
     // Do any additional setup after loading the view.
+    dragGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handleDrag:")
+    dragGestureRecognizer.delegate = self
+    
+    
+  }
+  
+  func initializeDragGestureRecognizer() {
+    
+  }
+  
+  func handleDrag(recognizer:UIPanGestureRecognizer) {
+  }
+  
+  func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    return true
+  }
+  
+  func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+    return true
   }
   
   override func didReceiveMemoryWarning() {
@@ -44,6 +63,10 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   func createTextViewWithFrame(frame:CGRect) {
     setupTextKitHierarchy()
     textView = EditorTextView(frame: frame, textContainer: textContainer)
+    textView.addGestureRecognizer(dragGestureRecognizer)
+    textView.panGestureRecognizer.requireGestureRecognizerToFail(dragGestureRecognizer)
+    view.addSubview(textView)
+    
     setupNotificationCenterObservers()
   }
   
@@ -73,8 +96,6 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     println("Should be drawing a box for func \(functionName!)")
     textView.drawParameterOverlay(range)
   }
-  
-  
   
   private func resetFontToCurrentFont() {
     textView.font = currentFont
