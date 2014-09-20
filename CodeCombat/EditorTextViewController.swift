@@ -12,6 +12,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   let textStorage = EditorTextStorage()
   let layoutManager = NSLayoutManager()
   let textContainer = NSTextContainer()
+  //var dragGestureRecognizer:
   let currentFont = UIFont(name: "Courier", size: 22)
   var textView:EditorTextView! {
     didSet {
@@ -72,6 +73,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     println("Should be drawing a box for func \(functionName!)")
     textView.drawParameterOverlay(range)
   }
+  
+  
   
   private func resetFontToCurrentFont() {
     textView.font = currentFont

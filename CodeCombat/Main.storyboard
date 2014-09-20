@@ -252,6 +252,7 @@
                                 </state>
                                 <connections>
                                     <action selector="changeLanguage" destination="1Nr-WG-M1D" eventType="touchUpInside" id="xk4-ja-iKT"/>
+                                    <segue destination="Wi4-rd-ltW" kind="modal" modalPresentationStyle="formSheet" id="0hy-xe-ZOd"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -269,6 +270,48 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mhn-qm-r2f" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1898" y="1675"/>
+        </scene>
+        <!--Language Selection View Controller-->
+        <scene sceneID="IST-ZV-CcS">
+            <objects>
+                <viewController id="Wi4-rd-ltW" customClass="LanguageSelectionViewController" customModule="CodeCombat" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="EvS-iA-kUh"/>
+                        <viewControllerLayoutGuide type="bottom" id="Jfr-hc-tAB"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="jLE-nr-nWh">
+                        <rect key="frame" x="0.0" y="0.0" width="540" height="620"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Language Selection" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uAc-Ym-tjz">
+                                <rect key="frame" x="194" y="157" width="152" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DeL-Bl-XN1">
+                                <rect key="frame" x="0.0" y="186" width="540" height="216"/>
+                            </pickerView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ypi-Hr-IUg">
+                                <rect key="frame" x="255" y="432" width="37" height="30"/>
+                                <state key="normal" title="Done">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="clickDone" destination="Wi4-rd-ltW" eventType="touchUpInside" id="bg7-VF-oul"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <outlet property="doneButton" destination="Ypi-Hr-IUg" id="8mO-dh-uci"/>
+                        <outlet property="languagePickerView" destination="DeL-Bl-XN1" id="Cpf-Ro-QZn"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="y2g-yF-KEN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3006" y="1793"/>
         </scene>
         <!--Store View Controller-->
         <scene sceneID="xxm-hx-PYa">

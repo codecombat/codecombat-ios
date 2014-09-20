@@ -31,7 +31,7 @@ class MainMenuController: UIViewController, UIActionSheetDelegate {
   
   @IBAction func changeLanguage() {
     let languages = NSArray(array: ["English","German","Swahili"])
-    ActionSheetStringPicker.showPickerWithTitle("Select language", rows: languages, initialSelection: 0, doneBlock: nil, cancelBlock: nil, origin: self.view)
+    //ActionSheetStringPicker.showPickerWithTitle("Select language", rows: languages, initialSelection: 0, doneBlock: nil, cancelBlock: nil, origin: self.view)
     println("Should have shown picker!")
   }
 
