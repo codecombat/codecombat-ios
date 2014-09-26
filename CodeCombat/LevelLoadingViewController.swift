@@ -21,7 +21,7 @@ class LevelLoadingViewController: UIViewController {
     let mainStoryboard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
     playViewController = mainStoryboard.instantiateViewControllerWithIdentifier("PlayViewController") as? PlayViewController
     playViewController?.view  // Access this early to get it set up and listening for events.
-    loadLevel("opportunism")
+    loadLevel("the-raised-sword")
     view.addSubview(WebManager.sharedInstance.webView!)  // If it's visible, it processes EaselJS stuff much faster, because EaselJS doesn't deprioritize it due to being hidden.
   }
   

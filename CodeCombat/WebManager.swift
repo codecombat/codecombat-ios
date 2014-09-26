@@ -37,7 +37,7 @@ class WebManager: NSObject, WKScriptMessageHandler {
     webViewConfiguration = WKWebViewConfiguration()
     addScriptMessageHandlers()
     webView = WKWebView(frame: WebViewFrame, configuration: webViewConfiguration)
-    webView!.hidden = true
+    //webView!.hidden = true
     if let email = User.sharedInstance.email {
       logIn(email: email, password: User.sharedInstance.password!)
     }
