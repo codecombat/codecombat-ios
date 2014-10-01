@@ -106,16 +106,23 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     }
   }
 
-  @IBAction func onCast(sender: UIButton) {
+  @IBAction func onCodeRun(sender: UIButton) {
     handleTomeSourceRequest()
     webManager.publish("tome:manual-cast", event: [:])
+    scrollView.contentOffset = CGPoint(x: 0, y: 0)
   }
-  
+
+  @IBAction func onCodeSubmitted(sender: UIButton) {
+    handleTomeSourceRequest()
+    webManager.publish("tome:manual-cast", event: ["realTime": true])
+    scrollView.contentOffset = CGPoint(x: 0, y: 0)
+  }
+
   func handleTomeSourceRequest(){
     var escapedString = textViewController.textView.text!.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
     escapedString = escapedString.stringByReplacingOccurrencesOfString("\n", withString: "\\n")
     var js = "if(currentView.tome.spellView) { currentView.tome.spellView.ace.setValue(\"\(escapedString)\"); } else { console.log('damn, no one was selected!'); }"
-    println(js)
+    //println(js)
     webManager.evaluateJavaScript(js, completionHandler: nil)
   }
 }

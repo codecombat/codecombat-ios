@@ -8,16 +8,25 @@
 
 import UIKit
 
+var mainMenuAutoLoggedIn: Bool = false  // Wish class variables were supported.
+
 class MainMenuController: UIViewController, UIActionSheetDelegate {
 
   @IBOutlet weak var playerNameLabel: UILabel!
   @IBOutlet weak var testPlayButton: UIButton!
-    
+  
   override func viewDidLoad() {
-    
     playerNameLabel.text = User.sharedInstance.name
     if playerNameLabel.text == nil {
       playerNameLabel.text = "New Player"
+    }
+  }
+  
+  override func viewDidAppear(animated: Bool) {
+    super.viewDidAppear(animated)
+    if !mainMenuAutoLoggedIn {
+      mainMenuAutoLoggedIn = true
+      self.performSegueWithIdentifier("loginScreenSegue", sender: self)
     }
   }
     

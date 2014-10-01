@@ -12,14 +12,16 @@ class WebManager: NSObject, WKScriptMessageHandler {
   
   var webViewConfiguration: WKWebViewConfiguration!
   var urlSesssionConfiguration: NSURLSessionConfiguration?
-  let rootURL = NSURL(scheme: "http", host: "localhost:3000", path: "/")
-  //let rootURL = NSURL(scheme: "http", host: "10.0.1.2:3000", path: "/")
+  //let rootURL = NSURL(scheme: "http", host: "localhost:3000", path: "/")
+  let rootURL = NSURL(scheme: "http", host: "10.0.1.2:3000", path: "/")
   var operationQueue: NSOperationQueue?
   var webView: WKWebView?  // Assign this if we create one, so that we can evaluate JS in its context.
   //let webViewContextPointer = UnsafeMutablePointer<()>()
   var lastJSEvaluated: String?
-  
   var scriptMessageNotificationCenter:NSNotificationCenter!
+  var activeSubscriptions: [String: Int] = [:]
+  var activeObservers: [NSObject : [String]] = [:]
+  
   class var sharedInstance:WebManager {
     return WebManagerSharedInstance
   }
@@ -33,7 +35,7 @@ class WebManager: NSObject, WKScriptMessageHandler {
   }
   
   private func instantiateWebView() {
-    let WebViewFrame = CGRectMake(0, 0, 1024, 1024 * (589 / 924))  // Full-width Surface, preserving aspect ratio.
+    let WebViewFrame = CGRectMake(0, 0, 1024, 768)  // Full-size
     webViewConfiguration = WKWebViewConfiguration()
     addScriptMessageHandlers()
     webView = WKWebView(frame: WebViewFrame, configuration: webViewConfiguration)
@@ -104,10 +106,31 @@ class WebManager: NSObject, WKScriptMessageHandler {
   
   func subscribe(observer: AnyObject, channel: String, selector: Selector) {
     scriptMessageNotificationCenter.addObserver(observer, selector: selector, name: channel, object: self)
+    if activeSubscriptions[channel] == nil {
+      activeSubscriptions[channel] = 0
+    }
+    activeSubscriptions[channel] = activeSubscriptions[channel]! + 1
+    if activeObservers[observer as NSObject] == nil {
+      activeObservers[observer as NSObject] = []
+    }
+    activeObservers[observer as NSObject]!.append(channel)
+    if activeSubscriptions[channel] == 1 {
+      evaluateJavaScript("if(window.addIPadSubscription) window.addIPadSubscription('\(channel)');", completionHandler: nil)
+    }
+    //println("Subscribed \(observer) to \(channel) so now have activeSubscriptions \(activeSubscriptions) activeObservers \(activeObservers)")
   }
   
   func unsubscribe(observer: AnyObject) {
     scriptMessageNotificationCenter.removeObserver(observer)
+    if let channels = activeObservers[observer as NSObject] {
+      for channel in channels {
+        activeSubscriptions[channel] = activeSubscriptions[channel]! - 1
+        if activeSubscriptions[channel] == 0 {
+          evaluateJavaScript("if(window.removeIPadSubscription) window.removeIPadSubscription('\(channel)');", completionHandler: nil)
+        }
+      }
+      //println("Unsubscribed \(observer) from \(channels) so now have activeSubscriptions \(activeSubscriptions) activeObservers \(activeObservers)")
+    }
   }
   
   func publish(channel: String, event: Dictionary<String, AnyObject>) {
@@ -127,7 +150,7 @@ class WebManager: NSObject, WKScriptMessageHandler {
       println("There was an error evaluating JS: \(error), response: \(response)")
       println("JS was \(lastJSEvaluated!)")
     } else if response != nil {
-      println("Got response from evaluating JS: \(response)")
+      //println("Got response from evaluating JS: \(response)")
     }
   }
   
