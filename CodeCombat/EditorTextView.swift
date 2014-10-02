@@ -192,8 +192,8 @@ class EditorTextView: UITextView {
     } else if draggedOntoLine == numberOfNewlinesBeforeGlyphIndex && nearestGlyphIndex == storage.string()!.length - 1 {
       stringToInsert = "\n" + stringToInsert
     } else if draggedOntoLine > numberOfNewlinesBeforeGlyphIndex { //adapt to deal with wrapped lines
-      for var newlinesToInsertBeforeString = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex; newlinesToInsertBeforeString >= 0; newlinesToInsertBeforeString-- {
-        stringToInsert = "\n" + stringToInsert
+      for var newlinesToInsertBeforeString = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex; newlinesToInsertBeforeString > 0; newlinesToInsertBeforeString-- {
+        stringToInsert = "\n" + stringToInsert  // TODO: figure out why something was prepending newlines in Gems in the Deep; > 0 used to be >= 0, dunno if that works.
       }
     }
     textStorage.beginEditing()

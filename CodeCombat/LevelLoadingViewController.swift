@@ -30,7 +30,7 @@ class LevelLoadingViewController: UIViewController {
     let webManager = WebManager.sharedInstance
     webManager.subscribe(self, channel: "router:navigated", selector: Selector("onNavigated:"))
     webManager.subscribe(self, channel: "level:loading-view-unveiled", selector: Selector("onLevelStarted:"))
-    webManager.subscribe(self, channel: "supermodel:load-progress-changed", selector: Selector("onProgressUpdate:"))
+    //webManager.subscribe(self, channel: "supermodel:load-progress-changed", selector: Selector("onProgressUpdate:"))
   }
   
   deinit {
@@ -64,17 +64,17 @@ class LevelLoadingViewController: UIViewController {
       let route = event["route"]! as String
       updateFrame(route)
       if presentedViewController != nil && route.rangeOfString("/play/level/", options: NSStringCompareOptions.LiteralSearch) != nil {
-        dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(false, completion: nil)
       }
     }
   }
   
-  func onProgressUpdate(note: NSNotification) {
-    if let event = note.userInfo {
-      let progress = event["progress"]! as Float
-      levelLoadingProgressView.setProgress(progress, animated: true)
-    }
-  }
+//  func onProgressUpdate(note: NSNotification) {
+//    if let event = note.userInfo {
+//      let progress = event["progress"]! as Float
+//      levelLoadingProgressView.setProgress(progress, animated: true)
+//    }
+//  }
   
   //  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
   //    WebManager.sharedInstance.unsubscribe(self)
@@ -82,7 +82,7 @@ class LevelLoadingViewController: UIViewController {
   
   func onLevelStarted(note: NSNotification) {
     playViewController!.setupWebView()
-    presentViewController(playViewController!, animated: true, completion: nil)
+    presentViewController(playViewController!, animated: false, completion: nil)
     //performSegueWithIdentifier("levelStartedSegue", sender: self)
     //let segue = UIStoryboardSegue(identifier: "levelStartedSegue2", source: self, destination: playViewController!)
     //segue.perform()
