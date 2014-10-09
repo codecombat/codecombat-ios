@@ -150,7 +150,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
         label.attributedText = getAttributedStringForCharacterRange(fragmentParagraphRange)
         label.sizeToFit()
         label.frame.origin.x += textView.gutterPadding
-        label.frame.origin.y += textView.lineSpacing + 4 //I have no idea why this isn't aligning properly, probably has to do with the sizeToFit()
+        label.frame.origin.y += textView.lineSpacing + 3.5 //I have no idea why this isn't aligning properly, probably has to do with the sizeToFit()
         label.backgroundColor = UIColor.clearColor()
         dragOverlayLabels[currentLineNumber] = label
         textView.addSubview(label)
