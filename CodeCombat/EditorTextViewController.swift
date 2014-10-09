@@ -181,7 +181,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     
     //If the drag has moved up, we need to move some lines down potentially
     if max(0,lineNumber) < draggedLineNumber {
-      for lineToMove in max(lineNumber,0)...(draggedLineNumber - 1) {
+      //Move the ones between the current drag location and dragged line
+      for lineToMove in max(lineNumber,1)...(draggedLineNumber - 1) {
         let labelToMove = dragOverlayLabels[lineToMove]!
         //check if offset is supposed to move
         if labelToMove.frame.origin.y == originalDragOverlayLabelOffsets[lineToMove]! {
@@ -192,7 +193,18 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
           labelToMove.setNeedsLayout()
         }
       }
+      //Reset the ones above that
+      for lineToReset in 1...max(1,lineNumber - 1) {
+        let labelToReset = dragOverlayLabels[lineToReset]!
+        if labelToReset.frame.origin.y != originalDragOverlayLabelOffsets[lineToReset]! {
+          var oldFrame = labelToReset.frame
+          oldFrame.origin.y = originalDragOverlayLabelOffsets[lineToReset]!
+          labelToReset.frame = oldFrame
+          labelToReset.setNeedsLayout()
+        }
+      }
     } else if min(lineNumber,maxLine) > draggedLineNumber {
+      //Move the lines between the dragged line and the current drag
       for lineToMove in (draggedLineNumber + 1)...min(lineNumber,maxLine) {
         let labelToMove = dragOverlayLabels[lineToMove]!
         if labelToMove.frame.origin.y == originalDragOverlayLabelOffsets[lineToMove]! {
@@ -203,6 +215,17 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
           println("Moved line \(lineToMove)")
         }
       }
+      //Reset the ones below that
+      for lineToReset in min(maxLine,lineNumber + 1)...maxLine {
+        let labelToReset = dragOverlayLabels[lineToReset]!
+        if labelToReset.frame.origin.y != originalDragOverlayLabelOffsets[lineToReset]! {
+          var oldFrame = labelToReset.frame
+          oldFrame.origin.y = originalDragOverlayLabelOffsets[lineToReset]!
+          labelToReset.frame = oldFrame
+          labelToReset.setNeedsLayout()
+        }
+      }
+    
       
     } else if lineNumber == draggedLineNumber {
       //println("Should maybe move lines back? Drag on dragged line number!")
