@@ -13,10 +13,9 @@ class WebManager: NSObject, WKScriptMessageHandler {
   var webViewConfiguration: WKWebViewConfiguration!
   var urlSesssionConfiguration: NSURLSessionConfiguration?
   //let rootURL = NSURL(scheme: "http", host: "localhost:3000", path: "/")
-  let rootURL = NSURL(scheme: "http", host: "10.0.1.2:3000", path: "/")
+  let rootURL = NSURL(scheme: "http", host: "localhost:3000", path: "/")
   var operationQueue: NSOperationQueue?
   var webView: WKWebView?  // Assign this if we create one, so that we can evaluate JS in its context.
-  //let webViewContextPointer = UnsafeMutablePointer<()>()
   var lastJSEvaluated: String?
   var scriptMessageNotificationCenter:NSNotificationCenter!
   var activeSubscriptions: [String: Int] = [:]
@@ -55,54 +54,6 @@ class WebManager: NSObject, WKScriptMessageHandler {
     //addWebViewKeyValueObservers()
     //println("going to log in to \(requestURL) when web view loads! \(loginScript)")
   }
-  
-  /*
-  func addWebViewKeyValueObservers() {
-    webView!.addObserver(self,
-      forKeyPath: NSStringFromSelector(Selector("loading")),
-      options: nil,
-      context: webViewContextPointer)
-    webView!.addObserver(self,
-      forKeyPath: NSStringFromSelector(Selector("estimatedProgress")),
-      options: NSKeyValueObservingOptions.Initial,
-      context: webViewContextPointer)
-  }
-
-  override func observeValueForKeyPath(
-    keyPath: String!,
-    ofObject object: AnyObject!,
-    change: [NSObject : AnyObject]!, context: UnsafeMutablePointer<()>) {
-      if context == WebViewContextPointer {
-        switch keyPath! {
-          //case NSStringFromSelector(Selector("estimatedProgress")):
-          //if webView!.estimatedProgress > 0.8 && !injectedListeners {
-          //  injectListeners()
-          //}
-        default:
-          println("\(keyPath) changed")
-        }
-      } else {
-        super.observeValueForKeyPath(keyPath,
-          ofObject: object,
-          change: change,
-          context: context)
-      }
-  }
-  
-  func doLogIn(loginScript: String) {
-    println("going to log in with \(loginScript)")
-    evaluateJavaScript(loginScript, completionHandler: { response, error in
-      if error != nil {
-        println("There was an error evaluating JS: \(error), response: \(response)")
-      } else {
-        //hasLoggedIn = true
-        //isLoggingIn = false
-        println("Logging in! Got JS response: \(response)")
-        //webpageLoadingProgressView.setProgress(0.2, animated: true)
-      }
-    })
-  }
-  */
   
   func subscribe(observer: AnyObject, channel: String, selector: Selector) {
     scriptMessageNotificationCenter.addObserver(observer, selector: selector, name: channel, object: self)

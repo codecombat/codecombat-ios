@@ -15,6 +15,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   var draggedLabel:UILabel!
   var draggedCharacterRange:NSRange!
   var coverTextView:UIView!
+  var deleteOverlayView:UIView!
+  let deleteOverlayWidth:CGFloat = 75
   var dragGestureRecognizer:UIPanGestureRecognizer!
   let currentFont = UIFont(name: "Courier", size: 22)
   var textView:EditorTextView! {
@@ -44,6 +46,16 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   }
   func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
     return true
+  }
+  
+  private func createDeleteOverlayView() -> UIView {
+    var deleteOverlayFrame = self.textView.frame
+    deleteOverlayFrame.origin.x = deleteOverlayFrame.width - deleteOverlayWidth
+    deleteOverlayFrame.size.width = deleteOverlayWidth
+    
+    let overlay = UIView(frame: deleteOverlayFrame)
+    overlay.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.3)
+    return overlay
   }
   
   func handleDrag(recognizer:UIPanGestureRecognizer) {
@@ -79,13 +91,22 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       //coverTextView.center = dragLocation
       textView.addSubview(coverTextView)
       parentViewController!.view.addSubview(draggedLabel)
+      deleteOverlayView = createDeleteOverlayView()
+      deleteOverlayView.hidden = true
+      textView.addSubview(deleteOverlayView)
+      
       break
     case .Changed:
       draggedLabel.center = locationInParentView
+      if draggedLabel.center.x > parentViewController!.view.bounds.maxX - deleteOverlayWidth {
+        deleteOverlayView.hidden = false
+      } else {
+        deleteOverlayView.hidden = true
+      }
       break
     case .Ended:
       var shouldDelete = false
-      if draggedLabel.center.x > parentViewController!.view.bounds.maxX - 50 {
+      if draggedLabel.center.x > parentViewController!.view.bounds.maxX - deleteOverlayWidth {
         textStorage.beginEditing()
         if draggedCharacterRange.location != 0 {
           textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
@@ -96,6 +117,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
         textStorage.endEditing()
         textView.setNeedsDisplay()
       }
+      deleteOverlayView.removeFromSuperview()
+      deleteOverlayView = nil
       coverTextView.removeFromSuperview()
       coverTextView = nil
       draggedLabel.removeFromSuperview()
