@@ -18,6 +18,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   var deleteOverlayView:UIView!
   let deleteOverlayWidth:CGFloat = 75
   var dragGestureRecognizer:UIPanGestureRecognizer!
+  var dragOverlayLabels:[Int:UILabel] = Dictionary<Int,UILabel>()
   let currentFont = UIFont(name: "Courier", size: 22)
   var textView:EditorTextView! {
     didSet {
@@ -76,17 +77,18 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   }
   
   private func createDraggedLabel(lineFragmentRect:CGRect, loc:CGPoint, characterRange:NSRange) -> UILabel {
-    draggedLabel = UILabel(frame: lineFragmentRect)
-    draggedLabel.attributedText = getAttributedStringForCharacterRange(characterRange)
-    draggedLabel.sizeToFit()
-    draggedLabel.center = loc
-    return draggedLabel
+    let label = UILabel(frame: lineFragmentRect)
+    label.attributedText = getAttributedStringForCharacterRange(characterRange)
+    label.sizeToFit()
+    label.center = loc
+    return label
   }
   
   private func createCoverTextView(#rectToCover:CGRect) -> UIView {
     var coverTextFrame = rectToCover
-    coverTextFrame.size.height = textView.font.lineHeight + textView.lineSpacing
-    coverTextFrame.origin.y += textView.lineSpacing
+    //coverTextFrame.size.height = textView.font.lineHeight + textView.lineSpacing
+    //coverTextFrame.origin.y += textView.lineSpacing
+    coverTextFrame.origin.x += textView.lineNumberWidth + textView.gutterPadding
     let coverView = UIView(frame: coverTextFrame)
     coverView.backgroundColor = textView.backgroundColor
     return coverView
@@ -127,6 +129,46 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     draggedLabel.center = dragLocation
   }
   
+  private func createViewsForAllLinesExceptDragged(draggedLineFragmentRect:CGRect, draggedCharacterRange:NSRange) {
+    let visibleCharacterRange = layoutManager.glyphRangeForBoundingRect(textView.frame, inTextContainer: textContainer)
+    let visibleGlyphs = layoutManager.glyphRangeForCharacterRange(visibleCharacterRange, actualCharacterRange: nil)
+    //when I refer to line numbers, I am referring to them by height, not in the document
+    var currentLineNumber = 0
+    func fragmentEnumerator(aRect:CGRect, aUsedRect:CGRect, textContainer:NSTextContainer!, glyphRange:NSRange, stop:UnsafeMutablePointer<ObjCBool>) -> Void {
+      let fragmentCharacterRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
+      let fragmentParagraphRange = textStorage.string()!.paragraphRangeForRange(fragmentCharacterRange)
+      if NSEqualRanges(draggedCharacterRange, fragmentParagraphRange) {
+        println("Found the dragged line, doing nothing")
+        return
+      }
+      if fragmentCharacterRange.location == fragmentCharacterRange.location {
+        //get the bounding rect for the paragraph
+        currentLineNumber++
+        var labelTextFrame = aRect
+        labelTextFrame.size.height = textView.font.lineHeight + textView.lineSpacing
+        let label = UILabel(frame: aRect)
+        label.attributedText = getAttributedStringForCharacterRange(fragmentParagraphRange)
+        label.sizeToFit()
+        label.frame.origin.x += textView.gutterPadding
+        label.frame.origin.y += textView.lineSpacing + 4 //I have no idea why this isn't aligning properly, probably has to do with the sizeToFit()
+        label.backgroundColor = UIColor.clearColor()
+        dragOverlayLabels[currentLineNumber] = label
+        textView.addSubview(label)
+      } else {
+        //handle wrapped lines here
+        println("Trying to create a view for a wrapped line")
+      }
+    }
+    layoutManager.enumerateLineFragmentsForGlyphRange(visibleGlyphs, usingBlock: fragmentEnumerator)
+  }
+  
+  private func clearLineOverlayLabels() {
+    for (index, label) in dragOverlayLabels {
+      label.removeFromSuperview()
+      dragOverlayLabels.removeValueForKey(index)
+    }
+  }
+  
   func handleDrag(recognizer:UIPanGestureRecognizer) {
     if recognizer == textView.panGestureRecognizer {
       return
@@ -147,9 +189,11 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       parentViewController!.view.addSubview(draggedLabel)
       
       //Create the solid colored label that covers up the dragged text in the text view
-      coverTextView = createCoverTextView(rectToCover: lineFragmentRect)
+      coverTextView = createCoverTextView(rectToCover: textView.bounds)
       textView.addSubview(coverTextView)
       
+      //Create a view for each of the lines to support drag live preview
+      createViewsForAllLinesExceptDragged(lineFragmentRect, draggedCharacterRange: characterRange)
       //create the deletion overlay view that turns red when you are about to delete something
       deleteOverlayView = createDeleteOverlayView()
       deleteOverlayView.hidden = true
@@ -162,6 +206,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       hideOrShowDeleteOverlay()
       break
     case .Ended:
+      clearLineOverlayLabels()
       deleteDraggedLineIfInDeletionZone()
       deleteSubviewsOnDragEnd()
       break

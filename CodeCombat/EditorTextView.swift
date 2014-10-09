@@ -22,6 +22,7 @@ class EditorTextView: UITextView {
   var currentDragHintView:ParticleView?
   var currentHighlightingView:UIView? = nil
   var parameterViews:[ParameterView] = []
+  let gutterPadding = CGFloat(5.0)
   let lineSpacing:CGFloat = 5
   override func drawRect(rect: CGRect) {
     if shouldShowLineNumbers {
@@ -124,11 +125,10 @@ class EditorTextView: UITextView {
     if NumberOfCharacters != numberOfCharactersInLineNumberGutter {
       let Size = TotalLinesString.sizeWithAttributes([NSFontAttributeName: font])
       let ContainerRect = bounds
-      let GutterPadding = CGFloat(5.0)
       let Rect = CGRect(
         x: ContainerRect.origin.x,
         y: ContainerRect.origin.y,
-        width: Size.width + GutterPadding,
+        width: Size.width + gutterPadding,
         height: CGFloat.max)
       lineNumberWidth = Rect.size.width
       textContainer.exclusionPaths = [UIBezierPath(rect: Rect)]
