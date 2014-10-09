@@ -101,6 +101,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
       let startingCode = spell["source"] as? String
       if startingCode != nil {
         textViewController.replaceTextViewContentsWithString(startingCode!)
+        textViewController.textStorage.undoManager.removeAllActions()
         println("set code before load to \(startingCode!)")
       }
     }
@@ -116,6 +117,18 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     handleTomeSourceRequest()
     webManager.publish("tome:manual-cast", event: ["realTime": true])
     scrollView.contentOffset = CGPoint(x: 0, y: 0)
+  }
+  
+  @IBAction func onUndo(sender:UIButton) {
+    println("Can undo? \(textViewController.textStorage.undoManager.canUndo)")
+    textViewController.textStorage.undoManager.undo()
+    textViewController.textView.setNeedsDisplay()
+  }
+  
+  @IBAction func onRedo(sender:UIButton) {
+    println("Should redo")
+    textViewController.textStorage.undoManager.redo()
+    textViewController.textView.setNeedsDisplay()
   }
 
   func handleTomeSourceRequest(){

@@ -15,6 +15,7 @@ class EditorTextStorage: NSTextStorage {
   var languageProvider = LanguageProvider()
   var highlighter:NodeHighlighter!
   let language = "python"
+  let undoManager = NSUndoManager()
   override init() {
     super.init()
     attributedString = NSMutableAttributedString()
@@ -45,6 +46,10 @@ class EditorTextStorage: NSTextStorage {
   }
   
   override func replaceCharactersInRange(range: NSRange, withString str: String) {
+    let previousContents = string()!.substringWithRange(range)
+    var newRange = range
+    newRange.length = NSString(string: str).length
+    undoManager.prepareWithInvocationTarget(self).replaceCharactersInRange(newRange, withString: previousContents)
     attributedString!.replaceCharactersInRange(range, withString: str)
     //find a more efficient way of getting string length that isn't buggy
     let changeInLength:NSInteger = (NSString(string: str).length - range.length)
