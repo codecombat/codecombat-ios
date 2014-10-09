@@ -58,6 +58,75 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     return overlay
   }
   
+  private func getLineFragmentRectForDrag(dragLocation:CGPoint) -> CGRect {
+    let nearestGlyphIndexToDrag = layoutManager.glyphIndexForPoint(dragLocation, inTextContainer: textContainer)
+    var effectiveGlyphRange:NSRange = NSRange(location:0, length:0)
+    var lineFragmentRectToDrag = layoutManager.lineFragmentRectForGlyphAtIndex(nearestGlyphIndexToDrag, effectiveRange: &effectiveGlyphRange)
+    return lineFragmentRectToDrag
+  }
+  
+  private func getCharacterRangeForLineFragmentRect(lineFragmentRect:CGRect) -> NSRange {
+    let glyphRange = layoutManager.glyphRangeForBoundingRect(lineFragmentRect, inTextContainer: textContainer)
+    let characterRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
+    return characterRange
+  }
+  
+  private func getAttributedStringForCharacterRange(range:NSRange) -> NSAttributedString {
+    return textStorage.attributedString!.attributedSubstringFromRange(range)
+  }
+  
+  private func createDraggedLabel(lineFragmentRect:CGRect, loc:CGPoint, characterRange:NSRange) -> UILabel {
+    draggedLabel = UILabel(frame: lineFragmentRect)
+    draggedLabel.attributedText = getAttributedStringForCharacterRange(characterRange)
+    draggedLabel.sizeToFit()
+    draggedLabel.center = loc
+    return draggedLabel
+  }
+  
+  private func createCoverTextView(#rectToCover:CGRect) -> UIView {
+    var coverTextFrame = rectToCover
+    coverTextFrame.size.height = textView.font.lineHeight + textView.lineSpacing
+    coverTextFrame.origin.y += textView.lineSpacing
+    let coverView = UIView(frame: coverTextFrame)
+    coverView.backgroundColor = textView.backgroundColor
+    return coverView
+  }
+  
+  private func hideOrShowDeleteOverlay() {
+    if draggedLabel.center.x > parentViewController!.view.bounds.maxX - deleteOverlayWidth {
+      deleteOverlayView.hidden = false
+    } else {
+      deleteOverlayView.hidden = true
+    }
+  }
+  
+  private func deleteDraggedLineIfInDeletionZone() {
+    if draggedLabel.center.x > parentViewController!.view.bounds.maxX - deleteOverlayWidth {
+      textStorage.beginEditing()
+      if draggedCharacterRange.location != 0 {
+        textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
+      } else {
+        textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "\n")
+      }
+      
+      textStorage.endEditing()
+      textView.setNeedsDisplay()
+    }
+  }
+  
+  private func deleteSubviewsOnDragEnd() {
+    deleteOverlayView.removeFromSuperview()
+    deleteOverlayView = nil
+    coverTextView.removeFromSuperview()
+    coverTextView = nil
+    draggedLabel.removeFromSuperview()
+    draggedLabel = nil
+  }
+  
+  private func adjustDraggedLabelPosition(dragLocation:CGPoint) {
+    draggedLabel.center = dragLocation
+  }
+  
   func handleDrag(recognizer:UIPanGestureRecognizer) {
     if recognizer == textView.panGestureRecognizer {
       return
@@ -65,65 +134,36 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     //get glyph under point
     var locationInParentView = recognizer.locationInView(parentViewController!.view)
     locationInParentView.y += (textView.lineSpacing + textView.font.lineHeight) / 2
-    let dragLocation = recognizer.locationInView(self.textView)
     
     switch recognizer.state {
+      
     case .Began:
-      let nearestGlyphIndexToDrag = layoutManager.glyphIndexForPoint(dragLocation, inTextContainer: textContainer)
-      var effectiveGlyphRange:NSRange = NSRange(location:0, length:0)
-      var lineFragmentRectToDrag = layoutManager.lineFragmentRectForGlyphAtIndex(nearestGlyphIndexToDrag, effectiveRange: &effectiveGlyphRange)
-      let glyphRange = layoutManager.glyphRangeForBoundingRect(lineFragmentRectToDrag, inTextContainer: textContainer)
-      let characterRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
-      println("Dragging character range loc:\(glyphRange.location), len: \(glyphRange.length)")
-      let attributedSubstring = textStorage.attributedString!.attributedSubstringFromRange(characterRange)
-      //make a new subview
-      //cover the text
-      draggedLabel = UILabel(frame: lineFragmentRectToDrag)
-      draggedLabel.attributedText = attributedSubstring
-      draggedLabel.sizeToFit()
-      draggedLabel.center = locationInParentView
+      var lineFragmentRect = getLineFragmentRectForDrag(recognizer.locationInView(textView))
+      var characterRange = getCharacterRangeForLineFragmentRect(lineFragmentRect)
+      
+      //Create the dragged label with text on it
+      draggedLabel = createDraggedLabel(lineFragmentRect, loc: locationInParentView, characterRange: characterRange)
       draggedCharacterRange = characterRange
-      //cover the text
-      lineFragmentRectToDrag.size.height = textView.font.lineHeight + textView.lineSpacing
-      lineFragmentRectToDrag.origin.y += textView.lineSpacing
-      coverTextView = UIView(frame: lineFragmentRectToDrag)
-      coverTextView.backgroundColor = textView.backgroundColor
-      //coverTextView.center = dragLocation
-      textView.addSubview(coverTextView)
       parentViewController!.view.addSubview(draggedLabel)
+      
+      //Create the solid colored label that covers up the dragged text in the text view
+      coverTextView = createCoverTextView(rectToCover: lineFragmentRect)
+      textView.addSubview(coverTextView)
+      
+      //create the deletion overlay view that turns red when you are about to delete something
       deleteOverlayView = createDeleteOverlayView()
       deleteOverlayView.hidden = true
       textView.addSubview(deleteOverlayView)
       
       break
+    
     case .Changed:
-      draggedLabel.center = locationInParentView
-      if draggedLabel.center.x > parentViewController!.view.bounds.maxX - deleteOverlayWidth {
-        deleteOverlayView.hidden = false
-      } else {
-        deleteOverlayView.hidden = true
-      }
+      adjustDraggedLabelPosition(locationInParentView)
+      hideOrShowDeleteOverlay()
       break
     case .Ended:
-      var shouldDelete = false
-      if draggedLabel.center.x > parentViewController!.view.bounds.maxX - deleteOverlayWidth {
-        textStorage.beginEditing()
-        if draggedCharacterRange.location != 0 {
-          textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
-        } else {
-          textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "\n")
-        }
-        
-        textStorage.endEditing()
-        textView.setNeedsDisplay()
-      }
-      deleteOverlayView.removeFromSuperview()
-      deleteOverlayView = nil
-      coverTextView.removeFromSuperview()
-      coverTextView = nil
-      draggedLabel.removeFromSuperview()
-      draggedLabel = nil
-      
+      deleteDraggedLineIfInDeletionZone()
+      deleteSubviewsOnDragEnd()
       break
     default:
       break
