@@ -188,7 +188,7 @@
                                     <action selector="onCodeRun:" destination="mL5-Kq-7bx" eventType="touchUpInside" id="Jcn-Vq-Gen"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yWl-nf-cCN">
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yWl-nf-cCN">
                                 <rect key="frame" x="519" y="720" width="38" height="30"/>
                                 <state key="normal" title="Undo">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -197,7 +197,7 @@
                                     <action selector="onUndo:" destination="mL5-Kq-7bx" eventType="touchUpInside" id="a0Z-kk-CeT"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZvF-zO-AH3">
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZvF-zO-AH3">
                                 <rect key="frame" x="606" y="720" width="37" height="30"/>
                                 <state key="normal" title="Redo">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -209,6 +209,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="redoButton" destination="ZvF-zO-AH3" id="2ce-4D-OLd"/>
+                        <outlet property="undoButton" destination="yWl-nf-cCN" id="v8B-ig-TYF"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tKE-jg-OcU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
