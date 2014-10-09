@@ -102,19 +102,19 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       deleteOverlayView.hidden = true
     }
   }
-  
-  private func deleteDraggedLineIfInDeletionZone() {
-    if draggedLabel.center.x > parentViewController!.view.bounds.maxX - deleteOverlayWidth {
-      textStorage.beginEditing()
-      if draggedCharacterRange.location != 0 {
-        textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
-      } else {
-        textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "\n")
-      }
-      
-      textStorage.endEditing()
-      textView.setNeedsDisplay()
+  private func draggedLineInDeletionZone() -> Bool {
+    return draggedLabel.center.x > parentViewController!.view.bounds.maxX - deleteOverlayWidth
+  }
+  private func deleteDraggedLine() {
+    textStorage.beginEditing()
+    if draggedCharacterRange.location != 0 {
+      textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
+    } else {
+      textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "\n")
     }
+    
+    textStorage.endEditing()
+    textView.setNeedsDisplay()
   }
   
   private func deleteSubviewsOnDragEnd() {
@@ -234,9 +234,6 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
           }
         }
       }
-      
-    
-      
     } else if lineNumber == draggedLineNumber {
       //println("Should maybe move lines back? Drag on dragged line number!")
       var linesToReset:[Int] = []
@@ -260,6 +257,30 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     }
   }
   
+  private func shiftAroundLines(dragEndLocation:CGPoint) {
+    //get the text underneath the drag end
+    let lineFragmentRect = getLineFragmentRectForDrag(dragEndLocation);
+    let characterRange = getCharacterRangeForLineFragmentRect(lineFragmentRect)
+    let replacedString = textStorage.string()!.substringWithRange(characterRange)
+    let replacingString = textStorage.string()!.substringWithRange(draggedCharacterRange)
+    if !NSEqualRanges(draggedCharacterRange, characterRange) {
+      println("Replacing string \(replacedString) with \(replacingString)")
+      textStorage.beginEditing()
+      //edit the latter range first
+      let replacingRange = NSRange(location: characterRange.location, length: 0)
+      if draggedCharacterRange.location > characterRange.location {
+        textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
+        textStorage.replaceCharactersInRange(replacingRange, withString: replacingString)
+      } else {
+        textStorage.replaceCharactersInRange(replacingRange, withString: replacingString)
+        textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
+      }
+      textStorage.endEditing()
+      textView.setNeedsDisplay()
+    }
+    
+    
+  }
   private func clearLineOverlayLabels() {
     for (index, label) in dragOverlayLabels {
       label.removeFromSuperview()
@@ -299,7 +320,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       textView.addSubview(deleteOverlayView)
       
       break
-    
+      
     case .Changed:
       adjustDraggedLabelPosition(locationInParentView)
       adjustLineViewsForDragLocation(recognizer.locationInView(textView))
@@ -307,7 +328,11 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       break
     case .Ended:
       clearLineOverlayLabels()
-      deleteDraggedLineIfInDeletionZone()
+      if draggedLineInDeletionZone() {
+        deleteDraggedLine()
+      } else {
+        shiftAroundLines(recognizer.locationInView(textView))
+      }
       deleteSubviewsOnDragEnd()
       break
     default:
@@ -353,7 +378,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     textContainer.widthTracksTextView = true
     layoutManager.addTextContainer(textContainer)
   }
-
+  
   private func setupNotificationCenterObservers() {
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleDrawParameterRequest:"), name: "drawParameterBox", object: nil)
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleEraseParameterViewsRequest:"), name: "eraseParameterBoxes", object: nil)
