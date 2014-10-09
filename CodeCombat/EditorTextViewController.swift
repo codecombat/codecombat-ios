@@ -171,16 +171,20 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   
   private func adjustLineViewsForDragLocation(loc:CGPoint) {
     //calculate which line the drag is currently on
-    let lineNumber = lineNumberOfLocationInTextView(loc)
+    var lineNumber = lineNumberOfLocationInTextView(loc)
+    
     var maxLine = 0
     for key in dragOverlayLabels.keys {
       if key > maxLine {
         maxLine = key
       }
     }
+    //Clamp lineNumber to available range
+    lineNumber = max(lineNumber, 1)
+    lineNumber = min(lineNumber, max(draggedLineNumber,maxLine))
     
     //If the drag has moved up, we need to move some lines down potentially
-    if max(0,lineNumber) < draggedLineNumber {
+    if max(1,lineNumber) < draggedLineNumber {
       //Move the ones between the current drag location and dragged line
       for lineToMove in max(lineNumber,1)...(draggedLineNumber - 1) {
         let labelToMove = dragOverlayLabels[lineToMove]!
@@ -194,15 +198,18 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
         }
       }
       //Reset the ones above that
-      for lineToReset in 1...max(1,lineNumber - 1) {
-        let labelToReset = dragOverlayLabels[lineToReset]!
-        if labelToReset.frame.origin.y != originalDragOverlayLabelOffsets[lineToReset]! {
-          var oldFrame = labelToReset.frame
-          oldFrame.origin.y = originalDragOverlayLabelOffsets[lineToReset]!
-          labelToReset.frame = oldFrame
-          labelToReset.setNeedsLayout()
+      if lineNumber != 1 && draggedLineNumber != 1 {
+        for lineToReset in 1...max(1,lineNumber - 1) {
+          let labelToReset = dragOverlayLabels[lineToReset]!
+          if labelToReset.frame.origin.y != originalDragOverlayLabelOffsets[lineToReset]! {
+            var oldFrame = labelToReset.frame
+            oldFrame.origin.y = originalDragOverlayLabelOffsets[lineToReset]!
+            labelToReset.frame = oldFrame
+            labelToReset.setNeedsLayout()
+          }
         }
       }
+      
     } else if min(lineNumber,maxLine) > draggedLineNumber {
       //Move the lines between the dragged line and the current drag
       for lineToMove in (draggedLineNumber + 1)...min(lineNumber,maxLine) {
@@ -216,7 +223,32 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
         }
       }
       //Reset the ones below that
-      for lineToReset in min(maxLine,lineNumber + 1)...maxLine {
+      if lineNumber != maxLine {
+        for lineToReset in min(maxLine,lineNumber + 1)...maxLine {
+          let labelToReset = dragOverlayLabels[lineToReset]!
+          if labelToReset.frame.origin.y != originalDragOverlayLabelOffsets[lineToReset]! {
+            var oldFrame = labelToReset.frame
+            oldFrame.origin.y = originalDragOverlayLabelOffsets[lineToReset]!
+            labelToReset.frame = oldFrame
+            labelToReset.setNeedsLayout()
+          }
+        }
+      }
+      
+    
+      
+    } else if lineNumber == draggedLineNumber {
+      //println("Should maybe move lines back? Drag on dragged line number!")
+      var linesToReset:[Int] = []
+      if draggedLineNumber == 1 {
+        linesToReset.append(2)
+      } else if draggedLineNumber > maxLine {
+        linesToReset.append(maxLine)
+      } else {
+        linesToReset.append(draggedLineNumber - 1)
+        linesToReset.append(draggedLineNumber + 1)
+      }
+      for lineToReset in linesToReset {
         let labelToReset = dragOverlayLabels[lineToReset]!
         if labelToReset.frame.origin.y != originalDragOverlayLabelOffsets[lineToReset]! {
           var oldFrame = labelToReset.frame
@@ -225,14 +257,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
           labelToReset.setNeedsLayout()
         }
       }
-    
-      
-    } else if lineNumber == draggedLineNumber {
-      //println("Should maybe move lines back? Drag on dragged line number!")
     }
-    
-    
-    
   }
   
   private func clearLineOverlayLabels() {
