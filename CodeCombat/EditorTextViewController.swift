@@ -272,8 +272,9 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
         textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
         textStorage.replaceCharactersInRange(replacingRange, withString: replacingString)
       } else {
-        textStorage.replaceCharactersInRange(replacingRange, withString: replacingString)
+        textStorage.replaceCharactersInRange(characterRange, withString: replacedString + replacingString)
         textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
+        //textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
       }
       textStorage.endEditing()
       textView.setNeedsDisplay()
