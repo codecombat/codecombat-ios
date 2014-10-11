@@ -33,6 +33,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     webManager.subscribe(self, channel: "sprite:speech-updated", selector: Selector("onSpriteSpeechUpdated:"))
     webManager.subscribe(self, channel: "tome:spell-loaded", selector: Selector("onTomeSpellLoaded:"))
     let nc = NSNotificationCenter.defaultCenter()
+    //additional notifications are listened to below concerning undo manager in setupEditor
     nc.addObserver(self, selector: Selector("setUndoRedoEnabled"), name: "textEdited", object: nil)
   }
   
@@ -49,7 +50,6 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     setupScrollView()
     setupInventory()
     setupEditor()
-    textViewController.textStorage.undoManager.removeAllActions()
     setUndoRedoEnabled()
   }
   
@@ -82,6 +82,10 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     scrollView.panGestureRecognizer.requireGestureRecognizerToFail(textViewController.dragGestureRecognizer)
     addChildViewController(textViewController)
     editorContainerView.addSubview(textViewController.textView)
+    let undoManager = textViewController.textStorage.undoManager
+    let nc = NSNotificationCenter.defaultCenter()
+    nc.addObserver(self, selector: Selector("setUndoRedoEnabled"), name: NSUndoManagerDidUndoChangeNotification, object: undoManager)
+    nc.addObserver(self, selector: Selector("setUndoRedoEnabled"), name: NSUndoManagerDidRedoChangeNotification, object: undoManager)
   }
 
   func setupWebView() {
@@ -108,8 +112,10 @@ class PlayViewController: UIViewController, UITextViewDelegate {
       let startingCode = spell["source"] as? String
       if startingCode != nil {
         textViewController.replaceTextViewContentsWithString(startingCode!)
-        textViewController.textStorage.undoManager.removeAllActions()
         println("set code before load to \(startingCode!)")
+        textViewController.textStorage.undoManager.removeAllActions()
+        setUndoRedoEnabled()
+
       }
     }
   }
@@ -132,15 +138,14 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   }
   
   @IBAction func onRedo(sender:UIButton) {
-    println("Should redo")
     textViewController.textStorage.undoManager.redo()
     textViewController.textView.setNeedsDisplay()
   }
   
   func setUndoRedoEnabled() {
-    println("Setting undo redo enabled")
-    undoButton.enabled = textViewController.textStorage.undoManager.canUndo
-    redoButton.enabled = textViewController.textStorage.undoManager.canRedo
+    let undoManager = textViewController.textStorage.undoManager
+    undoButton.enabled = undoManager.canUndo
+    redoButton.enabled = undoManager.canRedo
   }
 
   func handleTomeSourceRequest(){

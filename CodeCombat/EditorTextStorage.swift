@@ -78,7 +78,7 @@ class EditorTextStorage: NSTextStorage {
   
   override func processEditing() {
     super.processEditing()
-    sendTextEditedNotification()
+    
     //NSNotificationCenter.defaultCenter().postNotificationName("eraseParameterBoxes", object: nil, userInfo: nil)
     let parser = LanguageParser(scope: language, data: attributedString!.string, provider: languageProvider)
     highlighter = NodeHighlighter(parser: parser)
@@ -111,5 +111,6 @@ class EditorTextStorage: NSTextStorage {
         
       }
     }
+    sendTextEditedNotification()
   }
 }
