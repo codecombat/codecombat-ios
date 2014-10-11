@@ -15,6 +15,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   var draggedLabel:UILabel!
   var draggedCharacterRange:NSRange!
   var draggedLineNumber = -1
+  var highlightedLineNumber = -1
   var coverTextView:UIView!
   var deleteOverlayView:UIView!
   let deleteOverlayWidth:CGFloat = 75
@@ -44,6 +45,20 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     // Do any additional setup after loading the view.
     dragGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handleDrag:")
     dragGestureRecognizer.delegate = self
+    WebManager.sharedInstance.subscribe(self, channel: "tome:highlight-line", selector: Selector("onSpellStatementIndexUpdated:"))
+  }
+  
+  func onSpellStatementIndexUpdated(note:NSNotification) {
+    if let event = note.userInfo {
+      var lineIndex = event["line"]! as Int
+      lineIndex++ //to account for difference between 0 and 1 offset
+      if lineIndex == highlightedLineNumber {
+        return
+      } else {
+        highlightedLineNumber = lineIndex
+        textView.highlightLineNumber(lineIndex)
+      }
+    }
   }
   
   func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {

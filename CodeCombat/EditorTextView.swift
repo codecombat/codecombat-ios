@@ -21,6 +21,7 @@ class EditorTextView: UITextView {
   var currentDragView:UIView? = nil
   var currentDragHintView:ParticleView?
   var currentHighlightingView:UIView? = nil
+  var currentLineHighlightingView:UIView? = nil
   var parameterViews:[ParameterView] = []
   let gutterPadding = CGFloat(5.0)
   let lineSpacing:CGFloat = 5
@@ -50,6 +51,55 @@ class EditorTextView: UITextView {
     paramView.backgroundColor = UIColor(hue: CGFloat(drand48()), saturation: 1.0, brightness: 1.0, alpha: 0.1)
     addSubview(paramView)
     parameterViews.append(paramView)
+  }
+  
+  func highlightLineNumber(lineNumber:Int) {
+    if currentLineHighlightingView != nil {
+      currentLineHighlightingView!.removeFromSuperview()
+      currentLineHighlightingView = nil
+    }
+    currentLineHighlightingView = UIView(frame: lineFragmentRectForLineNumber(lineNumber))
+    currentLineHighlightingView!.backgroundColor = UIColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 0.3)
+    addSubview(currentLineHighlightingView!)
+  }
+  
+  private func lineFragmentRectForLineNumber(targetLineNumber:Int) -> CGRect {
+    //figure out how to optimize this through caching
+    let storage = textStorage as EditorTextStorage
+    let Context = UIGraphicsGetCurrentContext()
+    let Bounds = bounds
+    
+    let textRange = layoutManager.glyphRangeForTextContainer(textContainer)
+    let glyphsToShow = layoutManager.glyphRangeForCharacterRange(textRange,
+      actualCharacterRange: nil)
+    //find number of lines before textRange.location
+    var numberOfLinesBeforeVisible = 0
+    for var index = 0; index < textRange.location; numberOfLinesBeforeVisible++ {
+      index = NSMaxRange(storage.string()!.lineRangeForRange(NSRange(location: index, length: 0)))
+    }
+    var lineNumber = numberOfLinesBeforeVisible
+    let textAttributes = [NSFontAttributeName:font]
+    var lineFragmentRect:CGRect = CGRect()
+    func lineFragmentClosure(aRect:CGRect, aUsedRect:CGRect,
+      textContainer:NSTextContainer!, glyphRange:NSRange,
+      stop:UnsafeMutablePointer<ObjCBool>) -> Void {
+        let charRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
+        let paraRange = storage.string()!.paragraphRangeForRange(charRange)
+        //To avoid drawing numbers on wrapped lines
+        if charRange.location == paraRange.location {
+          lineNumber++
+          if targetLineNumber == lineNumber {
+            lineFragmentRect = aUsedRect
+          }
+          let LineNumberString = NSString(string: "\(lineNumber)")
+          let Size = LineNumberString.sizeWithAttributes(textAttributes)
+          let Point = CGPointMake(lineNumberWidth - 4 - Size.width, aRect.origin.y + 8)
+          LineNumberString.drawAtPoint(Point, withAttributes: textAttributes)
+        }
+    }
+    layoutManager.enumerateLineFragmentsForGlyphRange(glyphsToShow,
+      usingBlock: lineFragmentClosure)
+    return lineFragmentRect
   }
   
   private func drawLineNumbers(rect:CGRect) {
