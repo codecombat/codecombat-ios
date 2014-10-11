@@ -58,7 +58,9 @@ class EditorTextView: UITextView {
       currentLineHighlightingView!.removeFromSuperview()
       currentLineHighlightingView = nil
     }
-    currentLineHighlightingView = UIView(frame: lineFragmentRectForLineNumber(lineNumber))
+    var lineFragmentFrame = lineFragmentRectForLineNumber(lineNumber)
+    lineFragmentFrame.origin.y += lineSpacing
+    currentLineHighlightingView = UIView(frame:lineFragmentFrame )
     currentLineHighlightingView!.backgroundColor = UIColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 0.3)
     addSubview(currentLineHighlightingView!)
   }
