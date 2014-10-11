@@ -288,6 +288,14 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     }
   }
   
+  private func lineNumberForDraggedCharacterRange(range:NSRange) -> Int {
+    let sourceString = textStorage.string()!.substringWithRange(NSRange(location: 0, length: range.location))
+    let errorPointer = NSErrorPointer()
+    let regex = NSRegularExpression(pattern: "\\n", options:nil, error: errorPointer)
+    let matches = regex.numberOfMatchesInString(sourceString, options: nil, range: NSRange(location: 0, length: countElements(sourceString)))
+    return matches + 1
+  }
+  
   func handleDrag(recognizer:UIPanGestureRecognizer) {
     if recognizer == textView.panGestureRecognizer {
       return
@@ -295,7 +303,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     //get glyph under point
     var locationInParentView = recognizer.locationInView(parentViewController!.view)
     locationInParentView.y += (textView.lineSpacing + textView.font.lineHeight) / 2
-    
+    var locationInTextView = recognizer.locationInView(textView)
+    //println("Location in text view: \(locationInTextView.y), line \(lineNumberOfLocationInTextView(locationInTextView))")
     switch recognizer.state {
       
     case .Began:
@@ -306,7 +315,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       draggedLabel = createDraggedLabel(lineFragmentRect, loc: locationInParentView, characterRange: characterRange)
       draggedCharacterRange = characterRange
       parentViewController!.view.addSubview(draggedLabel)
-      draggedLineNumber = lineNumberOfLocationInTextView(recognizer.locationInView(textView))
+      draggedLineNumber = lineNumberForDraggedCharacterRange(characterRange)
       println("Dragging line number \(draggedLineNumber)")
       //Create the solid colored label that covers up the dragged text in the text view
       coverTextView = createCoverTextView(rectToCover: textView.bounds)
