@@ -13,6 +13,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
 
   @IBOutlet weak var redoButton: UIButton!
   @IBOutlet weak var undoButton: UIButton!
+  @IBOutlet weak var keyboardButton: UIButton!
   
   var scrollView: UIScrollView!
   let screenshotView = UIImageView(image: UIImage(named: "largeScreenshot"))
@@ -146,6 +147,18 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     let undoManager = textViewController.textStorage.undoManager
     undoButton.enabled = undoManager.canUndo
     redoButton.enabled = undoManager.canRedo
+  }
+  
+  func scrollToBottomOfScrollView() {
+    let bottomOffset = CGPoint(x: 0, y: scrollView.contentSize.height - self.scrollView.frame.size.height)
+    scrollView.setContentOffset(bottomOffset, animated: true)
+  }
+  
+  @IBAction func toggleKeyboard(sender:UIButton) {
+    if !textViewController.keyboardModeEnabled() {
+      scrollToBottomOfScrollView()
+    }
+    textViewController.toggleKeyboardMode()
   }
 
   func handleTomeSourceRequest(){

@@ -49,6 +49,28 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
     return true
   }
+  func keyboardModeEnabled() -> Bool {
+    return textView.editable && textView.selectable
+  }
+  func toggleKeyboardMode() {
+    if keyboardModeEnabled() {
+      textView.editable = false
+      textView.selectable = false
+      textView.resignFirstResponder()
+    } else {
+      textView.editable = true
+      textView.selectable = true
+      textView.becomeFirstResponder()
+    }
+  }
+  
+  func textViewDidEndEditing(textView: UITextView) {
+    //make sure to append a newline to the input text if there isn't one already!
+    if !textStorage.string()!.hasSuffix("\n") {
+      textStorage.appendAttributedString(NSAttributedString(string: "\n"))
+    }
+    toggleKeyboardMode()
+  }
   
   private func createDeleteOverlayView() -> UIView {
     var deleteOverlayFrame = self.textView.frame
@@ -173,7 +195,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     //calculate which line the drag is currently on
     var lineNumber = lineNumberOfLocationInTextView(loc)
     
-    var maxLine = 0
+    var maxLine = 1
     for key in dragOverlayLabels.keys {
       if key > maxLine {
         maxLine = key
@@ -237,7 +259,9 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     } else if lineNumber == draggedLineNumber {
       //println("Should maybe move lines back? Drag on dragged line number!")
       var linesToReset:[Int] = []
-      if draggedLineNumber == 1 {
+      if maxLine == 1 {
+        return
+      } else if draggedLineNumber == 1 {
         linesToReset.append(2)
       } else if draggedLineNumber > maxLine {
         linesToReset.append(maxLine)
