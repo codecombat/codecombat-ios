@@ -23,6 +23,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   var dragOverlayLabels:[Int:UILabel] = Dictionary<Int,UILabel>()
   var originalDragOverlayLabelOffsets:[Int:CGFloat] = Dictionary<Int,CGFloat>()
   let currentFont = UIFont(name: "Courier", size: 22)
+  
   var textView:EditorTextView! {
     didSet {
       textView.delegate = self
@@ -46,6 +47,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     dragGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handleDrag:")
     dragGestureRecognizer.delegate = self
     WebManager.sharedInstance.subscribe(self, channel: "tome:highlight-line", selector: Selector("onSpellStatementIndexUpdated:"))
+    WebManager.sharedInstance.subscribe(self, channel: "problem:problem-created", selector: Selector("onProblemCreated:"))
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onCodeRun"), name: "codeRun", object: nil)
   }
   
   func onSpellStatementIndexUpdated(note:NSNotification) {
@@ -59,6 +62,20 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
         textView.highlightLineNumber(lineIndex)
       }
     }
+  }
+  
+  func onProblemCreated(note:NSNotification) {
+    if let event = note.userInfo {
+      var lineIndex = event["line"]! as Int
+      var errorText = event["text"]! as String
+      println("Got error: \(errorText)")
+      lineIndex++
+      textView.highlightUserCodeProblemLine(lineIndex)
+    }
+  }
+  
+  func onCodeRun() {
+    textView.clearUserCodeProblems()
   }
   
   func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {

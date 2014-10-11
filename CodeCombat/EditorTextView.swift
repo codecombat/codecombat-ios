@@ -22,6 +22,7 @@ class EditorTextView: UITextView {
   var currentDragHintView:ParticleView?
   var currentHighlightingView:UIView? = nil
   var currentLineHighlightingView:UIView? = nil
+  var currentHighlightedProblemViews:[Int:UIView] = Dictionary<Int,UIView>()
   var parameterViews:[ParameterView] = []
   let gutterPadding = CGFloat(5.0)
   let lineSpacing:CGFloat = 5
@@ -63,6 +64,28 @@ class EditorTextView: UITextView {
     currentLineHighlightingView = UIView(frame:lineFragmentFrame )
     currentLineHighlightingView!.backgroundColor = UIColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 0.3)
     addSubview(currentLineHighlightingView!)
+  }
+  
+  func highlightUserCodeProblemLine(lineNumber:Int) {
+    if let problemView = currentHighlightedProblemViews[lineNumber] {
+      //just leave it
+    } else {
+      var frame = lineFragmentRectForLineNumber(lineNumber)
+      frame.origin.x -= lineNumberWidth
+      frame.size.width = lineNumberWidth
+      frame.origin.y += lineSpacing
+      let problemView = UIView(frame: frame)
+      problemView.backgroundColor = UIColor(red: 1.0, green: 0, blue: 0, alpha: 0.3)
+      currentHighlightedProblemViews[lineNumber] = problemView
+      addSubview(problemView)
+    }
+  }
+  
+  func clearUserCodeProblems() {
+    for (line, view) in currentHighlightedProblemViews {
+      view.removeFromSuperview()
+    }
+    currentHighlightedProblemViews.removeAll(keepCapacity: true)
   }
   
   private func lineFragmentRectForLineNumber(targetLineNumber:Int) -> CGRect {
