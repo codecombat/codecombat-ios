@@ -66,18 +66,17 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   }
   
   func onProblemCreated(note:NSNotification) {
+    println("Problem created!!")
     if let event = note.userInfo {
       var lineIndex = event["line"]! as Int
       var errorText = event["text"]! as String
       println("Got error: \(errorText)")
       lineIndex++
-      textView.highlightUserCodeProblemLine(lineIndex)
       textView.addUserCodeProblemGutterAnnotationOnLine(lineIndex)
     }
   }
   
   func onCodeRun() {
-    textView.clearUserCodeProblems()
     textView.clearCodeProblemGutterAnnotations()
   }
   
@@ -402,6 +401,9 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       } else {
         shiftAroundLines(recognizer.locationInView(textView))
       }
+      //These eventually should run only when the code significantly changes
+      textView.removeCurrentLineNumberHighlight()
+      textView.clearCodeProblemGutterAnnotations()
       deleteSubviewsOnDragEnd()
       break
     default:

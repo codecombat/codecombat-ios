@@ -22,7 +22,6 @@ class EditorTextView: UITextView {
   var currentDragHintView:ParticleView?
   var currentHighlightingView:UIView? = nil
   var currentLineHighlightingView:UIView? = nil
-  var currentHighlightedProblemViews:[Int:UIView] = Dictionary<Int,UIView>()
   var currentProblemGutterLineAnnotations:[Int:UIView] = Dictionary<Int, UIView>()
   var parameterViews:[ParameterView] = []
   let gutterPadding = CGFloat(5.0)
@@ -141,10 +140,7 @@ class EditorTextView: UITextView {
   }
   
   func highlightLineNumber(lineNumber:Int) {
-    if currentLineHighlightingView != nil {
-      currentLineHighlightingView!.removeFromSuperview()
-      currentLineHighlightingView = nil
-    }
+    removeCurrentLineNumberHighlight()
     var lineFragmentFrame = lineFragmentRectForLineNumber(lineNumber)
     lineFragmentFrame.origin.y += lineSpacing
     currentLineHighlightingView = UIView(frame:lineFragmentFrame )
@@ -152,18 +148,10 @@ class EditorTextView: UITextView {
     addSubview(currentLineHighlightingView!)
   }
   
-  func highlightUserCodeProblemLine(lineNumber:Int) {
-    if let problemView = currentHighlightedProblemViews[lineNumber] {
-      //just leave it
-    } else {
-      var frame = lineFragmentRectForLineNumber(lineNumber)
-      frame.origin.x -= lineNumberWidth
-      frame.size.width = lineNumberWidth
-      frame.origin.y += lineSpacing
-      let problemView = UIView(frame: frame)
-      problemView.backgroundColor = UIColor(red: 1.0, green: 0, blue: 0, alpha: 0.3)
-      currentHighlightedProblemViews[lineNumber] = problemView
-      addSubview(problemView)
+  func removeCurrentLineNumberHighlight() {
+    if currentLineHighlightingView != nil {
+      currentLineHighlightingView!.removeFromSuperview()
+      currentLineHighlightingView = nil
     }
   }
   
@@ -177,7 +165,8 @@ class EditorTextView: UITextView {
       frame.size.width = lineNumberWidth
       frame.origin.y += lineSpacing
       let gutterAnnotation = UIImageView(image: UIImage(named: "editorSidebarErrorIcon"))
-      gutterAnnotation.sizeToFit()
+      gutterAnnotation.contentMode = UIViewContentMode.ScaleAspectFit
+      gutterAnnotation.frame = frame
       currentProblemGutterLineAnnotations[lineNumber] = gutterAnnotation
       addSubview(gutterAnnotation)
     }
@@ -188,13 +177,6 @@ class EditorTextView: UITextView {
       view.removeFromSuperview()
     }
     currentProblemGutterLineAnnotations.removeAll(keepCapacity: true)
-  }
-  
-  func clearUserCodeProblems() {
-    for (line, view) in currentHighlightedProblemViews {
-      view.removeFromSuperview()
-    }
-    currentHighlightedProblemViews.removeAll(keepCapacity: true)
   }
   
   private func lineFragmentRectForLineNumber(targetLineNumber:Int) -> CGRect {
