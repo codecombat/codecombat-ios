@@ -72,11 +72,13 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       println("Got error: \(errorText)")
       lineIndex++
       textView.highlightUserCodeProblemLine(lineIndex)
+      textView.addUserCodeProblemGutterAnnotationOnLine(lineIndex)
     }
   }
   
   func onCodeRun() {
     textView.clearUserCodeProblems()
+    textView.clearCodeProblemGutterAnnotations()
   }
   
   func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {

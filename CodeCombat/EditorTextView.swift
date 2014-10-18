@@ -23,6 +23,7 @@ class EditorTextView: UITextView {
   var currentHighlightingView:UIView? = nil
   var currentLineHighlightingView:UIView? = nil
   var currentHighlightedProblemViews:[Int:UIView] = Dictionary<Int,UIView>()
+  var currentProblemGutterLineAnnotations:[Int:UIView] = Dictionary<Int, UIView>()
   var parameterViews:[ParameterView] = []
   let gutterPadding = CGFloat(5.0)
   let lineSpacing:CGFloat = 5
@@ -164,6 +165,29 @@ class EditorTextView: UITextView {
       currentHighlightedProblemViews[lineNumber] = problemView
       addSubview(problemView)
     }
+  }
+  
+  func addUserCodeProblemGutterAnnotationOnLine(lineNumber:Int) {
+    if let problemView = currentProblemGutterLineAnnotations[lineNumber] {
+      //Just leave it
+    } else {
+      //place the image here
+      var frame = lineFragmentRectForLineNumber(lineNumber)
+      frame.origin.x = 0
+      frame.size.width = lineNumberWidth
+      frame.origin.y += lineSpacing
+      let gutterAnnotation = UIImageView(image: UIImage(named: "editorSidebarErrorIcon"))
+      gutterAnnotation.sizeToFit()
+      currentProblemGutterLineAnnotations[lineNumber] = gutterAnnotation
+      addSubview(gutterAnnotation)
+    }
+  }
+  
+  func clearCodeProblemGutterAnnotations() {
+    for (line, view) in currentProblemGutterLineAnnotations {
+      view.removeFromSuperview()
+    }
+    currentProblemGutterLineAnnotations.removeAll(keepCapacity: true)
   }
   
   func clearUserCodeProblems() {
