@@ -72,12 +72,14 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       var errorText = event["text"]! as String
       println("Got error: \(errorText)")
       lineIndex++
-      textView.addUserCodeProblemGutterAnnotationOnLine(lineIndex)
+      textView.addUserCodeProblemGutterAnnotationOnLine(lineIndex, message: errorText)
+      textView.highlightUserCodeProblemLine(lineIndex)
     }
   }
   
   func onCodeRun() {
     textView.clearCodeProblemGutterAnnotations()
+    textView.removeUserCodeProblemLineHighlights()
   }
   
   func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -404,6 +406,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       //These eventually should run only when the code significantly changes
       textView.removeCurrentLineNumberHighlight()
       textView.clearCodeProblemGutterAnnotations()
+      textView.removeUserCodeProblemLineHighlights()
       deleteSubviewsOnDragEnd()
       break
     default:

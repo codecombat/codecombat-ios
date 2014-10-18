@@ -14,6 +14,10 @@ class ParameterView:UIView {
   //do something with unique identifier here
 }
 
+class GutterProblemLineAnnotationButton: UIButton {
+  var problemDescription:String = ""
+}
+
 class EditorTextView: UITextView {
   var shouldShowLineNumbers = false
   var numberOfCharactersInLineNumberGutter = 0
@@ -22,7 +26,9 @@ class EditorTextView: UITextView {
   var currentDragHintView:ParticleView?
   var currentHighlightingView:UIView? = nil
   var currentLineHighlightingView:UIView? = nil
-  var currentProblemGutterLineAnnotations:[Int:UIView] = Dictionary<Int, UIView>()
+  var errorMessageView:UILabel? = nil
+  var currentProblemGutterLineAnnotations:[Int:GutterProblemLineAnnotationButton] = [:]
+  var currentProblemLineHighlights:[Int:UIView] = [:]
   var parameterViews:[ParameterView] = []
   let gutterPadding = CGFloat(5.0)
   let lineSpacing:CGFloat = 5
@@ -149,13 +155,32 @@ class EditorTextView: UITextView {
   }
   
   func removeCurrentLineNumberHighlight() {
-    if currentLineHighlightingView != nil {
-      currentLineHighlightingView!.removeFromSuperview()
+      currentLineHighlightingView?.removeFromSuperview()
       currentLineHighlightingView = nil
+  }
+  
+  func highlightUserCodeProblemLine(lineNumber:Int) {
+    if let problemLineHighlight = currentProblemLineHighlights[lineNumber] {
+      
+    } else {
+      var frame = lineFragmentRectForLineNumber(lineNumber)
+      frame.origin.y += lineSpacing
+      let highlightView = UIView(frame: frame)
+      highlightView.backgroundColor = UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.3)
+      currentProblemLineHighlights[lineNumber] = highlightView
+      addSubview(highlightView)
     }
   }
   
-  func addUserCodeProblemGutterAnnotationOnLine(lineNumber:Int) {
+  func removeUserCodeProblemLineHighlights() {
+    for (line, view) in currentProblemLineHighlights {
+      view.removeFromSuperview()
+    }
+    currentProblemLineHighlights.removeAll(keepCapacity: true)
+  }
+
+  
+  func addUserCodeProblemGutterAnnotationOnLine(lineNumber:Int, message:String) {
     if let problemView = currentProblemGutterLineAnnotations[lineNumber] {
       //Just leave it
     } else {
@@ -163,15 +188,65 @@ class EditorTextView: UITextView {
       var frame = lineFragmentRectForLineNumber(lineNumber)
       frame.origin.x = 0
       frame.size.width = lineNumberWidth
+      frame.size.width = lineSpacing + font.lineHeight
       frame.origin.y += lineSpacing
-      let gutterAnnotation = UIImageView(image: UIImage(named: "editorSidebarErrorIcon"))
-      gutterAnnotation.contentMode = UIViewContentMode.ScaleAspectFit
+      let annotationImage = UIImage(named: "editorSidebarErrorIcon")
+      let gutterAnnotation = GutterProblemLineAnnotationButton(frame: frame)
+      gutterAnnotation.setImage(annotationImage, forState: UIControlState.Normal)
+      gutterAnnotation.problemDescription = message
+      gutterAnnotation.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Fill
+      gutterAnnotation.contentVerticalAlignment = UIControlContentVerticalAlignment.Fill
+      gutterAnnotation.imageView!.contentMode = UIViewContentMode.ScaleAspectFit
       gutterAnnotation.frame = frame
+      gutterAnnotation.imageView!.frame = frame
+      gutterAnnotation.addTarget(self, action: Selector("displayProblemErrorMessageFromView:"), forControlEvents: UIControlEvents.TouchUpInside)
       currentProblemGutterLineAnnotations[lineNumber] = gutterAnnotation
       addSubview(gutterAnnotation)
     }
   }
   
+  func displayProblemErrorMessageFromView(sender:GutterProblemLineAnnotationButton) {
+    if errorMessageView == nil {
+      displayProblemErrorMessage(sender.problemDescription)
+    } else {
+      //hide the display problem error message
+      UIView.animateWithDuration(0.5, animations: { self.errorMessageView!.alpha = 0 }, completion: { (Bool) -> Void in
+        self.clearErrorMessageView()
+      })
+    }
+    
+  }
+  
+  func displayProblemErrorMessage(message:String) {
+    if errorMessageView != nil {
+      clearErrorMessageView()
+    }
+    let backgroundImage = UIImage(named: "editorErrorBackground")
+    let mainScreenView = superview!.superview!
+    var errorMessageFrame = mainScreenView.frame
+    errorMessageFrame.origin.y = errorMessageFrame.height - 120
+    errorMessageFrame.origin.x = errorMessageFrame.width - backgroundImage.size.width
+    errorMessageFrame.size.width = backgroundImage.size.width
+    errorMessageFrame.size.height = backgroundImage.size.height
+    
+    errorMessageView = UILabel(frame: errorMessageFrame)
+    errorMessageView?.textAlignment = NSTextAlignment.Center
+    errorMessageView?.opaque = false
+    errorMessageView?.text = message
+    errorMessageView?.backgroundColor = UIColor(patternImage: backgroundImage)
+    errorMessageView?.alpha = 0
+    errorMessageView?.textColor = UIColor.whiteColor()
+    mainScreenView.addSubview(errorMessageView!)
+    UIView.animateWithDuration(0.5, animations: {
+      self.errorMessageView!.alpha = 1
+    })
+    
+  }
+  
+  func clearErrorMessageView() {
+    errorMessageView?.removeFromSuperview()
+    errorMessageView = nil
+  }
   func clearCodeProblemGutterAnnotations() {
     for (line, view) in currentProblemGutterLineAnnotations {
       view.removeFromSuperview()
