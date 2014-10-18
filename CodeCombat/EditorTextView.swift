@@ -30,7 +30,7 @@ class EditorTextView: UITextView {
   
   override var inputAccessoryView: UIView? {
     get {
-      //Eventually refactor this into it's own file
+      //Eventually refactor this into its own file
       if self.accessoryView == nil {
         let accessoryViewFrame = CGRect(x: 0, y: 0, width: self.frame.width, height: 55)
         self.accessoryView = UIView(frame: accessoryViewFrame)
@@ -46,13 +46,34 @@ class EditorTextView: UITextView {
         
         let selRightFrame = CGRect(
           x: buttonSpacing + Int(selLeftFrame.origin.x + selLeftFrame.width),
-          y: buttonYOffset, width: 100, height: buttonHeight)
+          y: buttonYOffset,
+          width: 100,
+          height: buttonHeight)
         let expandSelectionRightButton = UIButton(frame: selRightFrame)
         expandSelectionRightButton.setTitle("SelRight", forState: UIControlState.Normal)
         expandSelectionRightButton.addTarget(self, action: Selector("expandSelectionRight"), forControlEvents: UIControlEvents.TouchUpInside)
         
+        let cursorLeftFrame = CGRect(
+          x: buttonSpacing + Int(selRightFrame.origin.x + selRightFrame.width),
+          y: buttonYOffset,
+          width: 100,
+          height: buttonHeight)
+        let cursorLeftButton = UIButton(frame: cursorLeftFrame)
+        cursorLeftButton.setTitle("CurLeft", forState: UIControlState.Normal)
+        cursorLeftButton.addTarget(self, action: Selector("moveCursorLeft"), forControlEvents: UIControlEvents.TouchUpInside)
+        
+        let cursorRightFrame = CGRect(
+          x: buttonSpacing + Int(cursorLeftFrame.origin.x + cursorLeftFrame.width),
+          y: buttonYOffset,
+          width: 100,
+          height: buttonHeight)
+        let cursorRightButton = UIButton(frame: cursorRightFrame)
+        cursorRightButton.setTitle("CurRight", forState: UIControlState.Normal)
+        cursorRightButton.addTarget(self, action: Selector("moveCursorRight"), forControlEvents: UIControlEvents.TouchUpInside)
         self.accessoryView!.addSubview(expandSelectionLeftButton)
         self.accessoryView!.addSubview(expandSelectionRightButton)
+        self.accessoryView!.addSubview(cursorLeftButton)
+        self.accessoryView!.addSubview(cursorRightButton)
       }
       return self.accessoryView
     }
@@ -71,6 +92,21 @@ class EditorTextView: UITextView {
   func expandSelectionRight() {
     if selectedRange.location < textStorage.length {
       selectedRange.length++
+    }
+  }
+  
+  func moveCursorLeft() {
+    if selectedRange.location > 0 {
+      selectedRange.location--
+    }
+  }
+  
+  func moveCursorRight() {
+    if selectedRange.location < textStorage.length {
+      selectedRange.location++
+      if selectedRange.length > 0 {
+        selectedRange.length--
+      }
     }
   }
   
