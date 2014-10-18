@@ -26,6 +26,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   
   var textView:EditorTextView! {
     didSet {
+      textView.autocorrectionType = UITextAutocorrectionType.No
       textView.delegate = self
       textView.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
       textView.selectable = false

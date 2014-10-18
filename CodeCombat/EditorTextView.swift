@@ -26,6 +26,54 @@ class EditorTextView: UITextView {
   var parameterViews:[ParameterView] = []
   let gutterPadding = CGFloat(5.0)
   let lineSpacing:CGFloat = 5
+  var accessoryView:UIView?
+  
+  override var inputAccessoryView: UIView? {
+    get {
+      //Eventually refactor this into it's own file
+      if self.accessoryView == nil {
+        let accessoryViewFrame = CGRect(x: 0, y: 0, width: self.frame.width, height: 55)
+        self.accessoryView = UIView(frame: accessoryViewFrame)
+        self.accessoryView!.backgroundColor = UIColor.grayColor()
+        //Create the buttons
+        let buttonSpacing = 10
+        let buttonYOffset = 5
+        let buttonHeight = 45
+        let selLeftFrame = CGRect(x: buttonSpacing, y: buttonYOffset, width: 100, height: buttonHeight)
+        let expandSelectionLeftButton = UIButton(frame: selLeftFrame)
+        expandSelectionLeftButton.setTitle("SelLeft", forState: UIControlState.Normal)
+        expandSelectionLeftButton.addTarget(self, action: Selector("expandSelectionLeft"), forControlEvents: UIControlEvents.TouchUpInside)
+        
+        let selRightFrame = CGRect(
+          x: buttonSpacing + Int(selLeftFrame.origin.x + selLeftFrame.width),
+          y: buttonYOffset, width: 100, height: buttonHeight)
+        let expandSelectionRightButton = UIButton(frame: selRightFrame)
+        expandSelectionRightButton.setTitle("SelRight", forState: UIControlState.Normal)
+        expandSelectionRightButton.addTarget(self, action: Selector("expandSelectionRight"), forControlEvents: UIControlEvents.TouchUpInside)
+        
+        self.accessoryView!.addSubview(expandSelectionLeftButton)
+        self.accessoryView!.addSubview(expandSelectionRightButton)
+      }
+      return self.accessoryView
+    }
+    set {
+      self.accessoryView = newValue
+    }
+  }
+  
+  func expandSelectionLeft() {
+    if selectedRange.location > 0 {
+      selectedRange.location--
+      selectedRange.length++
+    }
+  }
+  
+  func expandSelectionRight() {
+    if selectedRange.location < textStorage.length {
+      selectedRange.length++
+    }
+  }
+  
   override func drawRect(rect: CGRect) {
     if shouldShowLineNumbers {
       drawLineNumberBackground()
@@ -41,6 +89,7 @@ class EditorTextView: UITextView {
     }
     parameterViews = []
   }
+  
   
   func drawParameterOverlay(range:NSRange) {
     let start = positionFromPosition(beginningOfDocument, offset: range.location)
@@ -305,4 +354,5 @@ class EditorTextView: UITextView {
     }
     currentHighlightingView?.frame = HighlightingRect
   }
+  
 }
