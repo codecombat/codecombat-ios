@@ -79,6 +79,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   
   func onCodeRun() {
     textView.clearCodeProblemGutterAnnotations()
+    textView.clearErrorMessageView()
     textView.removeUserCodeProblemLineHighlights()
   }
   
