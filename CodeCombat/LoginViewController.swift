@@ -32,7 +32,7 @@ class LoginViewController: UIViewController {
   func createLoginProtectionSpace() {
     // http://stackoverflow.com/a/17997943/540620
     let url = WebManager.sharedInstance.rootURL
-    loginProtectionSpace = NSURLProtectionSpace(host: url.host!, port: url.port!.integerValue, `protocol`: url.scheme!, realm: nil, authenticationMethod: nil)  //.HTTPDigest)
+    loginProtectionSpace = NSURLProtectionSpace(host: url!.host!, port: url!.port!.integerValue, `protocol`: url!.scheme!, realm: nil, authenticationMethod: nil)  //.HTTPDigest)
   }
   
   func rememberUser() {
@@ -82,7 +82,7 @@ class LoginViewController: UIViewController {
   
   func performLoginRequest(#username:String, password:String) {
     let RootURL = WebManager.sharedInstance.rootURL
-    let LoginURL:NSURL = NSURL(string: "/auth/login", relativeToURL: RootURL)
+    let LoginURL:NSURL = NSURL(string: "/auth/login", relativeToURL: RootURL)!
     let LoginRequest:NSMutableURLRequest = NSMutableURLRequest(
       URL: LoginURL,
       cachePolicy: NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData,

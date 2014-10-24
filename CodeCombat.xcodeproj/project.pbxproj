@@ -104,6 +104,7 @@
 		C827D1D61994784E00B5724C /* TomeInventoryItemProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = C827D1D41994784E00B5724C /* TomeInventoryItemProperty.swift */; };
 		C827D1D91994937C00B5724C /* TomeInventoryItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C827D1D81994937C00B5724C /* TomeInventoryItemView.swift */; };
 		C827D1DB19949E0200B5724C /* TomeInventoryItemPropertyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C827D1DA19949E0200B5724C /* TomeInventoryItemPropertyView.swift */; };
+		C87236FD19FABD760077BD3B /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C87236FC19FABD760077BD3B /* GameViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -257,6 +258,7 @@
 		C827D1D41994784E00B5724C /* TomeInventoryItemProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventoryItemProperty.swift; sourceTree = "<group>"; };
 		C827D1D81994937C00B5724C /* TomeInventoryItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventoryItemView.swift; sourceTree = "<group>"; };
 		C827D1DA19949E0200B5724C /* TomeInventoryItemPropertyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventoryItemPropertyView.swift; sourceTree = "<group>"; };
+		C87236FC19FABD760077BD3B /* GameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -437,6 +439,7 @@
 		287AE10C1992950E00EEE4F0 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				C87236FC19FABD760077BD3B /* GameViewController.swift */,
 				28BA9B541992D580006ACB3A /* Play */,
 				287AE1131992956D00EEE4F0 /* Login */,
 				287AE1121992956800EEE4F0 /* Loading */,
@@ -788,6 +791,7 @@
 				C827D1D51994784E00B5724C /* TomeInventoryItem.swift in Sources */,
 				285A542A199C34BD00932DDE /* utf16_le.c in Sources */,
 				280D7E6119AE4E19004F95D4 /* DocumentParser.swift in Sources */,
+				C87236FD19FABD760077BD3B /* GameViewController.swift in Sources */,
 				287E931819C8C4D100E68F03 /* SWActionSheet.m in Sources */,
 				287AE0D71992927300EEE4F0 /* StoreItemDetailViewController.swift in Sources */,
 				285A5434199C34BD00932DDE /* st.c in Sources */,

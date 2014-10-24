@@ -13,7 +13,7 @@ class WebManager: NSObject, WKScriptMessageHandler {
   var webViewConfiguration: WKWebViewConfiguration!
   var urlSesssionConfiguration: NSURLSessionConfiguration?
   //let rootURL = NSURL(scheme: "http", host: "localhost:3000", path: "/")
-  let rootURL = NSURL(scheme: "http", host: "localhost:3000", path: "/")
+  let rootURL = NSURL(scheme: "http", host: "10.0.1.2:3000", path: "/")
   var operationQueue: NSOperationQueue?
   var webView: WKWebView?  // Assign this if we create one, so that we can evaluate JS in its context.
   var lastJSEvaluated: String?
@@ -48,10 +48,9 @@ class WebManager: NSObject, WKScriptMessageHandler {
     let loginScript = "function foobarbaz() { require('/lib/auth').loginUser({'email':'\(email)','password':'\(password)'}); } if(me.get('anonymous')) setTimeout(foobarbaz, 1);"
     let userScript = WKUserScript(source: loginScript, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
     webViewConfiguration!.userContentController.addUserScript(userScript)
-    let requestURL = NSURL(string: "/", relativeToURL: rootURL)
-    let request = NSMutableURLRequest(URL: requestURL)
+    let requestURL = NSURL(string: "/play", relativeToURL: rootURL)
+    let request = NSMutableURLRequest(URL: requestURL!)
     webView!.loadRequest(request)
-    //addWebViewKeyValueObservers()
     //println("going to log in to \(requestURL) when web view loads! \(loginScript)")
   }
   
@@ -66,7 +65,19 @@ class WebManager: NSObject, WKScriptMessageHandler {
     }
     activeObservers[observer as NSObject]!.append(channel)
     if activeSubscriptions[channel] == 1 {
-      evaluateJavaScript("if(window.addIPadSubscription) window.addIPadSubscription('\(channel)');", completionHandler: nil)
+        evaluateJavaScript("\n".join([
+            "function addIPadSubscriptionIfReady(channel) {",
+            "  if (window.addIPadSubscription) {",
+            "    window.addIPadSubscription(channel);",
+            "    console.log('Totally subscribed to', channel);",
+            "  }",
+            "  else {",
+            "    console.log('Could not add iPad subscription', channel, 'yet.')",
+            "    setTimeout(function() { addIPadSubcriptionIfReady(channel); }, 500);",
+            "  }",
+            "}",
+            "addIPadSubscriptionIfReady('\(channel)');"
+        ]), completionHandler: nil)
     }
     //println("Subscribed \(observer) to \(channel) so now have activeSubscriptions \(activeSubscriptions) activeObservers \(activeObservers)")
   }
@@ -121,10 +132,10 @@ class WebManager: NSObject, WKScriptMessageHandler {
       let EmptyObjectString = NSString(string: "{}")
       serialized = EmptyObjectString.dataUsingEncoding(NSUTF8StringEncoding)
     }
-    return NSString(data: serialized!, encoding: NSUTF8StringEncoding)
+    return NSString(data: serialized!, encoding: NSUTF8StringEncoding)!
   }
   
-  func userContentController(userContentController: WKUserContentController!, didReceiveScriptMessage message: WKScriptMessage!) {
+  func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
     if message.name == "backboneEventHandler" {
       // Turn Backbone events into NSNotifications
       let body = (message.body as NSDictionary) as Dictionary  // You... It... So help me...

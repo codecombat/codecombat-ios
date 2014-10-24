@@ -354,7 +354,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     let sourceString = textStorage.string()!.substringWithRange(NSRange(location: 0, length: range.location))
     let errorPointer = NSErrorPointer()
     let regex = NSRegularExpression(pattern: "\\n", options:nil, error: errorPointer)
-    let matches = regex.numberOfMatchesInString(sourceString, options: nil, range: NSRange(location: 0, length: countElements(sourceString)))
+    let matches = regex!.numberOfMatchesInString(sourceString, options: nil, range: NSRange(location: 0, length: countElements(sourceString)))
     return matches + 1
   }
   

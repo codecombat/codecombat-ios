@@ -221,7 +221,7 @@ class EditorTextView: UITextView {
     if errorMessageView != nil {
       clearErrorMessageView()
     }
-    let backgroundImage = UIImage(named: "editorErrorBackground")
+    let backgroundImage = UIImage(named: "editorErrorBackground")!
     let mainScreenView = superview!.superview!
     var errorMessageFrame = mainScreenView.frame
     errorMessageFrame.origin.y = errorMessageFrame.height - 120

@@ -160,7 +160,7 @@ class LanguageProvider {
       return nil
     }
     let error:NSErrorPointer = nil
-    let languageFileContents = String.stringWithContentsOfFile(languageFilePath!, encoding: NSUTF8StringEncoding, error: error)
+    let languageFileContents = NSString(contentsOfFile: languageFilePath!, encoding: NSUTF8StringEncoding, error: error)
     if error != nil || languageFileContents == nil {
       return nil
     }
