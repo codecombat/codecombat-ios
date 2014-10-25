@@ -13,7 +13,8 @@ class WebManager: NSObject, WKScriptMessageHandler {
   var webViewConfiguration: WKWebViewConfiguration!
   var urlSesssionConfiguration: NSURLSessionConfiguration?
   //let rootURL = NSURL(scheme: "http", host: "localhost:3000", path: "/")
-  let rootURL = NSURL(scheme: "http", host: "10.0.1.2:3000", path: "/")
+  //let rootURL = NSURL(scheme: "http", host: "10.0.1.2:3000", path: "/")
+  let rootURL = NSURL(scheme: "http", host: "codecombat.com:80", path: "/")
   var operationQueue: NSOperationQueue?
   var webView: WKWebView?  // Assign this if we create one, so that we can evaluate JS in its context.
   var lastJSEvaluated: String?
