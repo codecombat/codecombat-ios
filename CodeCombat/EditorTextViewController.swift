@@ -346,8 +346,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   private func clearLineOverlayLabels() {
     for (index, label) in dragOverlayLabels {
       label.removeFromSuperview()
-      dragOverlayLabels.removeValueForKey(index)
     }
+    dragOverlayLabels.removeAll(keepCapacity: true)
   }
   
   private func lineNumberForDraggedCharacterRange(range:NSRange) -> Int {

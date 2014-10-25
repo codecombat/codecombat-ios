@@ -45,7 +45,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   func setupViews() {
     let frameWidth = view.frame.size.width
     let frameHeight = view.frame.size.height
-    let aspectRatio = screenshotView.image!.size.width/screenshotView.image!.size.height
+    let aspectRatio:CGFloat = 1.56888
     screenshotView.frame = CGRectMake(0, 0, frameWidth, frameWidth / aspectRatio)
     editorContainerView.frame = CGRectMake(0, screenshotView.frame.height, frameWidth, frameHeight)
     setupScrollView()

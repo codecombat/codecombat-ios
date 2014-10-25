@@ -21,7 +21,16 @@ class NodeHighlighter {
   var lastScopeNode:DocumentNode!
   var lastScopeName:String = ""
   var lastScopeBuf:NSMutableString = ""
+  var parser:LanguageParser
   init(parser:LanguageParser) {
+    self.parser = parser
+    rootNode = parser.parse()
+  }
+  
+  func reparse() {
+    lastScopeName = ""
+    lastScopeBuf = ""
+    lastScopeNode = nil
     rootNode = parser.parse()
   }
   // Given a text region, returns the innermost node covering that region.
@@ -132,13 +141,19 @@ class Regex {
 //The language provider is responsible for parsing files into languages
 class LanguageProvider {
   var scope:[String:String] = Dictionary<String,String>()
+  var cachedLanguages:[String:Language?] = [:]
   func getLanguage(id:String) -> Language? {
+    if let lang = cachedLanguages[id] {
+      return lang
+    }
     if let lang = languageFromScope(id) {
       lang.tweak()
+      cachedLanguages[id] = lang
       return lang
     } else {
       let lang = languageFromFile(id)
       lang?.tweak()
+      cachedLanguages[id] = lang
       return lang
     }
   }
