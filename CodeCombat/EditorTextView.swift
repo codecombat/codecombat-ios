@@ -36,56 +36,25 @@ class EditorTextView: UITextView {
   
   override var inputAccessoryView: UIView? {
     get {
-      //Eventually refactor this into its own file
       if self.accessoryView == nil {
         let accessoryViewFrame = CGRect(x: 0, y: 0, width: self.frame.width, height: 55)
-        self.accessoryView = UIView(frame: accessoryViewFrame)
-        self.accessoryView!.backgroundColor = UIColor.grayColor()
-        //Create the buttons
-        let buttonSpacing = 10
-        let buttonYOffset = 5
-        let buttonHeight = 45
-        let selLeftFrame = CGRect(x: buttonSpacing, y: buttonYOffset, width: 100, height: buttonHeight)
-        let expandSelectionLeftButton = UIButton(frame: selLeftFrame)
-        expandSelectionLeftButton.setTitle("SelLeft", forState: UIControlState.Normal)
-        expandSelectionLeftButton.addTarget(self, action: Selector("expandSelectionLeft"), forControlEvents: UIControlEvents.TouchUpInside)
-        
-        let selRightFrame = CGRect(
-          x: buttonSpacing + Int(selLeftFrame.origin.x + selLeftFrame.width),
-          y: buttonYOffset,
-          width: 100,
-          height: buttonHeight)
-        let expandSelectionRightButton = UIButton(frame: selRightFrame)
-        expandSelectionRightButton.setTitle("SelRight", forState: UIControlState.Normal)
-        expandSelectionRightButton.addTarget(self, action: Selector("expandSelectionRight"), forControlEvents: UIControlEvents.TouchUpInside)
-        
-        let cursorLeftFrame = CGRect(
-          x: buttonSpacing + Int(selRightFrame.origin.x + selRightFrame.width),
-          y: buttonYOffset,
-          width: 100,
-          height: buttonHeight)
-        let cursorLeftButton = UIButton(frame: cursorLeftFrame)
-        cursorLeftButton.setTitle("CurLeft", forState: UIControlState.Normal)
-        cursorLeftButton.addTarget(self, action: Selector("moveCursorLeft"), forControlEvents: UIControlEvents.TouchUpInside)
-        
-        let cursorRightFrame = CGRect(
-          x: buttonSpacing + Int(cursorLeftFrame.origin.x + cursorLeftFrame.width),
-          y: buttonYOffset,
-          width: 100,
-          height: buttonHeight)
-        let cursorRightButton = UIButton(frame: cursorRightFrame)
-        cursorRightButton.setTitle("CurRight", forState: UIControlState.Normal)
-        cursorRightButton.addTarget(self, action: Selector("moveCursorRight"), forControlEvents: UIControlEvents.TouchUpInside)
-        self.accessoryView!.addSubview(expandSelectionLeftButton)
-        self.accessoryView!.addSubview(expandSelectionRightButton)
-        self.accessoryView!.addSubview(cursorLeftButton)
-        self.accessoryView!.addSubview(cursorRightButton)
+        let accessory = EditorInputAccessoryView(frame: accessoryViewFrame)
+        accessory.parentTextView = self
+        self.accessoryView = accessory
       }
       return self.accessoryView
     }
     set {
       self.accessoryView = newValue
     }
+  }
+  
+  override func drawRect(rect: CGRect) {
+    if shouldShowLineNumbers {
+      drawLineNumberBackground()
+      drawLineNumbers(rect)
+    }
+    super.drawRect(rect)
   }
   
   func expandSelectionLeft() {
@@ -114,14 +83,6 @@ class EditorTextView: UITextView {
         selectedRange.length--
       }
     }
-  }
-  
-  override func drawRect(rect: CGRect) {
-    if shouldShowLineNumbers {
-      drawLineNumberBackground()
-      drawLineNumbers(rect)
-    }
-    super.drawRect(rect)
   }
   
   func eraseParameterViews() {
@@ -255,7 +216,6 @@ class EditorTextView: UITextView {
   }
   
   private func lineFragmentRectForLineNumber(targetLineNumber:Int) -> CGRect {
-    //figure out how to optimize this through caching
     let storage = textStorage as EditorTextStorage
     let Context = UIGraphicsGetCurrentContext()
     let Bounds = bounds
@@ -263,7 +223,6 @@ class EditorTextView: UITextView {
     let textRange = layoutManager.glyphRangeForTextContainer(textContainer)
     let glyphsToShow = layoutManager.glyphRangeForCharacterRange(textRange,
       actualCharacterRange: nil)
-    //find number of lines before textRange.location
     var numberOfLinesBeforeVisible = 0
     for var index = 0; index < textRange.location; numberOfLinesBeforeVisible++ {
       index = NSMaxRange(storage.string()!.lineRangeForRange(NSRange(location: index, length: 0)))
@@ -302,7 +261,6 @@ class EditorTextView: UITextView {
       inTextContainer: textContainer)
     let glyphsToShow = layoutManager.glyphRangeForCharacterRange(textRange,
       actualCharacterRange: nil)
-    //find number of lines before textRange.location
     var numberOfLinesBeforeVisible = 0
     for var index = 0; index < textRange.location; numberOfLinesBeforeVisible++ {
       index = NSMaxRange(storage.string()!.lineRangeForRange(NSRange(location: index, length: 0)))
@@ -328,13 +286,10 @@ class EditorTextView: UITextView {
       usingBlock: lineFragmentClosure)
   }
   
+  //Draws a solid brown background behind the lines
   private func drawLineNumberBackground() {
     let context = UIGraphicsGetCurrentContext()
-    let LineNumberBackgroundColor = UIColor(
-      red: CGFloat(234.0/256.0),
-      green: CGFloat(219.0/256.0),
-      blue: CGFloat(169.0/256.0),
-      alpha: 1)
+    let LineNumberBackgroundColor = ColorManager.sharedInstance.inventoryBackground
     CGContextSetFillColorWithColor(context, LineNumberBackgroundColor.CGColor)
     let LineNumberBackgroundRect = CGRect(
       x: bounds.origin.x,
@@ -379,19 +334,13 @@ class EditorTextView: UITextView {
   }
   
   func handleItemPropertyDragBegan() {
-    //create a coloured box on the line past the last line here
-    //identify location of last glyph index
     let glyphRange = layoutManager.glyphRangeForTextContainer(textContainer)
     var lastLineFragmentRect = layoutManager.lineFragmentRectForGlyphAtIndex(NSMaxRange(glyphRange) - 1, effectiveRange: nil)
-    //now add one line height
     let bufferHeight = 100
     let lineHeight = font.lineHeight + lineSpacing
     lastLineFragmentRect.origin.y += lineHeight + lineSpacing - CGFloat(bufferHeight/2)
     lastLineFragmentRect.size.height = lineHeight + CGFloat(bufferHeight)
-    //create a view
     currentDragHintView = ParticleView(frame: lastLineFragmentRect)
-    //currentDragHintView = UIView(frame: lastLineFragmentRect)
-    //currentDragHintView!.backgroundColor = UIColor.greenColor()
     addSubview(currentDragHintView!)
   }
   

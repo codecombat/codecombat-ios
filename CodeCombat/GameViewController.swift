@@ -28,7 +28,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
     super.viewDidLoad()
     webView = WebManagerSharedInstance.webView!
     view.addSubview(webView)
-    delay(15) {
+    delay(5) {
       // TODO: figure out how to tell when we're actually loaded after login and then listen to notifications. If we do it right away, then we reload the page and have lost them, or something like that.
       self.listenToNotifications()
     }

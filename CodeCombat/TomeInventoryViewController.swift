@@ -45,11 +45,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
     inventoryView.panGestureRecognizer.requireGestureRecognizerToFail(DragAndDropRecognizer)
     
     inventoryView.bounces = false
-    inventoryView.backgroundColor = UIColor(
-      red: CGFloat(234.0/256.0),
-      green: CGFloat(219.0/256.0),
-      blue: CGFloat(169.0/256.0),
-      alpha: 1)
+    inventoryView.backgroundColor = ColorManager.sharedInstance.inventoryBackground
     // TODO: Calculate the actual size
     inventoryView.contentSize = CGSize(
       width: inventoryFrame.width,

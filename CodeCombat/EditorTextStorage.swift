@@ -70,7 +70,9 @@ class EditorTextStorage: NSTextStorage {
       changeInLength: 0)
   }
   
-  func sendOverlayRequest(metaFunctionCallNode:DocumentNode) {
+  func sendArgumentOverlayRequest(characterRange:NSRange) {
+    println("Sending overlay request for argument overlay starting at \(characterRange.location)")
+    NSNotificationCenter.defaultCenter().postNotificationName("argumentOverlayRequest", object: nil, userInfo: ["characterRange":characterRange])
     /*println("Function name: \(metaFunctionCallNode.children[0].data)")
     println("Open bracket: \(metaFunctionCallNode.children[1].children[0].data)")
     println("Close bracket:\(metaFunctionCallNode.children[1].data)")*/
@@ -84,8 +86,7 @@ class EditorTextStorage: NSTextStorage {
     highlighter = NodeHighlighter(parser: parser)
     //the most inefficient way of doing this, optimize later
     let documentRange = NSRange(location: 0, length: string()!.length)
-    println("Edited range loc: \(editedRange.location), length: \(editedRange.length)")
-    println("Document range loc: \(documentRange.location), length: \(documentRange.length)")
+
     self.removeAttribute(NSForegroundColorAttributeName, range: documentRange)
     for var charIndex = documentRange.location; charIndex < NSMaxRange(documentRange); charIndex++ {
       let scopeName = highlighter.scopeName(charIndex)
@@ -104,11 +105,11 @@ class EditorTextStorage: NSTextStorage {
         } else if scope.hasPrefix("variable.language") && highlighter.lastScopeNode.data == "self" { //python self
           addAttribute(NSForegroundColorAttributeName, value: UIColor.purpleColor(), range: scopeExtent!)
           charIndex = NSMaxRange(scopeExtent!)
+        } else if scope.hasPrefix("codecombat.arguments") {
+          addAttribute(NSForegroundColorAttributeName, value: UIColor.cyanColor(), range: scopeExtent!)
+          sendArgumentOverlayRequest(scopeExtent!)
+          charIndex = NSMaxRange(scopeExtent!)
         }
-        if scope.hasPrefix("meta.function-call.python") {
-          sendOverlayRequest(highlighter.lastScopeNode)
-        }
-        
       }
     }
     sendTextEditedNotification()

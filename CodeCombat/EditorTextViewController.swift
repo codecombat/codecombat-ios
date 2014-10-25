@@ -26,39 +26,54 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   
   var textView:EditorTextView! {
     didSet {
-      textView.autocorrectionType = UITextAutocorrectionType.No
-      textView.delegate = self
-      textView.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
-      textView.selectable = false
-      textView.editable = false
-      textView.font = currentFont
-      textView.showLineNumbers()
-      textView.backgroundColor = UIColor(
-        red: CGFloat(230.0 / 256.0),
-        green: CGFloat(212.0 / 256.0),
-        blue: CGFloat(145.0 / 256.0),
-        alpha: 1)
+      setupTextView()
     }
+  }
+  
+  func setupTextView() {
+    textView.autocorrectionType = UITextAutocorrectionType.No
+    textView.delegate = self
+    textView.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
+    textView.selectable = false
+    textView.editable = false
+    textView.font = currentFont
+    textView.showLineNumbers()
+    textView.backgroundColor = UIColor(
+      red: CGFloat(230.0 / 256.0),
+      green: CGFloat(212.0 / 256.0),
+      blue: CGFloat(145.0 / 256.0),
+      alpha: 1)
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    //view.addGestureRecognizer(dragGestureRecognizer)
-    // Do any additional setup after loading the view.
+    setupDragGestureRecognizer()
+    setupWebManagerSubscriptions()
+    addNotificationCenterObservers()
+  }
+  
+  func setupDragGestureRecognizer() {
     dragGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handleDrag:")
     dragGestureRecognizer.delegate = self
+  }
+  
+  func setupWebManagerSubscriptions() {
     WebManager.sharedInstance.subscribe(self, channel: "tome:highlight-line", selector: Selector("onSpellStatementIndexUpdated:"))
     WebManager.sharedInstance.subscribe(self, channel: "problem:problem-created", selector: Selector("onProblemCreated:"))
+  }
+  
+  func addNotificationCenterObservers() {
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onCodeRun"), name: "codeRun", object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onArgumentOverlayRequest:"), name: "argumentOverlayRequest", object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleDrawParameterRequest:"), name: "drawParameterBox", object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleEraseParameterViewsRequest:"), name: "eraseParameterBoxes", object: nil)
   }
   
   func onSpellStatementIndexUpdated(note:NSNotification) {
     if let event = note.userInfo {
       var lineIndex = event["line"]! as Int
-      lineIndex++ //to account for difference between 0 and 1 offset
-      if lineIndex == highlightedLineNumber {
-        return
-      } else {
+      lineIndex++
+      if lineIndex != highlightedLineNumber {
         highlightedLineNumber = lineIndex
         textView.highlightLineNumber(lineIndex)
       }
@@ -66,11 +81,9 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   }
   
   func onProblemCreated(note:NSNotification) {
-    println("Problem created!!")
     if let event = note.userInfo {
       var lineIndex = event["line"]! as Int
       var errorText = event["text"]! as String
-      println("Got error: \(errorText)")
       lineIndex++
       textView.addUserCodeProblemGutterAnnotationOnLine(lineIndex, message: errorText)
       textView.highlightUserCodeProblemLine(lineIndex)
@@ -83,12 +96,18 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     textView.removeUserCodeProblemLineHighlights()
   }
   
+  func onArgumentOverlayRequest(note:NSNotification) {
+    println("Received argument overlay request")
+  }
+  
   func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
     return true
   }
+  
   func keyboardModeEnabled() -> Bool {
     return textView.editable && textView.selectable
   }
+  
   func toggleKeyboardMode() {
     if keyboardModeEnabled() {
       textView.editable = false
@@ -146,8 +165,6 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   
   private func createCoverTextView(#rectToCover:CGRect) -> UIView {
     var coverTextFrame = rectToCover
-    //coverTextFrame.size.height = textView.font.lineHeight + textView.lineSpacing
-    //coverTextFrame.origin.y += textView.lineSpacing
     coverTextFrame.origin.x += textView.lineNumberWidth + textView.gutterPadding
     let coverView = UIView(frame: coverTextFrame)
     coverView.backgroundColor = textView.backgroundColor
@@ -189,6 +206,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     draggedLabel.center = dragLocation
   }
   
+  //This function will put views identical to the text over every line so that they may be dragged around.
   private func createViewsForAllLinesExceptDragged(draggedLineFragmentRect:CGRect, draggedCharacterRange:NSRange) {
     let visibleCharacterRange = layoutManager.glyphRangeForBoundingRect(textView.frame, inTextContainer: textContainer)
     let visibleGlyphs = layoutManager.glyphRangeForCharacterRange(visibleCharacterRange, actualCharacterRange: nil)
@@ -224,6 +242,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     layoutManager.enumerateLineFragmentsForGlyphRange(visibleGlyphs, usingBlock: fragmentEnumerator)
   }
   
+  //Note, this won't take doubled lines into account
   private func lineNumberOfLocationInTextView(loc:CGPoint) -> Int {
     return Int((loc.y - textView.lineSpacing) / (textView.lineSpacing + textView.font.lineHeight) + 1)
   }
@@ -441,8 +460,6 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     textView.addGestureRecognizer(dragGestureRecognizer)
     textView.panGestureRecognizer.requireGestureRecognizerToFail(dragGestureRecognizer)
     view.addSubview(textView)
-    
-    setupNotificationCenterObservers()
   }
   
   private func setupTextKitHierarchy() {
@@ -452,11 +469,6 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     textContainer.lineBreakMode = NSLineBreakMode.ByWordWrapping
     textContainer.widthTracksTextView = true
     layoutManager.addTextContainer(textContainer)
-  }
-  
-  private func setupNotificationCenterObservers() {
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleDrawParameterRequest:"), name: "drawParameterBox", object: nil)
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleEraseParameterViewsRequest:"), name: "eraseParameterBoxes", object: nil)
   }
   
   func handleEraseParameterViewsRequest(notification:NSNotification) {

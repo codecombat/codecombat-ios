@@ -19,6 +19,10 @@
   "name": "Python",
   "patterns": [
     {
+      "match": "\\$\\{.*\\}",
+      "name": "codecombat.arguments"
+    },
+    {
       "match": "^In",
       "name": "support.ipython.in"
     },
