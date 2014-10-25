@@ -489,7 +489,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   }
   
   func replaceTextViewContentsWithString(text:String) {
-    textStorage.replaceCharactersInRange(NSRange(location: 0, length: 0), withString: text)
+    textStorage.replaceCharactersInRange(NSRange(location: 0, length: textStorage.string()!.length), withString: text)
     resetFontToCurrentFont()
     textView.setNeedsDisplay()
   }
