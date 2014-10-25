@@ -9,9 +9,11 @@
 import Foundation
 
 class TomeInventoryItemView: UIView {
-  
   var item: TomeInventoryItem!
   var showsProperties = false
+  var imageView: UIImageView?
+  let imageSize = CGFloat(75)
+  let margin = CGFloat(3)
   
   required init(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
@@ -30,8 +32,9 @@ class TomeInventoryItemView: UIView {
   }
   
   func buildSubviews() {
-    let Margin = CGFloat(3.0)
     var y = CGFloat(0)
+    let itemWidth = imageSize + 2 * margin
+    println("Got item: \(item) with data \(item.itemData)")
     if let name = item.itemData["name"].asString {
       
       for property in item.properties {
@@ -39,42 +42,47 @@ class TomeInventoryItemView: UIView {
           item: item,
           property: property,
           frame: CGRect(
-            x: frame.width / 2.0 + Margin,
-            y: y + Margin,
-            width: frame.width / 2.0 - 2 * Margin,
+            x: itemWidth,
+            y: y + margin,
+            width: frame.width - margin - itemWidth,
             height: 50.0))
         addSubview(propertyView)
-        y += propertyView.frame.height + Margin
+        y += propertyView.frame.height + margin
       }
       if item.properties.count > 0 {
-        var label = UILabel(
-          frame: CGRect(
-            x: Margin,
-            y: Margin,
-            width: frame.width / 2.0 - 2 * Margin,
-            height: frame.height - 2 * Margin))
-        label.text = name
-        label.textColor = UIColor.blackColor()
-        label.sizeToFit()
-        label.frame = CGRect(
-          x: label.frame.origin.x,
-          y: CGFloat((y + Margin - label.frame.height) / 2.0),
-          width: label.frame.width,
-          height: label.frame.height)
-        addSubview(label)
         showsProperties = true
+        buildItemImage()
       }
     }
+    let height = showsProperties ? max(y + margin, imageSize + 2 * margin) : 0
     frame = CGRect(
       x: frame.origin.x,
       y: frame.origin.y,
       width: frame.width,
-      height: showsProperties ? y + Margin : 0)
+      height: height)
     backgroundColor = UIColor(
       red: CGFloat(211.0/256.0),
       green: CGFloat(191.0/256.0),
       blue: CGFloat(129.0/256.0),
       alpha: 1)
+  }
+  
+  func buildItemImage() {
+    let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
+    dispatch_async(dispatch_get_global_queue(priority, 0)) {
+      let imageData = NSData(contentsOfURL: self.item.imageURL)
+      dispatch_async(dispatch_get_main_queue()) {
+        // update some UI
+        if imageData != nil {
+          let image = UIImage(data: imageData!)
+          let y = max(self.margin, (self.frame.size.height - self.imageSize) / 2)
+          let imageFrame = CGRect(x: self.margin, y: y, width: self.imageSize, height: self.imageSize)
+          self.imageView = UIImageView(frame: imageFrame)
+          self.imageView!.image = image
+          self.addSubview(self.imageView!)
+        }
+      }
+    }
   }
   
   func tomeInventoryItemPropertyAtLocation(location:CGPoint)

@@ -65,7 +65,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   }
   
   func setupInventory() {
-    inventoryFrame = CGRectMake(0, 0, editorContainerView.frame.width / 3, editorContainerView.frame.height)
+    inventoryFrame = CGRectMake(0, 0, editorContainerView.frame.width / 4, editorContainerView.frame.height)
     inventoryViewController = TomeInventoryViewController()
     inventoryViewController.view.frame = inventoryFrame
     //helps to fix a scrolling bug

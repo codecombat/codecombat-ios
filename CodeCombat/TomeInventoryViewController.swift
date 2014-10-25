@@ -16,9 +16,10 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
   private var draggedProperty: TomeInventoryItemProperty!
   
   override init() {
-    inventory = TomeInventory(
-      itemsData: parseJSONFile("items_tharin"),
-      propertiesData: parseJSONFile("properties"))
+//    inventory = TomeInventory(
+//      itemsData: parseJSONFile("items_tharin"),
+//      propertiesData: parseJSONFile("properties"))
+    inventory = TomeInventory()
     super.init(nibName: "", bundle: nil)
   }
   
@@ -46,10 +47,6 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
     
     inventoryView.bounces = false
     inventoryView.backgroundColor = ColorManager.sharedInstance.inventoryBackground
-    // TODO: Calculate the actual size
-    inventoryView.contentSize = CGSize(
-      width: inventoryFrame.width,
-      height: 2 * inventoryFrame.height)
     view.addSubview(inventoryView)
     
     addScriptMessageNotificationObservers()
@@ -72,6 +69,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
         itemHeight += Int(itemView.frame.height) + itemMargin
       }
     }
+    inventoryView.contentSize = CGSize(width: inventoryView.frame.width, height: CGFloat(itemHeight))
   }
   
   private func addScriptMessageNotificationObservers() {
@@ -87,19 +85,21 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
   func onInventoryUpdated(note: NSNotification) {
     if inventoryLoaded { return }
     inventoryLoaded = true
-    // Fake us up some inventory item data, since we're not separating things into inventory items yet, but we will be.
     inventory = TomeInventory()
     let userInfo = note.userInfo as [String: AnyObject]
     let entryGroupsJSON = userInfo["entryGroups"] as NSString
     let entryGroups = JSON.parse(entryGroupsJSON)
     var items: [TomeInventoryItem] = []
-    for (entryGroup, entries) in entryGroups.asDictionary! {
-      var entryNames: [String] = entries.asArray!.map({entry in entry["name"].asString!}) as [String]
+    for (entryGroupName, entryGroup) in entryGroups.asDictionary! {
+      var entries = entryGroup["props"].asArray!
+      var entryNames: [String] = entries.map({entry in entry["name"].asString!}) as [String]
       var entryNamesJSON = "\", \"".join(entryNames)
-      var itemDataJSON = "{\"name\":\"\(entryGroup)\",\"programmableProperties\":[\"\(entryNamesJSON)\"]}"
+      var imageInfoData = entryGroup["item"].asDictionary!
+      var imageURL = imageInfoData["imageURL"]!
+      var itemDataJSON = "{\"name\":\"\(entryGroupName)\",\"programmableProperties\":[\"\(entryNamesJSON)\"],\"imageURL\":\"\(imageURL)\"}"
       var itemData = JSON.parse(itemDataJSON)
       var item = TomeInventoryItem(itemData: itemData)
-      for entry in entries.asArray! {
+      for entry in entries {
         var property = TomeInventoryItemProperty(propertyData: entry, primary: true)
         item.addProperty(property)
       }

@@ -12,6 +12,15 @@ class TomeInventoryItem {
   var name: String {
     return itemData["name"].toString(pretty: false)
   }
+  var imageURL: NSURL {
+    var b = itemData["imageURL"]
+    var url: String = itemData["imageURL"].toString(pretty: false)
+    println("getting image url and imageData is \(itemData) with imageURL \(url)")
+    if url.isEmpty {
+      url = "/file/db/thang.type/53e4108204c00d4607a89f78/programmicon.png"
+    }
+    return NSURL(string: url, relativeToURL: WebManagerSharedInstance.rootURL!)!
+  }
   
   init(itemData: JSON) {
     self.itemData = itemData
