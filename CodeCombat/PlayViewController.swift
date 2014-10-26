@@ -14,6 +14,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   @IBOutlet weak var redoButton: UIButton!
   @IBOutlet weak var undoButton: UIButton!
   @IBOutlet weak var keyboardButton: UIButton!
+  @IBOutlet weak var resetCodeButton: UIButton!
   
   var scrollView: UIScrollView!
   let screenshotView = UIImageView(image: UIImage(named: "largeScreenshot"))
@@ -142,6 +143,18 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   @IBAction func onRedo(sender:UIButton) {
     textViewController.textStorage.undoManager.redo()
     textViewController.textView.setNeedsDisplay()
+  }
+  
+  @IBAction func onClickResetCode(sender:UIButton) {
+    let alertController = UIAlertController(title: "Are you sure?", message: "Reloading the original code will erase all of the code you've written. Are you sure?", preferredStyle: .Alert)
+    let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+    alertController.addAction(cancelAction)
+    
+    let resetAction = UIAlertAction(title: "Reset", style: .Destructive, handler: {(action) in
+      self.webManager.publish("level:restart", event: [:])
+    })
+    alertController.addAction(resetAction)
+    presentViewController(alertController, animated: true, completion: nil)
   }
   
   func setUndoRedoEnabled() {
