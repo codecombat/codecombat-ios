@@ -8,7 +8,7 @@
 
 import Foundation
 
-class TomeInventoryItemPropertyView: UIView {
+class TomeInventoryItemPropertyView: UIButton {
   
   var item: TomeInventoryItem!
   var property: TomeInventoryItemProperty!
@@ -17,6 +17,7 @@ class TomeInventoryItemPropertyView: UIView {
     self.item = item
     self.property = property
     buildSubviews()
+    addTarget(self, action: Selector("onTapped:"), forControlEvents: .TouchUpInside)
   }
   
   required init(coder aDecoder: NSCoder) {
@@ -55,5 +56,14 @@ class TomeInventoryItemPropertyView: UIView {
         height: label.frame.height + 2 * Padding)
       backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
     }
+  }
+  
+  func onTapped(sender: TomeInventoryItemView) {
+    var docView = TomeInventoryItemPropertyDocumentationView(item: item, property: property, frame: CGRect(x: 0, y: 0, width: 200, height: 300))
+    var docViewController = UIViewController()
+    docViewController.view = docView
+    var popover = UIPopoverController(contentViewController: docViewController)
+    popover.presentPopoverFromRect(frame, inView: superview!.superview!, permittedArrowDirections: .Down | .Up, animated: true)
+    println("tapped \(self.item.name) \(self.property.name)")
   }
 }

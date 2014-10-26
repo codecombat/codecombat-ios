@@ -15,7 +15,6 @@ class TomeInventoryItem {
   var imageURL: NSURL {
     var b = itemData["imageURL"]
     var url: String = itemData["imageURL"].toString(pretty: false)
-    println("getting image url and imageData is \(itemData) with imageURL \(url)")
     if url.isEmpty {
       url = "/file/db/thang.type/53e4108204c00d4607a89f78/programmicon.png"
     }

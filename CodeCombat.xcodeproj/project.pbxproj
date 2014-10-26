@@ -101,6 +101,7 @@
 		C824BF0A19FC43DE0097AE14 /* HockeySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C824BF0619FC43DE0097AE14 /* HockeySDK.framework */; };
 		C824BF0B19FC43DE0097AE14 /* HockeySDK.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C824BF0819FC43DE0097AE14 /* HockeySDK.xcconfig */; };
 		C824BF0C19FC43DE0097AE14 /* HockeySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C824BF0919FC43DE0097AE14 /* HockeySDKResources.bundle */; };
+		C824BF1119FD854E0097AE14 /* TomeInventoryItemPropertyDocumentationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C824BF1019FD854E0097AE14 /* TomeInventoryItemPropertyDocumentationView.swift */; };
 		C827D1C919943EA500B5724C /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C827D1C819943EA500B5724C /* Utilities.swift */; };
 		C827D1CB19943FF700B5724C /* items_tharin.json in Resources */ = {isa = PBXBuildFile; fileRef = C827D1CA19943FF700B5724C /* items_tharin.json */; };
 		C827D1CD199443AE00B5724C /* properties.json in Resources */ = {isa = PBXBuildFile; fileRef = C827D1CC199443AE00B5724C /* properties.json */; };
@@ -261,6 +262,7 @@
 		C824BF0619FC43DE0097AE14 /* HockeySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = HockeySDK.framework; sourceTree = "<group>"; };
 		C824BF0819FC43DE0097AE14 /* HockeySDK.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = HockeySDK.xcconfig; sourceTree = "<group>"; };
 		C824BF0919FC43DE0097AE14 /* HockeySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = HockeySDKResources.bundle; sourceTree = "<group>"; };
+		C824BF1019FD854E0097AE14 /* TomeInventoryItemPropertyDocumentationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventoryItemPropertyDocumentationView.swift; sourceTree = "<group>"; };
 		C827D1C819943EA500B5724C /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		C827D1CA19943FF700B5724C /* items_tharin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = items_tharin.json; sourceTree = "<group>"; };
 		C827D1CC199443AE00B5724C /* properties.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = properties.json; sourceTree = "<group>"; };
@@ -676,6 +678,7 @@
 				28C96DF61993D09C009FCD9E /* EditorTextView.swift */,
 				C827D1D81994937C00B5724C /* TomeInventoryItemView.swift */,
 				C827D1DA19949E0200B5724C /* TomeInventoryItemPropertyView.swift */,
+				C824BF1019FD854E0097AE14 /* TomeInventoryItemPropertyDocumentationView.swift */,
 				28DFD0B519FBFBA400C302F0 /* EditorInputAccessoryView.swift */,
 			);
 			name = Play;
@@ -869,6 +872,7 @@
 				287E931719C8C4D100E68F03 /* DistancePickerView.m in Sources */,
 				285A542D199C34BD00932DDE /* regerror.c in Sources */,
 				285A5435199C34BD00932DDE /* OnigRegexpUtility.m in Sources */,
+				C824BF1119FD854E0097AE14 /* TomeInventoryItemPropertyDocumentationView.swift in Sources */,
 				285A542E199C34BD00932DDE /* regexec.c in Sources */,
 				287AE0D91992927300EEE4F0 /* User.swift in Sources */,
 				28C96DF71993D09C009FCD9E /* EditorTextView.swift in Sources */,

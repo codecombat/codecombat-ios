@@ -34,7 +34,6 @@ class TomeInventoryItemView: UIView {
   func buildSubviews() {
     var y = CGFloat(0)
     let itemWidth = imageSize + 2 * margin
-    println("Got item: \(item) with data \(item.itemData)")
     if let name = item.itemData["name"].asString {
       
       for property in item.properties {
