@@ -221,11 +221,23 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
         return
       }
       if fragmentCharacterRange.location == fragmentParagraphRange.location {
-        //get the bounding rect for the paragraph
+        //println("The length of the character range is \(fragmentCharacterRange.length), and the length of the paragraph range is \(fragmentParagraphRange.length)")
         var labelTextFrame = aRect
         labelTextFrame.size.height = textView.font.lineHeight + textView.lineSpacing
         let label = UILabel(frame: aRect)
-        label.attributedText = getAttributedStringForCharacterRange(fragmentParagraphRange)
+        if fragmentCharacterRange.length == fragmentParagraphRange.length {
+          label.attributedText = getAttributedStringForCharacterRange(fragmentParagraphRange)
+        } else {
+          let attributedStringBeforeLineBreak = NSMutableAttributedString(attributedString: getAttributedStringForCharacterRange(fragmentCharacterRange))
+          attributedStringBeforeLineBreak.appendAttributedString(NSAttributedString(string: "\n"))
+          let attributedStringAfterLineBreak = getAttributedStringForCharacterRange(NSRange(location: NSMaxRange(fragmentCharacterRange), length: (fragmentParagraphRange.length - fragmentCharacterRange.length)))
+          attributedStringBeforeLineBreak.appendAttributedString(attributedStringAfterLineBreak)
+          label.attributedText = attributedStringBeforeLineBreak
+          label.frame.size.height += textView.font.lineHeight + textView.lineSpacing
+          //label.backgroundColor = UIColor.purpleColor()
+        }
+        
+        //Insert a line break
         label.sizeToFit()
         label.frame.origin.x += textView.gutterPadding
         label.frame.origin.y += textView.lineSpacing + 3.5 //I have no idea why this isn't aligning properly, probably has to do with the sizeToFit()

@@ -179,12 +179,7 @@
                     <view key="view" contentMode="scaleToFill" id="hP6-YF-pgF">
                         <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" image="loading" translatesAutoresizingMaskIntoConstraints="NO" id="uho-pv-ooW">
-                                <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
-                            </imageView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
@@ -383,7 +378,6 @@
     <resources>
         <image name="Logo" width="86" height="20"/>
         <image name="amuletOfConditional" width="32" height="32"/>
-        <image name="loading" width="1024" height="768"/>
         <image name="loginArtBackground" width="1024" height="435"/>
         <image name="loginInfoBackground" width="411" height="88"/>
         <image name="loginModalBackground" width="533" height="639"/>

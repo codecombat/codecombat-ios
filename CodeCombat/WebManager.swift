@@ -8,7 +8,7 @@
 
 import UIKit
 import WebKit
-class WebManager: NSObject, WKScriptMessageHandler {
+class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   
   var webViewConfiguration: WKWebViewConfiguration!
   var urlSesssionConfiguration: NSURLSessionConfiguration?
@@ -39,9 +39,17 @@ class WebManager: NSObject, WKScriptMessageHandler {
     webViewConfiguration = WKWebViewConfiguration()
     addScriptMessageHandlers()
     webView = WKWebView(frame: WebViewFrame, configuration: webViewConfiguration)
+    webView!.navigationDelegate = self
     if let email = User.sharedInstance.email {
       logIn(email: email, password: User.sharedInstance.password!)
     }
+  }
+  
+  func webView(webView: WKWebView, didCommitNavigation navigation: WKNavigation!) {
+    //Inject the no-zoom javascript
+    let noZoomJS = "var meta = document.createElement('meta');meta.setAttribute('name', 'viewport');meta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');document.getElementsByTagName('head')[0].appendChild(meta);"
+    webView.evaluateJavaScript(noZoomJS, completionHandler: nil)
+    println("Evaluated no-zoom Javascript")
   }
   
   func logIn(#email: String, password: String) {
