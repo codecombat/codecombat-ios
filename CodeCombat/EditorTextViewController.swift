@@ -414,6 +414,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     case .Changed:
       adjustDraggedLabelPosition(locationInParentView)
       adjustLineViewsForDragLocation(recognizer.locationInView(textView))
+      scrollWhileDraggingIfNecessary(locationInParentView)
       hideOrShowDeleteOverlay()
       break
     case .Ended:
@@ -431,6 +432,13 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       break
     default:
       break
+    }
+  }
+  
+  func scrollWhileDraggingIfNecessary(locationInParentView:CGPoint) {
+    //let locationInWindow = textView.convertPoint( to View)
+    if locationInParentView.y > 740 {
+      println("Should scroll down ! Current y position \(locationInParentView)")
     }
   }
   
