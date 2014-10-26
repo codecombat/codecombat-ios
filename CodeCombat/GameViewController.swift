@@ -28,16 +28,19 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
     super.viewDidLoad()
     webView = WebManagerSharedInstance.webView!
     view.addSubview(webView)
-    delay(5) {
-      // TODO: figure out how to tell when we're actually loaded after login and then listen to notifications. If we do it right away, then we reload the page and have lost them, or something like that.
-      self.listenToNotifications()
-    }
+    //delay(5) {
+    //  self.listenToNotifications()
+    //}
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("listenToNotifications"), name: "webViewDidFinishNavigation", object: nil)
   }
   
-  private func listenToNotifications() {
-    webManager.subscribe(self, channel: "router:navigated", selector: Selector("onNavigated:"))
-    webManager.subscribe(self, channel: "level:loading-view-unveiled", selector: Selector("onLevelStarted:"))
-    //webManager.subscribe(self, channel: "supermodel:load-progress-changed", selector: Selector("onProgressUpdate:"))
+  func listenToNotifications() {
+    delay(1, {
+      self.webManager.subscribe(self, channel: "router:navigated", selector: Selector("onNavigated:"))
+      self.webManager.subscribe(self, channel: "level:loading-view-unveiled", selector: Selector("onLevelStarted:"))
+      //webManager.subscribe(self, channel: "supermodel:load-progress-changed", selector: Selector("onProgressUpdate:"))
+    })
+    
   }
   
   deinit {
