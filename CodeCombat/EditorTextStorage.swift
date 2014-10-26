@@ -46,13 +46,24 @@ class EditorTextStorage: NSTextStorage {
   }
   
   override func replaceCharactersInRange(range: NSRange, withString str: String) {
-    let previousContents = string()!.substringWithRange(range)
+    let previousContents = attributedString?.attributedSubstringFromRange(range)
     var newRange = range
     newRange.length = NSString(string: str).length
-    undoManager.prepareWithInvocationTarget(self).replaceCharactersInRange(newRange, withString: previousContents)
+    undoManager.prepareWithInvocationTarget(self).replaceCharactersInRange(newRange, withAttributedString: previousContents!)
     attributedString!.replaceCharactersInRange(range, withString: str)
-    //find a more efficient way of getting string length that isn't buggy
     let changeInLength:NSInteger = (NSString(string: str).length - range.length)
+    self.edited(NSTextStorageEditActions.EditedCharacters,
+      range: range,
+      changeInLength: changeInLength)
+  }
+  
+  override func replaceCharactersInRange(range: NSRange, withAttributedString attrString: NSAttributedString) {
+    let previousContents = attributedString?.attributedSubstringFromRange(range)
+    var newRange = range
+    newRange.length = NSString(string: attrString.string).length
+    undoManager.prepareWithInvocationTarget(self).replaceCharactersInRange(newRange, withAttributedString: previousContents!)
+    attributedString!.replaceCharactersInRange(range, withAttributedString: attrString)
+    let changeInLength:NSInteger = (NSString(string: attrString.string).length - range.length)
     self.edited(NSTextStorageEditActions.EditedCharacters,
       range: range,
       changeInLength: changeInLength)
