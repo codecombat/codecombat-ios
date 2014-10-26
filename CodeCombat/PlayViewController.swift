@@ -9,6 +9,12 @@
 import UIKit
 import WebKit
 
+//I have subclassed UIScrollView so we can scroll on the WKWebView
+class PlayViewScrollView:UIScrollView, UIGestureRecognizerDelegate {
+  func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    return true
+  }
+}
 class PlayViewController: UIViewController, UITextViewDelegate {
 
   @IBOutlet weak var redoButton: UIButton!
@@ -56,7 +62,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   }
   
   func setupScrollView() {
-    scrollView = UIScrollView(frame: view.frame)
+    scrollView = PlayViewScrollView(frame: view.frame)
     scrollView.addSubview(screenshotView)
     scrollView.contentSize = CGSizeMake(view.frame.size.width, screenshotView.frame.height + view.frame.size.height)
     scrollView.addSubview(editorContainerView)
