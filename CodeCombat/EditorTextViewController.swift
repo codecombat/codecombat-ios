@@ -436,9 +436,11 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   }
   
   func scrollWhileDraggingIfNecessary(locationInParentView:CGPoint) {
-    //let locationInWindow = textView.convertPoint( to View)
-    if locationInParentView.y > 740 {
-      println("Should scroll down ! Current y position \(locationInParentView)")
+    let pvc = parentViewController as PlayViewController
+    if locationInParentView.y > 760 {
+      var newScrollLocation = pvc.scrollView.contentOffset
+      newScrollLocation.y = pvc.scrollView.contentSize.height - pvc.scrollView.bounds.size.height
+      pvc.scrollView.setContentOffset(newScrollLocation, animated: true)
     }
   }
   
