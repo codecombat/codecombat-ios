@@ -220,7 +220,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
         currentLineNumber++
         return
       }
-      if fragmentCharacterRange.location == fragmentCharacterRange.location {
+      if fragmentCharacterRange.location == fragmentParagraphRange.location {
         //get the bounding rect for the paragraph
         var labelTextFrame = aRect
         labelTextFrame.size.height = textView.font.lineHeight + textView.lineSpacing
