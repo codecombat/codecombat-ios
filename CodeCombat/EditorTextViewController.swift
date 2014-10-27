@@ -155,9 +155,25 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     return textStorage.attributedString!.attributedSubstringFromRange(range)
   }
   
-  private func createDraggedLabel(lineFragmentRect:CGRect, loc:CGPoint, characterRange:NSRange) -> UILabel {
+  private func createDraggedLabel(lineFragmentRect:CGRect, loc:CGPoint, fragmentCharacterRange:NSRange) -> UILabel {
     let label = UILabel(frame: lineFragmentRect)
-    label.attributedText = getAttributedStringForCharacterRange(characterRange)
+    let fragmentParagraphRange = textStorage.string()!.paragraphRangeForRange(fragmentCharacterRange)
+    if fragmentCharacterRange.length == fragmentParagraphRange.length {
+      label.attributedText = getAttributedStringForCharacterRange(fragmentParagraphRange)
+    } else {
+      let attributedStringBeforeLineBreak = NSMutableAttributedString(attributedString: getAttributedStringForCharacterRange(fragmentCharacterRange))
+      attributedStringBeforeLineBreak.appendAttributedString(NSAttributedString(string: "\n"))
+      let attributedStringAfterLineBreak = getAttributedStringForCharacterRange(NSRange(location: NSMaxRange(fragmentCharacterRange), length: (fragmentParagraphRange.length - fragmentCharacterRange.length)))
+      attributedStringBeforeLineBreak.appendAttributedString(attributedStringAfterLineBreak)
+      label.lineBreakMode = NSLineBreakMode.ByWordWrapping
+      label.numberOfLines = 0
+      var paragraphStyle = NSMutableParagraphStyle()
+      paragraphStyle.lineSpacing = textView.lineSpacing
+      attributedStringBeforeLineBreak.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: NSRange(location: 0, length: attributedStringBeforeLineBreak.length))
+      label.attributedText = attributedStringBeforeLineBreak
+      label.frame.size.height += textView.font.lineHeight + textView.lineSpacing
+    }
+    
     label.sizeToFit()
     label.center = loc
     return label
@@ -215,7 +231,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     func fragmentEnumerator(aRect:CGRect, aUsedRect:CGRect, textContainer:NSTextContainer!, glyphRange:NSRange, stop:UnsafeMutablePointer<ObjCBool>) -> Void {
       let fragmentCharacterRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
       let fragmentParagraphRange = textStorage.string()!.paragraphRangeForRange(fragmentCharacterRange)
-      if NSEqualRanges(draggedCharacterRange, fragmentParagraphRange) {
+      if NSEqualRanges(draggedCharacterRange,fragmentCharacterRange) {
         //This means we've found the dragged line
         currentLineNumber++
         return
@@ -407,10 +423,10 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     case .Began:
       var lineFragmentRect = getLineFragmentRectForDrag(recognizer.locationInView(textView))
       var characterRange = getCharacterRangeForLineFragmentRect(lineFragmentRect)
-      
+      let fragmentParagraphRange = textStorage.string()!.paragraphRangeForRange(characterRange)
       //Create the dragged label with text on it
-      draggedLabel = createDraggedLabel(lineFragmentRect, loc: locationInParentView, characterRange: characterRange)
-      draggedCharacterRange = characterRange
+      draggedLabel = createDraggedLabel(lineFragmentRect, loc: locationInParentView, fragmentCharacterRange: characterRange)
+      draggedCharacterRange = fragmentParagraphRange
       parentViewController!.view.addSubview(draggedLabel)
       draggedLineNumber = lineNumberForDraggedCharacterRange(characterRange)
       println("Dragging line number \(draggedLineNumber)")
