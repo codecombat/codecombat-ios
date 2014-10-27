@@ -232,9 +232,13 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
           attributedStringBeforeLineBreak.appendAttributedString(NSAttributedString(string: "\n"))
           let attributedStringAfterLineBreak = getAttributedStringForCharacterRange(NSRange(location: NSMaxRange(fragmentCharacterRange), length: (fragmentParagraphRange.length - fragmentCharacterRange.length)))
           attributedStringBeforeLineBreak.appendAttributedString(attributedStringAfterLineBreak)
+          label.lineBreakMode = NSLineBreakMode.ByWordWrapping
+          label.numberOfLines = 0
+          var paragraphStyle = NSMutableParagraphStyle()
+          paragraphStyle.lineSpacing = textView.lineSpacing
+          attributedStringBeforeLineBreak.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: NSRange(location: 0, length: attributedStringBeforeLineBreak.length))
           label.attributedText = attributedStringBeforeLineBreak
           label.frame.size.height += textView.font.lineHeight + textView.lineSpacing
-          //label.backgroundColor = UIColor.purpleColor()
         }
         
         //Insert a line break
