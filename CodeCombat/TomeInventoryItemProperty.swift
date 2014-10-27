@@ -12,6 +12,9 @@ struct TomeInventoryItemProperty {
   var name: String { //What do we do about schemas?
     return propertyData["name"].toString(pretty: false)
   }
+  var docHTML: String {
+    return propertyData["initialHTML"].toString(pretty: false)
+  }
   
   func codeSnippetForLanguage(language:String) -> String? {
     let snippet = propertyData["snippets"][language]["code"]

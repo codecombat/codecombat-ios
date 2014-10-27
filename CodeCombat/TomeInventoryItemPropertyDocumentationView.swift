@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import WebKit
 
 class TomeInventoryItemPropertyDocumentationView: UIView {
   var item: TomeInventoryItem!
@@ -31,55 +32,9 @@ class TomeInventoryItemPropertyDocumentationView: UIView {
   }
   
   func buildSubviews() {
-//    var y = CGFloat(0)
-//    let itemWidth = imageSize + 2 * margin
-//    if let name = item.itemData["name"].asString {
-//      
-//      for property in item.properties {
-//        let propertyView = TomeInventoryItemPropertyView(
-//          item: item,
-//          property: property,
-//          frame: CGRect(
-//            x: itemWidth,
-//            y: y + margin,
-//            width: frame.width - margin - itemWidth,
-//            height: 50.0))
-//        addSubview(propertyView)
-//        y += propertyView.frame.height + margin
-//      }
-//      if item.properties.count > 0 {
-//        showsProperties = true
-//        buildItemImage()
-//      }
-//    }
-//    let height = showsProperties ? max(y + margin, imageSize + 2 * margin) : 0
-//    frame = CGRect(
-//      x: frame.origin.x,
-//      y: frame.origin.y,
-//      width: frame.width,
-//      height: height)
-    backgroundColor = UIColor(
-      red: CGFloat(11.0/256.0),
-      green: CGFloat(191.0/256.0),
-      blue: CGFloat(129.0/256.0),
-      alpha: 1)
-  }
-  
-  func buildItemImage() {
-//    let priority = DISPATCH_QUEUE_PRIORITY_DEFAULT
-//    dispatch_async(dispatch_get_global_queue(priority, 0)) {
-//      let imageData = NSData(contentsOfURL: self.item.imageURL)
-//      dispatch_async(dispatch_get_main_queue()) {
-//        // update some UI
-//        if imageData != nil {
-//          let image = UIImage(data: imageData!)
-//          let y = max(self.margin, (self.frame.size.height - self.imageSize) / 2)
-//          let imageFrame = CGRect(x: self.margin, y: y, width: self.imageSize, height: self.imageSize)
-//          self.imageView = UIImageView(frame: imageFrame)
-//          self.imageView!.image = image
-//          self.addSubview(self.imageView!)
-//        }
-//      }
-//    }
+    var docWebView = WKWebView(frame: frame)
+    var wrappedHTML = "<!DOCTYPE html>\n<html><head><meta name='viewport' content='width=320, height=480, initial-scale=1'><link rel='stylesheet' href='/stylesheets/app.css'></head><body><div class='tome-inventory-property-documentation'>\(property.docHTML)</div></body></html>"
+    docWebView.loadHTMLString(wrappedHTML, baseURL: WebManagerSharedInstance.rootURL)
+    addSubview(docWebView)
   }
 }

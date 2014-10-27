@@ -59,7 +59,7 @@ class TomeInventoryItemPropertyView: UIButton {
   }
   
   func onTapped(sender: TomeInventoryItemView) {
-    var docView = TomeInventoryItemPropertyDocumentationView(item: item, property: property, frame: CGRect(x: 0, y: 0, width: 200, height: 300))
+    var docView = TomeInventoryItemPropertyDocumentationView(item: item, property: property, frame: CGRect(x: 0, y: 0, width: 320, height: 480))
     var docViewController = UIViewController()
     docViewController.view = docView
     var popover = UIPopoverController(contentViewController: docViewController)
