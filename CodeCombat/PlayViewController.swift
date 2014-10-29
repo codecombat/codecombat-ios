@@ -22,6 +22,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   @IBOutlet weak var keyboardButton: UIButton!
   @IBOutlet weak var resetCodeButton: UIButton!
   
+  var levelName = ""
   var scrollView: UIScrollView!
   let screenshotView = UIImageView(image: UIImage(named: "largeScreenshot"))
   var webView: WKWebView?
@@ -89,6 +90,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     textViewController.createTextViewWithFrame(editorTextViewFrame)
     scrollView.panGestureRecognizer.requireGestureRecognizerToFail(textViewController.dragGestureRecognizer)
     addChildViewController(textViewController)
+    textViewController.setupTextView()
     editorContainerView.addSubview(textViewController.textView)
     let undoManager = textViewController.textStorage.undoManager
     let nc = NSNotificationCenter.defaultCenter()

@@ -32,6 +32,8 @@
 		285A5433199C34BD00932DDE /* regversion.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5422199C34BD00932DDE /* regversion.c */; };
 		285A5434199C34BD00932DDE /* st.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5423199C34BD00932DDE /* st.c */; };
 		285A5435199C34BD00932DDE /* OnigRegexpUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 285A5425199C34BD00932DDE /* OnigRegexpUtility.m */; };
+		2879938419FFF741005F6369 /* ArgumentOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2879938319FFF741005F6369 /* ArgumentOverlayView.swift */; };
+		287993861A007281005F6369 /* ArgumentStringPickerPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287993851A007281005F6369 /* ArgumentStringPickerPopoverViewController.swift */; };
 		287AE0A4199290DF00EEE4F0 /* CodeCombatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0A3199290DF00EEE4F0 /* CodeCombatTests.swift */; };
 		287AE0B71992926400EEE4F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 287AE0AF1992926400EEE4F0 /* Main.storyboard */; };
 		287AE0B81992926400EEE4F0 /* EditorTextStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0B01992926400EEE4F0 /* EditorTextStorage.swift */; };
@@ -190,6 +192,8 @@
 		285A5423199C34BD00932DDE /* st.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = st.c; sourceTree = "<group>"; };
 		285A5424199C34BD00932DDE /* st.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = st.h; sourceTree = "<group>"; };
 		285A5425199C34BD00932DDE /* OnigRegexpUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OnigRegexpUtility.m; path = CocoaOniguruma/OnigRegexpUtility.m; sourceTree = "<group>"; };
+		2879938319FFF741005F6369 /* ArgumentOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentOverlayView.swift; sourceTree = "<group>"; };
+		287993851A007281005F6369 /* ArgumentStringPickerPopoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentStringPickerPopoverViewController.swift; sourceTree = "<group>"; };
 		287AE08B199290DF00EEE4F0 /* CodeCombat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodeCombat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		287AE08F199290DF00EEE4F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		287AE09D199290DF00EEE4F0 /* CodeCombatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CodeCombatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -680,6 +684,8 @@
 				C827D1DA19949E0200B5724C /* TomeInventoryItemPropertyView.swift */,
 				C824BF1019FD854E0097AE14 /* TomeInventoryItemPropertyDocumentationView.swift */,
 				28DFD0B519FBFBA400C302F0 /* EditorInputAccessoryView.swift */,
+				2879938319FFF741005F6369 /* ArgumentOverlayView.swift */,
+				287993851A007281005F6369 /* ArgumentStringPickerPopoverViewController.swift */,
 			);
 			name = Play;
 			sourceTree = "<group>";
@@ -829,6 +835,7 @@
 				28F3125519CDD1B50089C83D /* LanguageSelectionViewController.swift in Sources */,
 				287AE0DC1992927300EEE4F0 /* ColorManager.swift in Sources */,
 				287E931219C8C4D100E68F03 /* ActionSheetCustomPicker.m in Sources */,
+				287993861A007281005F6369 /* ArgumentStringPickerPopoverViewController.swift in Sources */,
 				287AE0D51992927300EEE4F0 /* SpriteDialogue.swift in Sources */,
 				287E931319C8C4D100E68F03 /* ActionSheetDatePicker.m in Sources */,
 				287AE0CF1992927300EEE4F0 /* LoginViewController.swift in Sources */,
@@ -878,6 +885,7 @@
 				28C96DF71993D09C009FCD9E /* EditorTextView.swift in Sources */,
 				287AE0BB1992926400EEE4F0 /* CodeCombatIAPHelper.swift in Sources */,
 				287AE0FA199293B600EEE4F0 /* fmemopen.c in Sources */,
+				2879938419FFF741005F6369 /* ArgumentOverlayView.swift in Sources */,
 				287AE0FD199293B600EEE4F0 /* NSAttributedStringMarkdownParser.m in Sources */,
 				287AE109199294CC00EEE4F0 /* ParticleView.swift in Sources */,
 				280D7E5C19AE2807004F95D4 /* DocumentNode.swift in Sources */,

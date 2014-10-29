@@ -23,12 +23,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   var dragOverlayLabels:[Int:UILabel] = Dictionary<Int,UILabel>()
   var originalDragOverlayLabelOffsets:[Int:CGFloat] = Dictionary<Int,CGFloat>()
   let currentFont = UIFont(name: "Courier", size: 22)
-  
-  var textView:EditorTextView! {
-    didSet {
-      setupTextView()
-    }
-  }
+  var overlayViewMap:[Int:ArgumentOverlayView] = [:]
+  var textView:EditorTextView!
   
   func setupTextView() {
     textView.autocorrectionType = UITextAutocorrectionType.No
@@ -45,8 +41,14 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       alpha: 1)
   }
   
+  func layoutManager(layoutManager: NSLayoutManager, didCompleteLayoutForTextContainer textContainer: NSTextContainer?, atEnd layoutFinishedFlag: Bool) {
+    let overlayRequests = textStorage.findArgumentOverlays()
+    processOverlayRequests(overlayRequests)
+  }
+  
   override func viewDidLoad() {
     super.viewDidLoad()
+    layoutManager.delegate = self
     setupDragGestureRecognizer()
     setupWebManagerSubscriptions()
     addNotificationCenterObservers()
@@ -64,9 +66,11 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   
   func addNotificationCenterObservers() {
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onCodeRun"), name: "codeRun", object: nil)
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onArgumentOverlayRequest:"), name: "argumentOverlayRequest", object: nil)
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleDrawParameterRequest:"), name: "drawParameterBox", object: nil)
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleEraseParameterViewsRequest:"), name: "eraseParameterBoxes", object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("textStorageFinishedTopLevelEditing"), name: "textStorageFinishedTopLevelEditing", object: nil)
+  }
+  
+  func textStorageFinishedTopLevelEditing() {
+    ensureNewlineAtEndOfCode()
   }
   
   func onSpellStatementIndexUpdated(note:NSNotification) {
@@ -96,8 +100,42 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     textView.removeUserCodeProblemLineHighlights()
   }
   
-  func onArgumentOverlayRequest(note:NSNotification) {
-    println("Received argument overlay request")
+  func clearOverlayViews() {
+    for (overlayStartLocation, overlay) in overlayViewMap {
+      overlay.removeFromSuperview()
+    }
+    overlayViewMap.removeAll(keepCapacity: true)
+  }
+  
+  func removeAllOverlaysNotRequested(overlayRequests:[String:NSRange]) {
+    let overlayRequestLocations = overlayRequests.values.map({$0.location})
+    for (overlayLocation, overlay) in overlayViewMap {
+      if !contains(overlayRequestLocations, overlayLocation) {
+        overlay.removeFromSuperview()
+        overlayViewMap.removeValueForKey(overlayLocation)
+      }
+    }
+  }
+  
+  func processOverlayRequests(overlayRequests:[String:NSRange]) {
+    removeAllOverlaysNotRequested(overlayRequests)
+    for (functionName,overlayRange) in overlayRequests {
+      //if view already exists and is requested, don't redraw
+      if overlayViewMap.indexForKey(overlayRange.location) != nil {
+        continue
+      }
+      let pvc = parentViewController as PlayViewController
+      let range = overlayRange
+      //to render views http://stackoverflow.com/questions/788662/rendering-uiview-with-its-children
+      let defaultRect = CGRect()
+      let newView = ArgumentOverlayView(frame: defaultRect)
+      newView.editorTextViewController = self
+      newView.characterRange = range
+      newView.setupView(pvc.levelName, functionName: "blah")
+      newView.resetLocationToCurrentCharacterRange()
+      overlayViewMap[range.location] = newView
+      self.textView.addSubview(newView)
+    }
   }
   
   func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -120,11 +158,15 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     }
   }
   
-  func textViewDidEndEditing(textView: UITextView) {
-    //make sure to append a newline to the input text if there isn't one already!
+  func ensureNewlineAtEndOfCode() {
     if !textStorage.string()!.hasSuffix("\n") {
+      //needs to be wrapped in beginEditing and endEditing if bugs
       textStorage.appendAttributedString(NSAttributedString(string: "\n"))
     }
+  }
+  
+  func textViewDidEndEditing(textView: UITextView) {
+    ensureNewlineAtEndOfCode()
     toggleKeyboardMode()
   }
   
@@ -204,11 +246,10 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     } else {
       textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "\n")
     }
-    
     textStorage.endEditing()
     textView.setNeedsDisplay()
   }
-  
+
   private func deleteSubviewsOnDragEnd() {
     deleteOverlayView.removeFromSuperview()
     deleteOverlayView = nil
@@ -329,7 +370,6 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
           oldFrame.origin.y -= textView.lineSpacing + textView.font.lineHeight
           labelToMove.frame = oldFrame
           labelToMove.setNeedsLayout()
-          println("Moved line \(lineToMove)")
         }
       }
       //Reset the ones below that
@@ -376,7 +416,6 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     let replacedString = textStorage.string()!.substringWithRange(characterRange)
     let replacingString = textStorage.string()!.substringWithRange(draggedCharacterRange)
     if !NSEqualRanges(draggedCharacterRange, characterRange) {
-      println("Replacing string \(replacedString) with \(replacingString)")
       textStorage.beginEditing()
       //edit the latter range first
       let replacingRange = NSRange(location: characterRange.location, length: 0)
@@ -391,8 +430,6 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       textStorage.endEditing()
       textView.setNeedsDisplay()
     }
-    
-    
   }
   private func clearLineOverlayLabels() {
     for (index, label) in dragOverlayLabels {
@@ -429,7 +466,6 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       draggedCharacterRange = fragmentParagraphRange
       parentViewController!.view.addSubview(draggedLabel)
       draggedLineNumber = lineNumberForDraggedCharacterRange(characterRange)
-      println("Dragging line number \(draggedLineNumber)")
       //Create the solid colored label that covers up the dragged text in the text view
       coverTextView = createCoverTextView(rectToCover: textView.bounds)
       textView.addSubview(coverTextView)
@@ -476,7 +512,6 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     }
   }
   
-  
   func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
     if draggedLabel != nil {
       return false
@@ -511,19 +546,6 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     textContainer.lineBreakMode = NSLineBreakMode.ByWordWrapping
     textContainer.widthTracksTextView = true
     layoutManager.addTextContainer(textContainer)
-  }
-  
-  func handleEraseParameterViewsRequest(notification:NSNotification) {
-    textView.eraseParameterViews()
-  }
-  
-  func handleDrawParameterRequest(notification:NSNotification) {
-    return
-    let info = notification.userInfo!
-    let functionName:NSString? = info["functionName"] as? NSString
-    let range:NSRange = (info["rangeValue"] as? NSValue)!.rangeValue
-    println("Should be drawing a box for func \(functionName!)")
-    textView.drawParameterOverlay(range)
   }
   
   private func resetFontToCurrentFont() {

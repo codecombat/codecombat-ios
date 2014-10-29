@@ -19,7 +19,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
 //    set { webView = newValue as WKWebView }
 //  }
   var playViewController: PlayViewController?
-  
+  var playLevelRoutePrefix = "/play/level/"
 //  override func loadView() {
 //    view = WebManagerSharedInstance.webView!
 //  }
@@ -56,7 +56,16 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   }
   
   private func isRouteLevel(route: String) -> Bool {
-    return route.rangeOfString("/play/level/", options: NSStringCompareOptions.LiteralSearch) != nil
+    return route.rangeOfString(playLevelRoutePrefix, options: NSStringCompareOptions.LiteralSearch) != nil
+  }
+  
+  private func routeLevelName(route:String) -> String {
+    if !isRouteLevel(route) {
+      return ""
+    } else {
+      let substringIndex = advance(route.startIndex, countElements(playLevelRoutePrefix))
+      return route.substringFromIndex(substringIndex)
+    }
   }
   
   private func updateFrame(route: String) {
@@ -69,9 +78,11 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   
   private func adjustPlayView(route: String) {
     if isRouteLevel(route) {
+      let currentLevelName = routeLevelName(route)
       let mainStoryboard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
       playViewController = mainStoryboard.instantiateViewControllerWithIdentifier("PlayViewController") as? PlayViewController
       playViewController?.view  // Access this early to get it set up and listening for events.
+      playViewController!.levelName = currentLevelName
       println("Created a playViewController for \(route)")
     }
     else {

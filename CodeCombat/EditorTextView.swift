@@ -386,12 +386,37 @@ class EditorTextView: UITextView {
         stringToInsert = "\n" + stringToInsert  // TODO: figure out why something was prepending newlines in Gems in the Deep; > 0 used to be >= 0, dunno if that works.
       }
     }
-    textStorage.beginEditing()
+    //Check if code contains a placeholder
+    if codeContainsPlaceholder(stringToInsert) {
+      let placeholderReplacement = getPlaceholderWidthString(stringToInsert)
+      stringToInsert = replacePlaceholderInString(stringToInsert, replacement: placeholderReplacement)
+    }
     storage.replaceCharactersInRange(NSRange(location: nearestGlyphIndex, length: 0), withString: stringToInsert)
-    textStorage.endEditing()
     setNeedsDisplay()
     
   }
+  
+  func codeContainsPlaceholder(code:String) -> Bool {
+    var error:NSErrorPointer = nil
+    
+    let regex = NSRegularExpression(pattern: "\\$\\{.*\\}", options: nil, error: error)
+    let matches = regex!.matchesInString(code, options: nil, range: NSRange(location: 0, length: countElements(code)))
+    return matches.count > 0
+  }
+  
+  func getPlaceholderWidthString(code:String) -> String {
+    return "${1:d}"
+  }
+  
+  func replacePlaceholderInString(code:String, replacement:String) -> String {
+    var error:NSErrorPointer = nil
+    let regex = NSRegularExpression(pattern: "\\$\\{.*\\}", options: nil, error: error)
+    let matches = regex!.matchesInString(code, options: nil, range: NSRange(location: 0, length: countElements(code)))
+    let firstMatch = matches[0] as NSTextCheckingResult
+    let newString = NSString(string: code).stringByReplacingCharactersInRange(firstMatch.range, withString: replacement)
+    return newString
+  }
+  
   func getLineNumberRect(lineNumber:Int) -> CGRect{
     let LineHeight = font.lineHeight + lineSpacing
     let LineNumberRect = CGRect(
