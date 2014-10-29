@@ -42,7 +42,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   }
   
   private func listenToNotifications() {
-    webManager.subscribe(self, channel: "sprite:speech-updated", selector: Selector("onSpriteSpeechUpdated:"))
+    //webManager.subscribe(self, channel: "sprite:speech-updated", selector: Selector("onSpriteSpeechUpdated:"))
     webManager.subscribe(self, channel: "tome:spell-loaded", selector: Selector("onTomeSpellLoaded:"))
     let nc = NSNotificationCenter.defaultCenter()
     //additional notifications are listened to below concerning undo manager in setupEditor
