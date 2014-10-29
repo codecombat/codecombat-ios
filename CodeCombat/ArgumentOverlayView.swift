@@ -11,25 +11,48 @@ import Foundation
 class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
   var characterRange:NSRange! //represents the character range this view is over
   var editorTextViewController:EditorTextViewController!
-  
+  var currentLevelName = ""
+  var currentFunctionName = ""
+  var defaultContentsToInsertOnRun = ""
   func setupView(levelName:String, functionName:String) {
+    currentLevelName = levelName
+    currentFunctionName = functionName
     backgroundColor = UIColor.redColor()
     //round the corners
     layer.cornerRadius = 10
     layer.masksToBounds = true
+    println("Setting up view for level \(levelName)")
     if levelName == "true-names" {
       setupTrueNames()
+    } else if levelName == "the-raised-sword" {
+      setupTheRaisedSword()
     }
     addTarget(self, action: Selector("onTapped"), forControlEvents: .TouchUpInside)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onCodeRun"), name: "codeRun", object: nil)
+  }
+  
+  deinit {
+    NSNotificationCenter.defaultCenter().removeObserver(self)
+  }
+  
+  func setupTheRaisedSword() {
+    let defaultLabel = makeDefaultLabelWithText("\"Gurt\"")
+    addSubview(defaultLabel)
   }
   
   func setupTrueNames() {
     //only function is attack
+    let defaultLabel = makeDefaultLabelWithText("\"Brak\"")
+    addSubview(defaultLabel)
+  }
+  
+  func makeDefaultLabelWithText(text:String) -> UILabel {
     let defaultLabel = UILabel(frame: CGRect(x: 0, y: editorTextViewController.textView.lineSpacing, width: 0, height: 0))
-    defaultLabel.text = "\"Brak\""
+    defaultLabel.text = text
     defaultLabel.font = editorTextViewController.currentFont!
     defaultLabel.sizeToFit()
-    addSubview(defaultLabel)
+    defaultContentsToInsertOnRun = text
+    return defaultLabel
   }
   
   func resetLocationToCurrentCharacterRange() {
@@ -40,15 +63,28 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
     setNeedsDisplay()
   }
   
+  func onCodeRun() {
+    //Insert the default choice
+    stringWasSelectedByStringPickerPopover(defaultContentsToInsertOnRun)
+  }
+  
   func onTapped() {
     //create the view here
-    let choices = ["\"Brak\"","\"Treg\""]
+    if currentLevelName == "true-names" {
+      let choices = ["\"Brak\"","\"Treg\""]
+      makeStringChoicePopoverWithChoices(choices)
+    } else if currentLevelName == "the-raised-sword" {
+      let choices = ["\"Gurt\"","\"Rig\"","\"Ack\""]
+      makeStringChoicePopoverWithChoices(choices)
+    }
+  }
+  
+  func makeStringChoicePopoverWithChoices(choices:[String]) {
     let stringPickerViewController = ArgumentStringPickerPopoverViewController(stringChoices: choices)
     stringPickerViewController.pickerDelegate = self
     let popover = UIPopoverController(contentViewController: stringPickerViewController)
     popover.setPopoverContentSize(CGSize(width: 100, height: stringPickerViewController.rowHeight*choices.count), animated: true)
     popover.presentPopoverFromRect(frame, inView: superview!, permittedArrowDirections: .Down | .Up, animated: true)
-    
   }
   
   func stringWasSelectedByStringPickerPopover(selected:String) {

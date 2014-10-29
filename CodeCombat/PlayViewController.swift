@@ -131,8 +131,8 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   }
 
   @IBAction func onCodeRun(sender: UIButton) {
-    handleTomeSourceRequest()
     NSNotificationCenter.defaultCenter().postNotificationName("codeRun", object: nil)
+    handleTomeSourceRequest()
     webManager.publish("tome:manual-cast", event: [:])
     scrollView.contentOffset = CGPoint(x: 0, y: 0)
   }

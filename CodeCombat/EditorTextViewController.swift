@@ -75,21 +75,30 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     var locationInTextView = recognizer.locationInView(textView)
     let tappedCharacterIndex = layoutManager.characterIndexForPoint(locationInTextView, inTextContainer: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
     if textStorage.characterIsPartOfString(tappedCharacterIndex) {
+      let stringRange = textStorage.stringRangeContainingCharacterIndex(tappedCharacterIndex)
+      tappedStringRange = stringRange
       let pvc = parentViewController as PlayViewController
       if pvc.levelName == "true-names" {
-        let stringRange = textStorage.stringRangeContainingCharacterIndex(tappedCharacterIndex)
-        tappedStringRange = stringRange
         let choices = ["\"Brak\"","\"Treg\""]
-        let stringPickerViewController = ArgumentStringPickerPopoverViewController(stringChoices: choices)
-        stringPickerViewController.pickerDelegate = self
-        let glyphRange = layoutManager.glyphRangeForCharacterRange(stringRange, actualCharacterRange: nil)
-        var boundingRect = layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: textContainer)
-        boundingRect.origin.y += textView.lineSpacing
-        let popover = UIPopoverController(contentViewController: stringPickerViewController)
-        popover.setPopoverContentSize(CGSize(width: 100, height: stringPickerViewController.rowHeight*choices.count), animated: true)
-        popover.presentPopoverFromRect(boundingRect, inView: textView, permittedArrowDirections: .Down | .Up, animated: true)
+        createStringPickerPopoverWithChoices(choices, stringCharacterRange: stringRange)
+      } else if pvc.levelName == "the-raised-sword" {
+        let choices = ["\"Gurt\"","\"Rig\"","\"Ack\""]
+        createStringPickerPopoverWithChoices(choices, stringCharacterRange: stringRange)
       }
     }
+  }
+  
+  func createStringPickerPopoverWithChoices(choices:[String], stringCharacterRange:NSRange) {
+    
+    let stringPickerViewController = ArgumentStringPickerPopoverViewController(stringChoices: choices)
+    stringPickerViewController.pickerDelegate = self
+    let glyphRange = layoutManager.glyphRangeForCharacterRange(stringCharacterRange, actualCharacterRange: nil)
+    var boundingRect = layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: textContainer)
+    boundingRect.origin.y += textView.lineSpacing
+    let popover = UIPopoverController(contentViewController: stringPickerViewController)
+    popover.setPopoverContentSize(CGSize(width: 100, height: stringPickerViewController.rowHeight*choices.count), animated: true)
+    popover.presentPopoverFromRect(boundingRect, inView: textView, permittedArrowDirections: .Down | .Up, animated: true)
+    
   }
   
   func stringWasSelectedByStringPickerPopover(selected:String) {
