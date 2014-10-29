@@ -17,6 +17,7 @@ class PlayViewScrollView:UIScrollView, UIGestureRecognizerDelegate {
 }
 class PlayViewController: UIViewController, UITextViewDelegate {
 
+  @IBOutlet weak var runButton: UIButton!
   @IBOutlet weak var redoButton: UIButton!
   @IBOutlet weak var undoButton: UIButton!
   @IBOutlet weak var keyboardButton: UIButton!
@@ -32,6 +33,8 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   var inventoryFrame: CGRect!
   let webManager = WebManager.sharedInstance
   
+  let lastSubmitString:String = ""
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     listenToNotifications()
@@ -44,10 +47,19 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     let nc = NSNotificationCenter.defaultCenter()
     //additional notifications are listened to below concerning undo manager in setupEditor
     nc.addObserver(self, selector: Selector("setUndoRedoEnabled"), name: "textEdited", object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onTextStorageFinishedTopLevelEditing"), name: "textStorageFinishedTopLevelEditing", object: nil)
   }
   
   deinit {
     WebManager.sharedInstance.unsubscribe(self)
+  }
+  
+  func onTextStorageFinishedTopLevelEditing() {
+    if getEscapedSourceString() != lastSubmitString {
+      runButton.enabled = true
+    } else {
+      //show error text view here
+    }
   }
   
   func setupViews() {
@@ -135,6 +147,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     handleTomeSourceRequest()
     webManager.publish("tome:manual-cast", event: [:])
     scrollView.contentOffset = CGPoint(x: 0, y: 0)
+    runButton.enabled = false
   }
 
   @IBAction func onCodeSubmitted(sender: UIButton) {
@@ -183,9 +196,14 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     textViewController.toggleKeyboardMode()
   }
 
-  func handleTomeSourceRequest(){
+  func getEscapedSourceString() -> String {
     var escapedString = textViewController.textView.text!.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
     escapedString = escapedString.stringByReplacingOccurrencesOfString("\n", withString: "\\n")
+    return escapedString
+  }
+  func handleTomeSourceRequest(){
+    var escapedString = getEscapedSourceString()
+    lastSubmitString == escapedString
     var js = "if(currentView.tome.spellView) { currentView.tome.spellView.ace.setValue(\"\(escapedString)\"); } else { console.log('damn, no one was selected!'); }"
     //println(js)
     webManager.evaluateJavaScript(js, completionHandler: nil)

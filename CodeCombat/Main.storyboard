@@ -161,6 +161,7 @@
                         <outlet property="keyboardButton" destination="OTR-hY-aNL" id="q7t-UD-oMh"/>
                         <outlet property="redoButton" destination="ZvF-zO-AH3" id="2ce-4D-OLd"/>
                         <outlet property="resetCodeButton" destination="lwx-zM-L4H" id="U5x-o6-fbP"/>
+                        <outlet property="runButton" destination="SkL-FP-pol" id="8YI-8Q-LsS"/>
                         <outlet property="undoButton" destination="yWl-nf-cCN" id="v8B-ig-TYF"/>
                     </connections>
                 </viewController>
