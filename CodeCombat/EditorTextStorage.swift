@@ -48,6 +48,19 @@ class EditorTextStorage: NSTextStorage {
     nestedEditingLevel--
   }
   
+  func characterIsPartOfString(characterIndex:Int) -> Bool {
+    let scopeName = highlighter.scopeName(characterIndex)
+    let node = highlighter.lastScopeNode
+    return node.name.hasPrefix("string")
+  }
+  
+  //caller is responsible for checking if character is part of string
+  func stringRangeContainingCharacterIndex(characterIndex:Int) -> NSRange {
+    let scopeName = highlighter.scopeName(characterIndex)
+    let node = highlighter.lastScopeNode
+    return node.range
+  }
+  
   func findArgumentOverlays() -> [String:NSRange] {
     var argumentOverlays:[String:NSRange] = [:]
     let documentRange = NSRange(location: 0, length: string()!.length)

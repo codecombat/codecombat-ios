@@ -8,7 +8,7 @@
 
 import UIKit
 
-class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutManagerDelegate, UIGestureRecognizerDelegate {
+class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutManagerDelegate, UIGestureRecognizerDelegate, StringPickerPopoverDelegate {
   let textStorage = EditorTextStorage()
   let layoutManager = NSLayoutManager()
   let textContainer = NSTextContainer()
@@ -25,6 +25,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   var originalDragOverlayLabelOffsets:[Int:CGFloat] = Dictionary<Int,CGFloat>()
   let currentFont = UIFont(name: "Courier", size: 22)
   var overlayViewMap:[Int:ArgumentOverlayView] = [:]
+  var tappedStringRange:NSRange! = nil
   var textView:EditorTextView!
   
   func setupTextView() {
@@ -51,6 +52,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     super.viewDidLoad()
     layoutManager.delegate = self
     setupDragGestureRecognizer()
+    setupTapGestureRecognizer()
     setupWebManagerSubscriptions()
     addNotificationCenterObservers()
   }
@@ -61,7 +63,37 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   }
   
   func setupTapGestureRecognizer() {
-    
+    tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "onTap:")
+    tapGestureRecognizer.delegate = self
+    tapGestureRecognizer.requireGestureRecognizerToFail(dragGestureRecognizer)
+  }
+  
+  func onTap(recognizer:UITapGestureRecognizer) {
+    if recognizer != tapGestureRecognizer {
+      return
+    }
+    var locationInTextView = recognizer.locationInView(textView)
+    let tappedCharacterIndex = layoutManager.characterIndexForPoint(locationInTextView, inTextContainer: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
+    if textStorage.characterIsPartOfString(tappedCharacterIndex) {
+      let pvc = parentViewController as PlayViewController
+      if pvc.levelName == "true-names" {
+        let stringRange = textStorage.stringRangeContainingCharacterIndex(tappedCharacterIndex)
+        tappedStringRange = stringRange
+        let choices = ["\"Brak\"","\"Treg\""]
+        let stringPickerViewController = ArgumentStringPickerPopoverViewController(stringChoices: choices)
+        stringPickerViewController.pickerDelegate = self
+        let glyphRange = layoutManager.glyphRangeForCharacterRange(stringRange, actualCharacterRange: nil)
+        var boundingRect = layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: textContainer)
+        boundingRect.origin.y += textView.lineSpacing
+        let popover = UIPopoverController(contentViewController: stringPickerViewController)
+        popover.setPopoverContentSize(CGSize(width: 100, height: stringPickerViewController.rowHeight*choices.count), animated: true)
+        popover.presentPopoverFromRect(boundingRect, inView: textView, permittedArrowDirections: .Down | .Up, animated: true)
+      }
+    }
+  }
+  
+  func stringWasSelectedByStringPickerPopover(selected:String) {
+    textStorage.replaceCharactersInRange(tappedStringRange, withString: selected)
   }
   
   func setupWebManagerSubscriptions() {
@@ -540,6 +572,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     setupTextKitHierarchy()
     textView = EditorTextView(frame: frame, textContainer: textContainer)
     textView.addGestureRecognizer(dragGestureRecognizer)
+    textView.addGestureRecognizer(tapGestureRecognizer)
+    textView.panGestureRecognizer.requireGestureRecognizerToFail(tapGestureRecognizer)
     textView.panGestureRecognizer.requireGestureRecognizerToFail(dragGestureRecognizer)
     view.addSubview(textView)
   }

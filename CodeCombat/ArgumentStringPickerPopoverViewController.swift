@@ -8,9 +8,13 @@
 
 import Foundation
 
+protocol StringPickerPopoverDelegate {
+  func stringWasSelectedByStringPickerPopover(String)
+}
+
 class ArgumentStringPickerPopoverViewController: UITableViewController {
   var strings:[String] = []
-  var pickerDelegate:ArgumentOverlayView! = nil
+  var pickerDelegate:StringPickerPopoverDelegate! = nil
   var selectedString:String = ""
   let rowHeight = 30
 

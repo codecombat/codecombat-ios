@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ArgumentOverlayView: UIButton {
+class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
   var characterRange:NSRange! //represents the character range this view is over
   var editorTextViewController:EditorTextViewController!
   
