@@ -61,8 +61,8 @@ class EditorTextStorage: NSTextStorage {
     return node.range
   }
   
-  func findArgumentOverlays() -> [String:NSRange] {
-    var argumentOverlays:[String:NSRange] = [:]
+  func findArgumentOverlays() -> [(String,NSRange)] {
+    var argumentOverlays:[(String,NSRange)] = []
     let documentRange = NSRange(location: 0, length: string()!.length)
     
     for var charIndex = documentRange.location; charIndex < NSMaxRange(documentRange); charIndex++ {
@@ -82,7 +82,8 @@ class EditorTextStorage: NSTextStorage {
             let parentNode = highlighter.lastScopeNode
             functionName = parentNode.data
           }
-          argumentOverlays[functionName] = scopeExtent!
+          let argumentOverlayTuple = (functionName, scopeExtent!)
+          argumentOverlays.append(argumentOverlayTuple)
           charIndex = NSMaxRange(scopeExtent!)
         }
       }

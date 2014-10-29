@@ -153,8 +153,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     overlayViewMap.removeAll(keepCapacity: true)
   }
   
-  func removeAllOverlaysNotRequested(overlayRequests:[String:NSRange]) {
-    let overlayRequestLocations = overlayRequests.values.map({$0.location})
+  func removeAllOverlaysNotRequested(overlayRequests:[(String,NSRange)]) {
+    let overlayRequestLocations = overlayRequests.map({$0.1.location})
     for (overlayLocation, overlay) in overlayViewMap {
       if !contains(overlayRequestLocations, overlayLocation) {
         overlay.removeFromSuperview()
@@ -163,7 +163,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     }
   }
   
-  func processOverlayRequests(overlayRequests:[String:NSRange]) {
+  func processOverlayRequests(overlayRequests:[(String,NSRange)]) {
     removeAllOverlaysNotRequested(overlayRequests)
     for (functionName,overlayRange) in overlayRequests {
       //if view already exists and is requested, don't redraw
