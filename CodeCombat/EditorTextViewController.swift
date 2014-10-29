@@ -20,6 +20,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   var deleteOverlayView:UIView!
   let deleteOverlayWidth:CGFloat = 75
   var dragGestureRecognizer:UIPanGestureRecognizer!
+  var tapGestureRecognizer:UITapGestureRecognizer!
   var dragOverlayLabels:[Int:UILabel] = Dictionary<Int,UILabel>()
   var originalDragOverlayLabelOffsets:[Int:CGFloat] = Dictionary<Int,CGFloat>()
   let currentFont = UIFont(name: "Courier", size: 22)
@@ -57,6 +58,10 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   func setupDragGestureRecognizer() {
     dragGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handleDrag:")
     dragGestureRecognizer.delegate = self
+  }
+  
+  func setupTapGestureRecognizer() {
+    
   }
   
   func setupWebManagerSubscriptions() {
