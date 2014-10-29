@@ -51,6 +51,9 @@ class EditorTextStorage: NSTextStorage {
   func characterIsPartOfString(characterIndex:Int) -> Bool {
     let scopeName = highlighter.scopeName(characterIndex)
     let node = highlighter.lastScopeNode
+    if node == nil {
+      return false
+    }
     return node.name.hasPrefix("string")
   }
   
