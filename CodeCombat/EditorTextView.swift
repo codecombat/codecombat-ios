@@ -358,9 +358,10 @@ class EditorTextView: UITextView {
     let dragPoint = CGPoint(x: 0, y: location.y)
     let nearestGlyphIndex = layoutManager.glyphIndexForPoint(dragPoint,
       inTextContainer: textContainer) //nearest glyph index
+    //This may cause some really really weird bugs if glyphs and character indices don't correspond.
+    let nearestCharacterIndex = layoutManager.characterIndexForGlyphAtIndex(nearestGlyphIndex)
     
     let draggedOntoLine = Int(location.y / (font.lineHeight + lineSpacing)) + 1
-    
     var numberOfNewlinesBeforeGlyphIndex = 1
     for var index = 0; index < nearestGlyphIndex; numberOfNewlinesBeforeGlyphIndex++ {
       index = NSMaxRange(storage.string()!.lineRangeForRange(NSRange(location: index, length: 0)))
@@ -386,14 +387,60 @@ class EditorTextView: UITextView {
         stringToInsert = "\n" + stringToInsert  // TODO: figure out why something was prepending newlines in Gems in the Deep; > 0 used to be >= 0, dunno if that works.
       }
     }
+    //Adjust code to match indentation level and other languages
+    stringToInsert = fixIndentationLevelForPython(nearestCharacterIndex, lineNumber: draggedOntoLine, rawString: stringToInsert)
+    
     //Check if code contains a placeholder
     if codeContainsPlaceholder(stringToInsert) {
       let placeholderReplacement = getPlaceholderWidthString(stringToInsert)
       stringToInsert = replacePlaceholderInString(stringToInsert, replacement: placeholderReplacement)
     }
+    
     storage.replaceCharactersInRange(NSRange(location: nearestGlyphIndex, length: 0), withString: stringToInsert)
     setNeedsDisplay()
+  }
+  
+  private func fixIndentationLevelForPython(firstCharacterIndex:Int, lineNumber:Int, rawString:String) -> String {
+    let numberOfSpacesForIndentation = 4
+    var indentationLevel = indentationLevelOfLine(lineNumber - 1)
+    //58 is ASCII for :
+    if firstNonWhitespaceCharacterBeforeCharacterIndex(firstCharacterIndex) == 58 {
+      indentationLevel++
+    }
+    return String(count: numberOfSpacesForIndentation * indentationLevel, repeatedValue: " " as Character) + rawString
+  }
+  
+  private func indentationLevelOfLine(lineNumber:Int) -> Int {
+    let storage = textStorage as EditorTextStorage
+    if lineNumber <= 0 {
+      return 0
+    } else {
+      let lines = storage.string()!.componentsSeparatedByCharactersInSet(NSCharacterSet.newlineCharacterSet())
+      let line = lines[lineNumber - 1] as NSString
+      var spacesCount = 0
+      for var charIndex = 0; charIndex < line.length; charIndex++ {
+        let character = line.characterAtIndex(charIndex)
+        if NSCharacterSet.whitespaceCharacterSet().characterIsMember(character) {
+          spacesCount++
+        }
+      }
+      let indentationLevel = spacesCount / 4
+      return indentationLevel
+    }
+  }
+  
+  private func firstNonWhitespaceCharacterBeforeCharacterIndex(index:Int) -> unichar {
+    let storage = textStorage as EditorTextStorage
     
+    var firstNonWhitespaceCharacter = unichar(10)
+    for var charIndex = index; charIndex > 0; charIndex-- {
+      let character = storage.string()!.characterAtIndex(charIndex)
+      if !NSCharacterSet.whitespaceAndNewlineCharacterSet().characterIsMember(character) {
+        firstNonWhitespaceCharacter = character
+        break
+      }
+    }
+    return firstNonWhitespaceCharacter
   }
   
   func codeContainsPlaceholder(code:String) -> Bool {
