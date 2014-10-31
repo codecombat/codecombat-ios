@@ -38,7 +38,7 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
   }
   
   func onCodeRun() {
-    stringWasSelectedByStringPickerPopover(defaultContentsToInsertOnRun)
+    stringWasSelectedByStringPickerPopover(defaultContentsToInsertOnRun, characterRange:characterRange)
   }
   
   func onTapped() {
@@ -54,7 +54,7 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
     }
   }
   
-  internal func stringWasSelectedByStringPickerPopover(selected:String) {
+  internal func stringWasSelectedByStringPickerPopover(selected:String, characterRange:NSRange) {
     editorTextViewController.replaceCharactersInCharacterRange(characterRange, str: selected)
     self.hidden = true
   }
@@ -95,12 +95,9 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
   private func makeDefaultLabelWithText(text:String) -> UILabel {
     let defaultLabel = UILabel(frame: CGRect(x: 0, y: editorTextViewController.textView.lineSpacing, width: 0, height: 0))
     defaultLabel.text = text
-    defaultLabel.font = editorTextViewController.currentFont!
+    defaultLabel.font = editorTextViewController.textView.font
     defaultLabel.sizeToFit()
     defaultContentsToInsertOnRun = text
     return defaultLabel
   }
-
-  
-  
 }

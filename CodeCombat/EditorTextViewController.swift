@@ -16,36 +16,80 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   var draggedCharacterRange:NSRange!
   var draggedLineNumber = -1
   var highlightedLineNumber = -1
-  var coverTextView:UIView!
   var deleteOverlayView:UIView!
   let deleteOverlayWidth:CGFloat = 75
   var dragGestureRecognizer:UIPanGestureRecognizer!
   var tapGestureRecognizer:UITapGestureRecognizer!
   var dragOverlayLabels:[Int:UILabel] = Dictionary<Int,UILabel>()
   var originalDragOverlayLabelOffsets:[Int:CGFloat] = Dictionary<Int,CGFloat>()
-  let currentFont = UIFont(name: "Courier", size: 22)
-  var overlayViewMap:[Int:ArgumentOverlayView] = [:]
-  var tappedStringRange:NSRange! = nil
-  var textView:EditorTextView!
   
-  func setupTextView() {
-    textView.autocorrectionType = UITextAutocorrectionType.No
-    textView.delegate = self
-    textView.autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
-    textView.selectable = false
-    textView.editable = false
-    textView.font = currentFont
-    textView.showLineNumbers()
-    textView.backgroundColor = UIColor(
-      red: CGFloat(230.0 / 256.0),
-      green: CGFloat(212.0 / 256.0),
-      blue: CGFloat(145.0 / 256.0),
-      alpha: 1)
+  var textView:EditorTextView!
+  var keyboardModeEnabled:Bool {
+    return textView.keyboardModeEnabled
+  }
+  
+  func handleItemPropertyDragBegan() {
+    textView.drawDragHintViewOnLastLine()
+  }
+  
+  func handleItemPropertyDragChangedAtLocation(location:CGPoint) {
+    textView.highlightLineUnderLocation(location)
+  }
+  
+  func handleItemPropertyDragEndedAtLocation(location:CGPoint, code:String) {
+    textView.currentHighlightingView?.removeFromSuperview()
+    textView.currentDragHintView?.removeFromSuperview()
+    textView.currentHighlightingView = nil
+    let storage = textStorage as EditorTextStorage
+    
+    let dragPoint = CGPoint(x: 0, y: location.y)
+    let nearestGlyphIndex = layoutManager.glyphIndexForPoint(dragPoint,
+      inTextContainer: textContainer) //nearest glyph index
+    //This may cause some really really weird bugs if glyphs and character indices don't correspond.
+    let nearestCharacterIndex = layoutManager.characterIndexForGlyphAtIndex(nearestGlyphIndex)
+    
+    let draggedOntoLine = Int(location.y / (textView.font.lineHeight + textView.lineSpacing)) + 1
+    var numberOfNewlinesBeforeGlyphIndex = 1
+    for var index = 0; index < nearestGlyphIndex; numberOfNewlinesBeforeGlyphIndex++ {
+      index = NSMaxRange(storage.string()!.lineRangeForRange(NSRange(location: index, length: 0)))
+    }
+    
+    var totalLinesInDoc = 1
+    for var index = 0; index < storage.string()!.length; totalLinesInDoc++ {
+      index = NSMaxRange(storage.string()!.lineRangeForRange(NSRange(location: index, length: 0)))
+    }
+    
+    let characterAtGlyphIndex = storage.string()!.characterAtIndex(nearestGlyphIndex)
+    let characterBeforeGlyphIndex = storage.string()!.characterAtIndex(nearestGlyphIndex - 1)
+    var stringToInsert = code
+    var newlinesToInsert = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex
+    //Check if dragging onto an empty line in between two other lines of code.
+    stringToInsert = textView.fixIndentationLevelForPython(nearestCharacterIndex, lineNumber: draggedOntoLine, rawString: stringToInsert)
+    //Adjust code to match indentation level and other languages
+    if characterAtGlyphIndex == 10 && characterBeforeGlyphIndex == 10 {
+    } else if draggedOntoLine == numberOfNewlinesBeforeGlyphIndex && characterAtGlyphIndex != 10 {
+      stringToInsert = stringToInsert + "\n"
+    } else if draggedOntoLine == numberOfNewlinesBeforeGlyphIndex && nearestGlyphIndex == storage.string()!.length - 1 {
+      stringToInsert = "\n" + stringToInsert
+    } else if draggedOntoLine > numberOfNewlinesBeforeGlyphIndex { //adapt to deal with wrapped lines
+      for var newlinesToInsertBeforeString = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex; newlinesToInsertBeforeString > 0; newlinesToInsertBeforeString-- {
+        stringToInsert = "\n" + stringToInsert  // TODO: figure out why something was prepending newlines in Gems in the Deep; > 0 used to be >= 0, dunno if that works.
+      }
+    }
+    //Check if code contains a placeholder
+    if textView.codeContainsPlaceholder(stringToInsert) {
+      println(stringToInsert)
+      let placeholderReplacement = textView.getPlaceholderWidthString(stringToInsert)
+      stringToInsert = textView.replacePlaceholderInString(stringToInsert, replacement: placeholderReplacement)
+    }
+    
+    storage.replaceCharactersInRange(NSRange(location: nearestGlyphIndex, length: 0), withString: stringToInsert)
+    textView.setNeedsDisplay()
   }
   
   func layoutManager(layoutManager: NSLayoutManager, didCompleteLayoutForTextContainer textContainer: NSTextContainer?, atEnd layoutFinishedFlag: Bool) {
     let overlayRequests = textStorage.findArgumentOverlays()
-    processOverlayRequests(overlayRequests)
+    textView.processOverlayRequests(overlayRequests)
   }
   
   override func viewDidLoad() {
@@ -73,24 +117,23 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       return
     }
     var locationInTextView = recognizer.locationInView(textView)
-    let tappedCharacterIndex = layoutManager.characterIndexForPoint(locationInTextView, inTextContainer: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
+    let tappedCharacterIndex = textView.layoutManager.characterIndexForPoint(locationInTextView, inTextContainer: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
     if textStorage.characterIsPartOfString(tappedCharacterIndex) {
       let stringRange = textStorage.stringRangeContainingCharacterIndex(tappedCharacterIndex)
-      tappedStringRange = stringRange
-      let pvc = parentViewController as PlayViewController
-      if pvc.levelName == "true-names" {
-        let choices = ["\"Brak\"","\"Treg\""]
-        createStringPickerPopoverWithChoices(choices, characterRange: stringRange, delegate: self)
-      } else if pvc.levelName == "the-raised-sword" {
-        let choices = ["\"Gurt\"","\"Rig\"","\"Ack\""]
-        createStringPickerPopoverWithChoices(choices, characterRange: stringRange, delegate: self)
+      
+      switch LevelSettingsManager.sharedInstance.level {
+      case .TrueNames:
+        createStringPickerPopoverWithChoices(["\"Brak\"","\"Treg\""], characterRange: stringRange, delegate: self)
+      case .TheRaisedSword:
+        createStringPickerPopoverWithChoices(["\"Gurt\"","\"Rig\"","\"Ack\""], characterRange: stringRange, delegate: self)
+      default:
+        break
       }
     }
   }
   
   func createStringPickerPopoverWithChoices(choices:[String], characterRange:NSRange, delegate:StringPickerPopoverDelegate) {
-    
-    let stringPickerViewController = ArgumentStringPickerPopoverViewController(stringChoices: choices)
+    let stringPickerViewController = ArgumentStringPickerPopoverViewController(stringChoices: choices, characterRange:characterRange)
     stringPickerViewController.pickerDelegate = delegate
     let glyphRange = layoutManager.glyphRangeForCharacterRange(characterRange, actualCharacterRange: nil)
     var boundingRect = layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: textContainer)
@@ -105,8 +148,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     textStorage.replaceCharactersInRange(characterRange, withString: str)
   }
   
-  func stringWasSelectedByStringPickerPopover(selected:String) {
-    replaceCharactersInCharacterRange(tappedStringRange, str: selected)
+  func stringWasSelectedByStringPickerPopover(selected:String, characterRange:NSRange) {
+    replaceCharactersInCharacterRange(characterRange, str: selected)
   }
   
   func setupWebManagerSubscriptions() {
@@ -116,10 +159,10 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   
   func addNotificationCenterObservers() {
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onCodeRun"), name: "codeRun", object: nil)
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("textStorageFinishedTopLevelEditing"), name: "textStorageFinishedTopLevelEditing", object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onTextStorageFinishedTopLevelEditing"), name: "textStorageFinishedTopLevelEditing", object: nil)
   }
   
-  func textStorageFinishedTopLevelEditing() {
+  func onTextStorageFinishedTopLevelEditing() {
     ensureNewlineAtEndOfCode()
   }
   
@@ -150,69 +193,19 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     textView.removeUserCodeProblemLineHighlights()
   }
   
-  func clearOverlayViews() {
-    for (overlayStartLocation, overlay) in overlayViewMap {
-      overlay.removeFromSuperview()
-    }
-    overlayViewMap.removeAll(keepCapacity: true)
-  }
-  
-  func removeAllOverlaysNotRequested(overlayRequests:[(String,NSRange)]) {
-    let overlayRequestLocations = overlayRequests.map({$0.1.location})
-    for (overlayLocation, overlay) in overlayViewMap {
-      if !contains(overlayRequestLocations, overlayLocation) {
-        overlay.removeFromSuperview()
-        overlayViewMap.removeValueForKey(overlayLocation)
-      }
-    }
-  }
-  
-  func processOverlayRequests(overlayRequests:[(String,NSRange)]) {
-    removeAllOverlaysNotRequested(overlayRequests)
-    for (functionName,overlayRange) in overlayRequests {
-      //if view already exists and is requested, don't redraw
-      if overlayViewMap.indexForKey(overlayRange.location) != nil {
-        continue
-      }
-      let pvc = parentViewController as PlayViewController
-      let range = overlayRange
-      //to render views http://stackoverflow.com/questions/788662/rendering-uiview-with-its-children
-      let defaultRect = CGRect()
-      let newView = ArgumentOverlayView(
-        frame: defaultRect,
-        textViewController: self,
-        characterRange: overlayRange,
-        functionName: "blah")
-      
-      overlayViewMap[range.location] = newView
-      self.textView.addSubview(newView)
-    }
-  }
-  
   func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
     return true
   }
   
-  func keyboardModeEnabled() -> Bool {
-    return textView.editable && textView.selectable
-  }
-  
   func toggleKeyboardMode() {
-    if keyboardModeEnabled() {
-      textView.editable = false
-      textView.selectable = false
-      textView.resignFirstResponder()
-    } else {
-      textView.editable = true
-      textView.selectable = true
-      textView.becomeFirstResponder()
-    }
+    textView.toggleKeyboardMode()
   }
   
   func ensureNewlineAtEndOfCode() {
     if !textStorage.string()!.hasSuffix("\n") {
-      //needs to be wrapped in beginEditing and endEditing if bugs
+      textStorage.beginEditing()
       textStorage.appendAttributedString(NSAttributedString(string: "\n"))
+      textStorage.endEditing()
     }
   }
   
@@ -272,14 +265,6 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     return label
   }
   
-  private func createCoverTextView(#rectToCover:CGRect) -> UIView {
-    var coverTextFrame = rectToCover
-    coverTextFrame.origin.x += textView.lineNumberWidth + textView.gutterPadding
-    let coverView = UIView(frame: coverTextFrame)
-    coverView.backgroundColor = textView.backgroundColor
-    return coverView
-  }
-  
   private func hideOrShowDeleteOverlay() {
     if draggedLabel.center.x > parentViewController!.view.bounds.maxX - deleteOverlayWidth {
       deleteOverlayView.hidden = false
@@ -304,16 +289,11 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   private func deleteSubviewsOnDragEnd() {
     deleteOverlayView.removeFromSuperview()
     deleteOverlayView = nil
-    coverTextView.removeFromSuperview()
-    coverTextView = nil
+    textView.removeTextViewCoverView()
     draggedLabel.removeFromSuperview()
     draggedLabel = nil
   }
-  
-  private func adjustDraggedLabelPosition(dragLocation:CGPoint) {
-    draggedLabel.center = dragLocation
-  }
-  
+
   //This function will put views identical to the text over every line so that they may be dragged around.
   private func createViewsForAllLinesExceptDragged(draggedLineFragmentRect:CGRect, draggedCharacterRange:NSRange) {
     let visibleCharacterRange = layoutManager.glyphRangeForBoundingRect(textView.frame, inTextContainer: textContainer)
@@ -518,9 +498,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       parentViewController!.view.addSubview(draggedLabel)
       draggedLineNumber = lineNumberForDraggedCharacterRange(characterRange)
       //Create the solid colored label that covers up the dragged text in the text view
-      coverTextView = createCoverTextView(rectToCover: textView.bounds)
-      textView.addSubview(coverTextView)
-      
+      textView.createTextViewCoverView()
       //Create a view for each of the lines to support drag live preview
       createViewsForAllLinesExceptDragged(lineFragmentRect, draggedCharacterRange: characterRange)
       //create the deletion overlay view that turns red when you are about to delete something
@@ -531,7 +509,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       break
       
     case .Changed:
-      adjustDraggedLabelPosition(locationInParentView)
+      draggedLabel.center = locationInParentView
       adjustLineViewsForDragLocation(recognizer.locationInView(textView))
       scrollWhileDraggingIfNecessary(locationInParentView)
       hideOrShowDeleteOverlay()
@@ -577,14 +555,11 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     return true
   }
   
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
-  }
-  
   func createTextViewWithFrame(frame:CGRect) {
     setupTextKitHierarchy()
     textView = EditorTextView(frame: frame, textContainer: textContainer)
+    textView.delegate = self
+    textView.parentTextViewController = self
     textView.addGestureRecognizer(dragGestureRecognizer)
     textView.addGestureRecognizer(tapGestureRecognizer)
     textView.panGestureRecognizer.requireGestureRecognizerToFail(tapGestureRecognizer)
@@ -601,13 +576,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     layoutManager.addTextContainer(textContainer)
   }
   
-  private func resetFontToCurrentFont() {
-    textView.font = currentFont
-  }
-  
   func replaceTextViewContentsWithString(text:String) {
     textStorage.replaceCharactersInRange(NSRange(location: 0, length: textStorage.string()!.length), withString: text)
-    resetFontToCurrentFont()
     textView.setNeedsDisplay()
   }
   

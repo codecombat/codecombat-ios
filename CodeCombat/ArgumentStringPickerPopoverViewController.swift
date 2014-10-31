@@ -9,18 +9,20 @@
 import Foundation
 
 protocol StringPickerPopoverDelegate {
-  func stringWasSelectedByStringPickerPopover(String)
+  func stringWasSelectedByStringPickerPopover(selected:String,characterRange:NSRange)
 }
 
 class ArgumentStringPickerPopoverViewController: UITableViewController {
   var strings:[String] = []
   var pickerDelegate:StringPickerPopoverDelegate! = nil
   var selectedString:String = ""
+  var characterRange:NSRange!
   let rowHeight = 30
 
-  init(stringChoices:[String]) {
+  init(stringChoices:[String], characterRange:NSRange) {
     super.init(style: UITableViewStyle.Plain)
     strings = stringChoices
+    self.characterRange = characterRange
     clearsSelectionOnViewWillAppear = false
   }
 
@@ -58,7 +60,7 @@ class ArgumentStringPickerPopoverViewController: UITableViewController {
     let selected = strings[indexPath.row]
     
     if pickerDelegate != nil {
-      pickerDelegate.stringWasSelectedByStringPickerPopover(selected)
+      pickerDelegate.stringWasSelectedByStringPickerPopover(selected, characterRange:characterRange)
       dismissViewControllerAnimated(true, completion: nil)
     }
   }

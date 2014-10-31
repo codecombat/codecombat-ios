@@ -8,17 +8,12 @@
 
 import UIKit
 
-class ParameterView:UIView {
-  var range:NSRange!
-  var functionName:String = ""
-  //do something with unique identifier here
-}
-
 class GutterProblemLineAnnotationButton: UIButton {
   var problemDescription:String = ""
 }
 
 class EditorTextView: UITextView {
+  var parentTextViewController:EditorTextViewController!
   var shouldShowLineNumbers = false
   var numberOfCharactersInLineNumberGutter = 0
   var lineNumberWidth = CGFloat(20.0)
@@ -29,11 +24,71 @@ class EditorTextView: UITextView {
   var errorMessageView:UILabel? = nil
   var currentProblemGutterLineAnnotations:[Int:GutterProblemLineAnnotationButton] = [:]
   var currentProblemLineHighlights:[Int:UIView] = [:]
-  var parameterViews:[ParameterView] = []
+  var overlayLocationToViewMap:[Int:ArgumentOverlayView] = [:]
   let gutterPadding = CGFloat(5.0)
   let lineSpacing:CGFloat = 5
   var accessoryView:UIView?
-  var levelString = ""
+  var textViewCoverView:UIView?
+  
+  var keyboardModeEnabled:Bool {
+    return editable && selectable
+  }
+  
+  //Will create a blank view covering entire text view
+  func createTextViewCoverView() {
+    var coverTextFrame = bounds
+    coverTextFrame.origin.x += lineNumberWidth + gutterPadding
+    textViewCoverView = UIView(frame: coverTextFrame)
+    textViewCoverView!.backgroundColor = backgroundColor
+    addSubview(textViewCoverView!)
+  }
+  
+  func removeTextViewCoverView() {
+    textViewCoverView?.removeFromSuperview()
+    textViewCoverView = nil
+  }
+  
+  func toggleKeyboardMode() {
+    editable = !editable
+    selectable = !selectable
+    if isFirstResponder() {
+      resignFirstResponder()
+    } else {
+      becomeFirstResponder()
+    }
+  }
+  
+  func removeAllOverlaysNotRequested(requestedOverlayFunctionNamesAndRanges:[(String, NSRange)]) {
+    let overlayRequestLocations = requestedOverlayFunctionNamesAndRanges.map({$0.1.location})
+    for (overlayLocation, overlay) in overlayLocationToViewMap {
+      if !contains(overlayRequestLocations, overlayLocation) {
+        overlay.removeFromSuperview()
+        overlayLocationToViewMap.removeValueForKey(overlayLocation)
+      }
+    }
+  }
+  
+  func processOverlayRequests(requestedOverlayFunctionNamesAndRanges:[(String, NSRange)]) {
+    removeAllOverlaysNotRequested(requestedOverlayFunctionNamesAndRanges)
+    for (functionName,overlayRange) in requestedOverlayFunctionNamesAndRanges {
+      //if view already exists and is requested, don't redraw
+      if overlayLocationToViewMap.indexForKey(overlayRange.location) != nil {
+        continue
+      }
+      let range = overlayRange
+      //to render views http://stackoverflow.com/questions/788662/rendering-uiview-with-its-children
+      let defaultRect = CGRect()
+      let newView = ArgumentOverlayView(
+        frame: defaultRect,
+        textViewController: parentTextViewController,
+        characterRange: overlayRange,
+        functionName: "blah")
+      
+      overlayLocationToViewMap[range.location] = newView
+      addSubview(newView)
+    }
+  }
+  
   
   override var inputAccessoryView: UIView? {
     get {
@@ -48,6 +103,27 @@ class EditorTextView: UITextView {
     set {
       self.accessoryView = newValue
     }
+  }
+  
+  override init(frame: CGRect, textContainer: NSTextContainer?) {
+    super.init(frame: frame, textContainer: textContainer)
+    autocorrectionType = UITextAutocorrectionType.No
+    autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
+    selectable = false
+    editable = false
+    //Not sure if this will get reset, if it does it will cause bugs
+    font = UIFont(name: "Courier", size: 22)
+    showLineNumbers()
+    backgroundColor = UIColor(
+      red: CGFloat(230.0 / 256.0),
+      green: CGFloat(212.0 / 256.0),
+      blue: CGFloat(145.0 / 256.0),
+      alpha: 1)
+    
+  }
+
+  required init(coder aDecoder: NSCoder) {
+      super.init(coder: aDecoder)
   }
   
   override func drawRect(rect: CGRect) {
@@ -86,25 +162,20 @@ class EditorTextView: UITextView {
     }
   }
   
-  func eraseParameterViews() {
-    println("Erasing boxes...")
-    for v in parameterViews {
-      v.removeFromSuperview()
-    }
-    parameterViews = []
+  func drawDragHintViewOnLastLine() {
+    let glyphRange = layoutManager.glyphRangeForTextContainer(textContainer)
+    var lastLineFragmentRect = layoutManager.lineFragmentRectForGlyphAtIndex(NSMaxRange(glyphRange) - 1, effectiveRange: nil)
+    let bufferHeight = 100
+    let lineHeight = font.lineHeight + lineSpacing
+    lastLineFragmentRect.origin.y += lineHeight + lineSpacing - CGFloat(bufferHeight/2)
+    lastLineFragmentRect.size.height = lineHeight + CGFloat(bufferHeight)
+    currentDragHintView = ParticleView(frame: lastLineFragmentRect)
+    addSubview(currentDragHintView!)
   }
   
-  
-  func drawParameterOverlay(range:NSRange) {
-    let start = positionFromPosition(beginningOfDocument, offset: range.location)
-    let end = positionFromPosition(start!, offset: range.length)
-    let textRange = textRangeFromPosition(start, toPosition: end)
-    let resultRect =  firstRectForRange(textRange)
-    let paramView = ParameterView(frame: resultRect)
-    paramView.range = range
-    paramView.backgroundColor = UIColor(hue: CGFloat(drand48()), saturation: 1.0, brightness: 1.0, alpha: 0.1)
-    addSubview(paramView)
-    parameterViews.append(paramView)
+  func highlightLineUnderLocation(location:CGPoint) {
+    let currentLine = Int(location.y / (font.lineHeight + lineSpacing))
+    highlightLines(startingLineNumber: currentLine, numberOfLines: 1)
   }
   
   func highlightLineNumber(lineNumber:Int) {
@@ -333,75 +404,9 @@ class EditorTextView: UITextView {
     }
     setNeedsDisplay()
   }
+
   
-  func handleItemPropertyDragBegan() {
-    let glyphRange = layoutManager.glyphRangeForTextContainer(textContainer)
-    var lastLineFragmentRect = layoutManager.lineFragmentRectForGlyphAtIndex(NSMaxRange(glyphRange) - 1, effectiveRange: nil)
-    let bufferHeight = 100
-    let lineHeight = font.lineHeight + lineSpacing
-    lastLineFragmentRect.origin.y += lineHeight + lineSpacing - CGFloat(bufferHeight/2)
-    lastLineFragmentRect.size.height = lineHeight + CGFloat(bufferHeight)
-    currentDragHintView = ParticleView(frame: lastLineFragmentRect)
-    addSubview(currentDragHintView!)
-  }
-  
-  func handleItemPropertyDragChangedAtLocation(location:CGPoint, code:String) {
-    let currentLine = Int(location.y / (font.lineHeight + lineSpacing))
-    highlightLines(startingLineNumber: currentLine, numberOfLines: 1)
-  }
-  
-  func handleItemPropertyDragEndedAtLocation(location:CGPoint, code:String) {
-    currentHighlightingView?.removeFromSuperview()
-    currentDragHintView?.removeFromSuperview()
-    currentHighlightingView = nil
-    let storage = textStorage as EditorTextStorage
-    
-    let dragPoint = CGPoint(x: 0, y: location.y)
-    let nearestGlyphIndex = layoutManager.glyphIndexForPoint(dragPoint,
-      inTextContainer: textContainer) //nearest glyph index
-    //This may cause some really really weird bugs if glyphs and character indices don't correspond.
-    let nearestCharacterIndex = layoutManager.characterIndexForGlyphAtIndex(nearestGlyphIndex)
-    
-    let draggedOntoLine = Int(location.y / (font.lineHeight + lineSpacing)) + 1
-    var numberOfNewlinesBeforeGlyphIndex = 1
-    for var index = 0; index < nearestGlyphIndex; numberOfNewlinesBeforeGlyphIndex++ {
-      index = NSMaxRange(storage.string()!.lineRangeForRange(NSRange(location: index, length: 0)))
-    }
-    
-    var totalLinesInDoc = 1
-    for var index = 0; index < storage.string()!.length; totalLinesInDoc++ {
-      index = NSMaxRange(storage.string()!.lineRangeForRange(NSRange(location: index, length: 0)))
-    }
-    
-    let characterAtGlyphIndex = storage.string()!.characterAtIndex(nearestGlyphIndex)
-    let characterBeforeGlyphIndex = storage.string()!.characterAtIndex(nearestGlyphIndex - 1)
-    var stringToInsert = code
-    var newlinesToInsert = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex
-    //Check if dragging onto an empty line in between two other lines of code.
-    stringToInsert = fixIndentationLevelForPython(nearestCharacterIndex, lineNumber: draggedOntoLine, rawString: stringToInsert)
-    //Adjust code to match indentation level and other languages
-    if characterAtGlyphIndex == 10 && characterBeforeGlyphIndex == 10 {
-    } else if draggedOntoLine == numberOfNewlinesBeforeGlyphIndex && characterAtGlyphIndex != 10 {
-      stringToInsert = stringToInsert + "\n"
-    } else if draggedOntoLine == numberOfNewlinesBeforeGlyphIndex && nearestGlyphIndex == storage.string()!.length - 1 {
-      stringToInsert = "\n" + stringToInsert
-    } else if draggedOntoLine > numberOfNewlinesBeforeGlyphIndex { //adapt to deal with wrapped lines
-      for var newlinesToInsertBeforeString = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex; newlinesToInsertBeforeString > 0; newlinesToInsertBeforeString-- {
-        stringToInsert = "\n" + stringToInsert  // TODO: figure out why something was prepending newlines in Gems in the Deep; > 0 used to be >= 0, dunno if that works.
-      }
-    }
-    //Check if code contains a placeholder
-    if codeContainsPlaceholder(stringToInsert) {
-      println(stringToInsert)
-      let placeholderReplacement = getPlaceholderWidthString(stringToInsert)
-      stringToInsert = replacePlaceholderInString(stringToInsert, replacement: placeholderReplacement)
-    }
-    
-    storage.replaceCharactersInRange(NSRange(location: nearestGlyphIndex, length: 0), withString: stringToInsert)
-    setNeedsDisplay()
-  }
-  
-  private func fixIndentationLevelForPython(firstCharacterIndex:Int, lineNumber:Int, rawString:String) -> String {
+  func fixIndentationLevelForPython(firstCharacterIndex:Int, lineNumber:Int, rawString:String) -> String {
     let numberOfSpacesForIndentation = 4
     var indentationLevel = indentationLevelOfLine(lineNumber - 1)
     //58 is ASCII for :

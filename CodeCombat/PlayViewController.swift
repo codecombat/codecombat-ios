@@ -102,7 +102,6 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     textViewController.createTextViewWithFrame(editorTextViewFrame)
     scrollView.panGestureRecognizer.requireGestureRecognizerToFail(textViewController.dragGestureRecognizer)
     addChildViewController(textViewController)
-    textViewController.setupTextView()
     editorContainerView.addSubview(textViewController.textView)
     let undoManager = textViewController.textStorage.undoManager
     let nc = NSNotificationCenter.defaultCenter()
@@ -190,14 +189,17 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   }
   
   @IBAction func toggleKeyboard(sender:UIButton) {
-    if !textViewController.keyboardModeEnabled() {
+    if !textViewController.keyboardModeEnabled {
       scrollToBottomOfScrollView()
     }
     textViewController.toggleKeyboardMode()
   }
 
   func getEscapedSourceString() -> String {
-    var escapedString = textViewController.textView.text!.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
+    if textViewController.textView == nil {
+      return ""
+    }
+    var escapedString = textViewController.textView.text.stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
     escapedString = escapedString.stringByReplacingOccurrencesOfString("\n", withString: "\\n")
     return escapedString
   }

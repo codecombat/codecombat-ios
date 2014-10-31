@@ -145,7 +145,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
       DragView.backgroundColor = UIColor.clearColor()
       Parent.view.addSubview(DragView)
       draggedView = DragView
-      EditorView.handleItemPropertyDragBegan()
+      Parent.textViewController.handleItemPropertyDragBegan()
       break
     case .Changed:
       draggedView.center = LocationInParentView
@@ -155,10 +155,10 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
         if Snippet != nil {
           Snippet = draggedProperty.name
         }
-        EditorView.handleItemPropertyDragChangedAtLocation(LocationInEditorContainerView, code: Snippet!)
+        Parent.textViewController.handleItemPropertyDragChangedAtLocation(LocationInEditorContainerView)
       } else {
-        EditorView.currentHighlightingView?.removeFromSuperview()
-        EditorView.currentHighlightingView = nil
+        Parent.textViewController.textView.currentHighlightingView?.removeFromSuperview()
+        Parent.textViewController.textView.currentHighlightingView = nil
       }
       break
     case .Ended:
@@ -168,12 +168,12 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
         Snippet = draggedProperty.name
       }
       if EditorView.frame.contains(LocationInParentView) {
-        EditorView.handleItemPropertyDragEndedAtLocation(LocationInEditorContainerView, code: Snippet!)
+        Parent.textViewController.handleItemPropertyDragEndedAtLocation(LocationInEditorContainerView, code: Snippet!)
       } else {
-        EditorView.currentDragHintView?.removeFromSuperview()
-        EditorView.currentDragHintView = nil
-        EditorView.currentHighlightingView?.removeFromSuperview()
-        EditorView.currentHighlightingView = nil
+        Parent.textViewController.textView.currentDragHintView?.removeFromSuperview()
+        Parent.textViewController.textView.currentDragHintView = nil
+        Parent.textViewController.textView.currentHighlightingView?.removeFromSuperview()
+        Parent.textViewController.textView.currentHighlightingView = nil
       }
       draggedView = nil
       
