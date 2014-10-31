@@ -16,9 +16,6 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
   private var draggedProperty: TomeInventoryItemProperty!
   
   override init() {
-//    inventory = TomeInventory(
-//      itemsData: parseJSONFile("items_tharin"),
-//      propertiesData: parseJSONFile("properties"))
     inventory = TomeInventory()
     super.init(nibName: "", bundle: nil)
   }
@@ -157,8 +154,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
         }
         Parent.textViewController.handleItemPropertyDragChangedAtLocation(LocationInEditorContainerView)
       } else {
-        Parent.textViewController.textView.currentHighlightingView?.removeFromSuperview()
-        Parent.textViewController.textView.currentHighlightingView = nil
+        Parent.textViewController.textView.removeLineDimmingOverlay()
       }
       break
     case .Ended:
@@ -170,10 +166,8 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
       if EditorView.frame.contains(LocationInParentView) {
         Parent.textViewController.handleItemPropertyDragEndedAtLocation(LocationInEditorContainerView, code: Snippet!)
       } else {
-        Parent.textViewController.textView.currentDragHintView?.removeFromSuperview()
-        Parent.textViewController.textView.currentDragHintView = nil
-        Parent.textViewController.textView.currentHighlightingView?.removeFromSuperview()
-        Parent.textViewController.textView.currentHighlightingView = nil
+        Parent.textViewController.textView.removeDragHintView()
+        Parent.textViewController.textView.removeLineDimmingOverlay()
       }
       draggedView = nil
       

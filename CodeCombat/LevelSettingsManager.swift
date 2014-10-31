@@ -9,9 +9,9 @@
 private let levelSettingsManagerSharedInstance = LevelSettingsManager()
 import UIKit
 
-enum CodeLanguage {
-  case Python
-  case Javascript
+enum CodeLanguage:String {
+  case Python = "python"
+  case Javascript = "javascript"
 }
 
 enum LevelName:String {

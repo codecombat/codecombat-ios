@@ -21,12 +21,17 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   var deletionOverlayView:UIView?
   var currentDragView:UIView? = nil
   var currentDragHintView:ParticleView?
-  var currentHighlightingView:UIView? = nil
+  var lineDimmingOverlay:UIView? = nil
   var currentLineHighlightingView:UIView? = nil
   var errorMessageView:UILabel? = nil
   var currentProblemGutterLineAnnotations:[Int:GutterProblemLineAnnotationButton] = [:]
   var currentProblemLineHighlights:[Int:UIView] = [:]
   var overlayLocationToViewMap:[Int:ArgumentOverlayView] = [:]
+  
+  var dragOverlayLabels:[Int:UILabel] = Dictionary<Int,UILabel>()
+  var originalDragOverlayLabelOffsets:[Int:CGFloat] = Dictionary<Int,CGFloat>()
+  var draggedLineNumber = -1
+  
   let gutterPadding = CGFloat(5.0)
   let lineSpacing:CGFloat = 5
   var accessoryView:UIView?
@@ -179,9 +184,38 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     addSubview(currentDragHintView!)
   }
   
-  func highlightLineUnderLocation(location:CGPoint) {
+  func removeDragHintView() {
+    currentDragHintView?.removeFromSuperview()
+    currentDragHintView = nil
+  }
+  
+  func dimLineUnderLocation(location:CGPoint) {
     let currentLine = Int(location.y / (font.lineHeight + lineSpacing))
-    highlightLines(startingLineNumber: currentLine, numberOfLines: 1)
+    slightlyDimLineWhileDraggingOver(lineNumber: currentLine)
+  }
+  
+  func slightlyDimLineWhileDraggingOver(#lineNumber:Int) {
+    let FirstLineNumberRect = getLineNumberRect(lineNumber)
+    let HighlightingRect = CGRect(
+      x: FirstLineNumberRect.origin.x,
+      y: FirstLineNumberRect.origin.y,
+      width: FirstLineNumberRect.width,
+      height: FirstLineNumberRect.height)
+    if lineDimmingOverlay == nil {
+      lineDimmingOverlay = UIView(frame: HighlightingRect)
+      lineDimmingOverlay?.backgroundColor = UIColor(
+        red: 0,
+        green: 0,
+        blue: 0,
+        alpha: 0.2)
+      addSubview(lineDimmingOverlay!)
+    }
+    lineDimmingOverlay?.frame = HighlightingRect
+  }
+  
+  func removeLineDimmingOverlay() {
+    lineDimmingOverlay?.removeFromSuperview()
+    lineDimmingOverlay = nil
   }
   
   func highlightLineNumber(lineNumber:Int) {
@@ -246,7 +280,25 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   
   func displayProblemErrorMessageFromView(sender:GutterProblemLineAnnotationButton) {
     if errorMessageView == nil {
-      displayProblemErrorMessage(sender.problemDescription)
+      let backgroundImage = UIImage(named: "editorErrorBackground")!
+      let mainScreenView = superview!.superview!
+      var errorMessageFrame = mainScreenView.frame
+      errorMessageFrame.origin.y = errorMessageFrame.height - 120
+      errorMessageFrame.origin.x = errorMessageFrame.width - backgroundImage.size.width
+      errorMessageFrame.size.width = backgroundImage.size.width
+      errorMessageFrame.size.height = backgroundImage.size.height
+      
+      errorMessageView = UILabel(frame: errorMessageFrame)
+      errorMessageView?.textAlignment = NSTextAlignment.Center
+      errorMessageView?.opaque = false
+      errorMessageView?.text = sender.problemDescription
+      errorMessageView?.backgroundColor = UIColor(patternImage: backgroundImage)
+      errorMessageView?.alpha = 0
+      errorMessageView?.textColor = UIColor.whiteColor()
+      mainScreenView.addSubview(errorMessageView!)
+      UIView.animateWithDuration(0.5, animations: {
+        self.errorMessageView!.alpha = 1
+      })
     } else {
       //hide the display problem error message
       UIView.animateWithDuration(0.5, animations: { self.errorMessageView!.alpha = 0 }, completion: { (Bool) -> Void in
@@ -256,36 +308,11 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     
   }
   
-  func displayProblemErrorMessage(message:String) {
-    if errorMessageView != nil {
-      clearErrorMessageView()
-    }
-    let backgroundImage = UIImage(named: "editorErrorBackground")!
-    let mainScreenView = superview!.superview!
-    var errorMessageFrame = mainScreenView.frame
-    errorMessageFrame.origin.y = errorMessageFrame.height - 120
-    errorMessageFrame.origin.x = errorMessageFrame.width - backgroundImage.size.width
-    errorMessageFrame.size.width = backgroundImage.size.width
-    errorMessageFrame.size.height = backgroundImage.size.height
-    
-    errorMessageView = UILabel(frame: errorMessageFrame)
-    errorMessageView?.textAlignment = NSTextAlignment.Center
-    errorMessageView?.opaque = false
-    errorMessageView?.text = message
-    errorMessageView?.backgroundColor = UIColor(patternImage: backgroundImage)
-    errorMessageView?.alpha = 0
-    errorMessageView?.textColor = UIColor.whiteColor()
-    mainScreenView.addSubview(errorMessageView!)
-    UIView.animateWithDuration(0.5, animations: {
-      self.errorMessageView!.alpha = 1
-    })
-    
-  }
-  
   func clearErrorMessageView() {
     errorMessageView?.removeFromSuperview()
     errorMessageView = nil
   }
+  
   func clearCodeProblemGutterAnnotations() {
     for (line, view) in currentProblemGutterLineAnnotations {
       view.removeFromSuperview()
@@ -377,7 +404,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     CGContextFillRect(context, LineNumberBackgroundRect)
   }
   
-  func showLineNumbers() {
+  private func showLineNumbers() {
     if shouldShowLineNumbers {
       return
     }
@@ -410,7 +437,159 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     }
     setNeedsDisplay()
   }
-
+  
+  func createViewsForAllLinesExceptDragged(draggedLineFragmentRect:CGRect, draggedCharacterRange:NSRange) {
+    let visibleCharacterRange = layoutManager.glyphRangeForBoundingRect(frame, inTextContainer: textContainer)
+    let visibleGlyphs = layoutManager.glyphRangeForCharacterRange(visibleCharacterRange, actualCharacterRange: nil)
+    //when I refer to line numbers, I am referring to them by height, not in the document
+    var currentLineNumber = 1
+    let editorTextStorage = textStorage as EditorTextStorage
+    func fragmentEnumerator(aRect:CGRect, aUsedRect:CGRect, textContainer:NSTextContainer!, glyphRange:NSRange, stop:UnsafeMutablePointer<ObjCBool>) -> Void {
+      let fragmentCharacterRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
+      let fragmentParagraphRange = editorTextStorage.string()!.paragraphRangeForRange(fragmentCharacterRange)
+      if NSEqualRanges(draggedCharacterRange,fragmentCharacterRange) {
+        //This means we've found the dragged line
+        currentLineNumber++
+        return
+      }
+      if fragmentCharacterRange.location == fragmentParagraphRange.location {
+        //println("The length of the character range is \(fragmentCharacterRange.length), and the length of the paragraph range is \(fragmentParagraphRange.length)")
+        var labelTextFrame = aRect
+        labelTextFrame.size.height = font.lineHeight + lineSpacing
+        let label = UILabel(frame: aRect)
+        if fragmentCharacterRange.length == fragmentParagraphRange.length {
+          label.attributedText = parentTextViewController.getAttributedStringForCharacterRange(fragmentParagraphRange)
+        } else {
+          let attributedStringBeforeLineBreak = NSMutableAttributedString(attributedString: parentTextViewController.getAttributedStringForCharacterRange(fragmentCharacterRange))
+          attributedStringBeforeLineBreak.appendAttributedString(NSAttributedString(string: "\n"))
+          let attributedStringAfterLineBreak = parentTextViewController.getAttributedStringForCharacterRange(NSRange(location: NSMaxRange(fragmentCharacterRange), length: (fragmentParagraphRange.length - fragmentCharacterRange.length)))
+          attributedStringBeforeLineBreak.appendAttributedString(attributedStringAfterLineBreak)
+          label.lineBreakMode = NSLineBreakMode.ByWordWrapping
+          label.numberOfLines = 0
+          var paragraphStyle = NSMutableParagraphStyle()
+          paragraphStyle.lineSpacing = lineSpacing
+          attributedStringBeforeLineBreak.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: NSRange(location: 0, length: attributedStringBeforeLineBreak.length))
+          label.attributedText = attributedStringBeforeLineBreak
+          label.frame.size.height += font.lineHeight + lineSpacing
+        }
+        
+        //Insert a line break
+        label.sizeToFit()
+        label.frame.origin.x += gutterPadding
+        label.frame.origin.y += lineSpacing + 3.5 //I have no idea why this isn't aligning properly, probably has to do with the sizeToFit()
+        label.backgroundColor = UIColor.clearColor()
+        dragOverlayLabels[currentLineNumber] = label
+        originalDragOverlayLabelOffsets[currentLineNumber] = label.frame.origin.y
+        currentLineNumber++
+        addSubview(label)
+      } else {
+        //handle wrapped lines here
+        println("Trying to create a view for a wrapped line")
+      }
+    }
+    layoutManager.enumerateLineFragmentsForGlyphRange(visibleGlyphs, usingBlock: fragmentEnumerator)
+  }
+  
+  func adjustLineViewsForDragLocation(loc:CGPoint) {
+    //calculate which line the drag is currently on
+    var lineNumber = lineNumberOfLocationInTextView(loc)
+    
+    var maxLine = 1
+    for key in dragOverlayLabels.keys {
+      if key > maxLine {
+        maxLine = key
+      }
+    }
+    //Clamp lineNumber to available range
+    lineNumber = max(lineNumber, 1)
+    lineNumber = min(lineNumber, max(draggedLineNumber,maxLine))
+    
+    //If the drag has moved up, we need to move some lines down potentially
+    if max(1,lineNumber) < draggedLineNumber {
+      //Move the ones between the current drag location and dragged line
+      for lineToMove in max(lineNumber,1)...(draggedLineNumber - 1) {
+        let labelToMove = dragOverlayLabels[lineToMove]!
+        //check if offset is supposed to move
+        if labelToMove.frame.origin.y == originalDragOverlayLabelOffsets[lineToMove]! {
+          //shift down
+          var oldFrame = labelToMove.frame
+          oldFrame.origin.y += lineSpacing + font.lineHeight
+          labelToMove.frame = oldFrame
+          labelToMove.setNeedsLayout()
+        }
+      }
+      //Reset the ones above that
+      if lineNumber != 1 && draggedLineNumber != 1 {
+        for lineToReset in 1...max(1,lineNumber - 1) {
+          let labelToReset = dragOverlayLabels[lineToReset]!
+          if labelToReset.frame.origin.y != originalDragOverlayLabelOffsets[lineToReset]! {
+            var oldFrame = labelToReset.frame
+            oldFrame.origin.y = originalDragOverlayLabelOffsets[lineToReset]!
+            labelToReset.frame = oldFrame
+            labelToReset.setNeedsLayout()
+          }
+        }
+      }
+      
+    } else if min(lineNumber,maxLine) > draggedLineNumber {
+      //Move the lines between the dragged line and the current drag
+      for lineToMove in (draggedLineNumber + 1)...min(lineNumber,maxLine) {
+        let labelToMove = dragOverlayLabels[lineToMove]!
+        if labelToMove.frame.origin.y == originalDragOverlayLabelOffsets[lineToMove]! {
+          var oldFrame = labelToMove.frame
+          oldFrame.origin.y -= lineSpacing + font.lineHeight
+          labelToMove.frame = oldFrame
+          labelToMove.setNeedsLayout()
+        }
+      }
+      //Reset the ones below that
+      if lineNumber != maxLine {
+        for lineToReset in min(maxLine,lineNumber + 1)...maxLine {
+          let labelToReset = dragOverlayLabels[lineToReset]!
+          if labelToReset.frame.origin.y != originalDragOverlayLabelOffsets[lineToReset]! {
+            var oldFrame = labelToReset.frame
+            oldFrame.origin.y = originalDragOverlayLabelOffsets[lineToReset]!
+            labelToReset.frame = oldFrame
+            labelToReset.setNeedsLayout()
+          }
+        }
+      }
+    } else if lineNumber == draggedLineNumber {
+      //println("Should maybe move lines back? Drag on dragged line number!")
+      var linesToReset:[Int] = []
+      if maxLine == 1 {
+        return
+      } else if draggedLineNumber == 1 {
+        linesToReset.append(2)
+      } else if draggedLineNumber > maxLine {
+        linesToReset.append(maxLine)
+      } else {
+        linesToReset.append(draggedLineNumber - 1)
+        linesToReset.append(draggedLineNumber + 1)
+      }
+      for lineToReset in linesToReset {
+        let labelToReset = dragOverlayLabels[lineToReset]!
+        if labelToReset.frame.origin.y != originalDragOverlayLabelOffsets[lineToReset]! {
+          var oldFrame = labelToReset.frame
+          oldFrame.origin.y = originalDragOverlayLabelOffsets[lineToReset]!
+          labelToReset.frame = oldFrame
+          labelToReset.setNeedsLayout()
+        }
+      }
+    }
+  }
+  
+  func clearLineOverlayLabels() {
+    for (index, label) in dragOverlayLabels {
+      label.removeFromSuperview()
+    }
+    dragOverlayLabels.removeAll(keepCapacity: true)
+  }
+  
+  //Note, this won't take doubled lines into account
+  private func lineNumberOfLocationInTextView(loc:CGPoint) -> Int {
+    return Int((loc.y - lineSpacing) / (lineSpacing + font.lineHeight) + 1)
+  }
   
   func fixIndentationLevelForPython(firstCharacterIndex:Int, lineNumber:Int, rawString:String) -> String {
     let numberOfSpacesForIndentation = 4
@@ -490,24 +669,6 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
       height: LineHeight)
     return LineNumberRect
   }
-  
-  func highlightLines(#startingLineNumber:Int, numberOfLines:Int) {
-    let FirstLineNumberRect = getLineNumberRect(startingLineNumber)
-    let HighlightingRect = CGRect(
-      x: FirstLineNumberRect.origin.x,
-      y: FirstLineNumberRect.origin.y,
-      width: FirstLineNumberRect.width,
-      height: FirstLineNumberRect.height * CGFloat(numberOfLines))
-    if currentHighlightingView == nil {
-      currentHighlightingView = UIView(frame: HighlightingRect)
-      currentHighlightingView?.backgroundColor = UIColor(
-        red: 0,
-        green: 0,
-        blue: 0,
-        alpha: 0.2)
-      addSubview(currentHighlightingView!)
-    }
-    currentHighlightingView?.frame = HighlightingRect
-  }
-  
+
+
 }

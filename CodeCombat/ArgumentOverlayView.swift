@@ -37,10 +37,6 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
     NSNotificationCenter.defaultCenter().removeObserver(self)
   }
   
-  func onCodeRun() {
-    stringWasSelectedByStringPickerPopover(defaultContentsToInsertOnRun, characterRange:characterRange)
-  }
-  
   func onTapped() {
     switch LevelSettingsManager.sharedInstance.level {
     case .TrueNames:
@@ -52,6 +48,10 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
     default:
       break
     }
+  }
+  
+  func onCodeRun() {
+    stringWasSelectedByStringPickerPopover(defaultContentsToInsertOnRun, characterRange:characterRange)
   }
   
   internal func stringWasSelectedByStringPickerPopover(selected:String, characterRange:NSRange) {
