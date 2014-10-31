@@ -26,6 +26,8 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
       setupTrueNames()
     } else if levelName == "the-raised-sword" {
       setupTheRaisedSword()
+    } else if levelName == "new-sight" {
+      setupNewSight()
     }
     addTarget(self, action: Selector("onTapped"), forControlEvents: .TouchUpInside)
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onCodeRun"), name: "codeRun", object: nil)
@@ -35,6 +37,10 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
     NSNotificationCenter.defaultCenter().removeObserver(self)
   }
   
+  func setupNewSight() {
+    let defaultLabel = makeDefaultLabelWithText("\"Door\"")
+    addSubview(defaultLabel)
+  }
   func setupTheRaisedSword() {
     let defaultLabel = makeDefaultLabelWithText("\"Gurt\"")
     addSubview(defaultLabel)
@@ -76,6 +82,8 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
     } else if currentLevelName == "the-raised-sword" {
       let choices = ["\"Gurt\"","\"Rig\"","\"Ack\""]
       makeStringChoicePopoverWithChoices(choices)
+    } else if currentLevelName == "new-sight" {
+      makeStringChoicePopoverWithChoices(["\"Door\""])
     }
   }
   

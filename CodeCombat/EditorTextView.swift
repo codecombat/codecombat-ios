@@ -33,6 +33,7 @@ class EditorTextView: UITextView {
   let gutterPadding = CGFloat(5.0)
   let lineSpacing:CGFloat = 5
   var accessoryView:UIView?
+  var levelString = ""
   
   override var inputAccessoryView: UIView? {
     get {
@@ -377,6 +378,8 @@ class EditorTextView: UITextView {
     var stringToInsert = code
     var newlinesToInsert = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex
     //Check if dragging onto an empty line in between two other lines of code.
+    stringToInsert = fixIndentationLevelForPython(nearestCharacterIndex, lineNumber: draggedOntoLine, rawString: stringToInsert)
+    //Adjust code to match indentation level and other languages
     if characterAtGlyphIndex == 10 && characterBeforeGlyphIndex == 10 {
     } else if draggedOntoLine == numberOfNewlinesBeforeGlyphIndex && characterAtGlyphIndex != 10 {
       stringToInsert = stringToInsert + "\n"
@@ -387,11 +390,9 @@ class EditorTextView: UITextView {
         stringToInsert = "\n" + stringToInsert  // TODO: figure out why something was prepending newlines in Gems in the Deep; > 0 used to be >= 0, dunno if that works.
       }
     }
-    //Adjust code to match indentation level and other languages
-    stringToInsert = fixIndentationLevelForPython(nearestCharacterIndex, lineNumber: draggedOntoLine, rawString: stringToInsert)
-    
     //Check if code contains a placeholder
     if codeContainsPlaceholder(stringToInsert) {
+      println(stringToInsert)
       let placeholderReplacement = getPlaceholderWidthString(stringToInsert)
       stringToInsert = replacePlaceholderInString(stringToInsert, replacement: placeholderReplacement)
     }
@@ -407,7 +408,10 @@ class EditorTextView: UITextView {
     if firstNonWhitespaceCharacterBeforeCharacterIndex(firstCharacterIndex) == 58 {
       indentationLevel++
     }
-    return String(count: numberOfSpacesForIndentation * indentationLevel, repeatedValue: " " as Character) + rawString
+    
+    let stringToReturn = String(count: numberOfSpacesForIndentation * indentationLevel, repeatedValue: " " as Character) + rawString
+    println("Returning string \(stringToReturn)")
+    return stringToReturn
   }
   
   private func indentationLevelOfLine(lineNumber:Int) -> Int {
@@ -422,6 +426,8 @@ class EditorTextView: UITextView {
         let character = line.characterAtIndex(charIndex)
         if NSCharacterSet.whitespaceCharacterSet().characterIsMember(character) {
           spacesCount++
+        } else {
+          break
         }
       }
       let indentationLevel = spacesCount / 4
