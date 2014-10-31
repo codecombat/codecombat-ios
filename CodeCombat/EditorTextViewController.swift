@@ -260,14 +260,10 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
       return indentationLevel
     }
   }
-  
-  
-  
+
   func getPlaceholderWidthString(code:String) -> String {
     return "${1:d}"
   }
-  
-  
   
   func getArgumentOverlays() -> [(String, NSRange)] {
     return textStorage.findArgumentOverlays()

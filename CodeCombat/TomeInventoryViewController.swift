@@ -136,7 +136,8 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
       draggedProperty = ItemProperty
       let DragView = UILabel()
       DragView.font = EditorView.font
-      DragView.text = ItemProperty!.codeSnippetForLanguage("python")
+      let adjustedCodeSnippet = Parent.textViewController.replacePlaceholderInString(ItemProperty!.codeSnippetForLanguage("python")!, replacement: "")
+      DragView.text = adjustedCodeSnippet
       DragView.sizeToFit()
       DragView.center = LocationInParentView
       DragView.backgroundColor = UIColor.clearColor()
