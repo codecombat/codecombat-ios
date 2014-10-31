@@ -332,25 +332,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   }
   
   private func createDraggedLabel(lineFragmentRect:CGRect, loc:CGPoint, fragmentCharacterRange:NSRange) -> UILabel {
-    let label = UILabel(frame: lineFragmentRect)
-    let fragmentParagraphRange = textStorage.string()!.paragraphRangeForRange(fragmentCharacterRange)
-    if fragmentCharacterRange.length == fragmentParagraphRange.length {
-      label.attributedText = getAttributedStringForCharacterRange(fragmentParagraphRange)
-    } else {
-      let attributedStringBeforeLineBreak = NSMutableAttributedString(attributedString: getAttributedStringForCharacterRange(fragmentCharacterRange))
-      attributedStringBeforeLineBreak.appendAttributedString(NSAttributedString(string: "\n"))
-      let attributedStringAfterLineBreak = getAttributedStringForCharacterRange(NSRange(location: NSMaxRange(fragmentCharacterRange), length: (fragmentParagraphRange.length - fragmentCharacterRange.length)))
-      attributedStringBeforeLineBreak.appendAttributedString(attributedStringAfterLineBreak)
-      label.lineBreakMode = NSLineBreakMode.ByWordWrapping
-      label.numberOfLines = 0
-      var paragraphStyle = NSMutableParagraphStyle()
-      paragraphStyle.lineSpacing = textView.lineSpacing
-      attributedStringBeforeLineBreak.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: NSRange(location: 0, length: attributedStringBeforeLineBreak.length))
-      label.attributedText = attributedStringBeforeLineBreak
-      label.frame.size.height += textView.font.lineHeight + textView.lineSpacing
-    }
-    
-    label.sizeToFit()
+    let label = textView.createLineLabel(lineFragmentRect, fragmentCharacterRange: fragmentCharacterRange)
     label.center = loc
     return label
   }

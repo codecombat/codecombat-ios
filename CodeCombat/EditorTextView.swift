@@ -154,7 +154,6 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
         continue
       }
       let range = overlayRange
-      //to render views http://stackoverflow.com/questions/788662/rendering-uiview-with-its-children
       let defaultRect = CGRect()
       let newView = ArgumentOverlayView(
         frame: defaultRect,
@@ -460,25 +459,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
         //println("The length of the character range is \(fragmentCharacterRange.length), and the length of the paragraph range is \(fragmentParagraphRange.length)")
         var labelTextFrame = aRect
         labelTextFrame.size.height = font.lineHeight + lineSpacing
-        let label = UILabel(frame: aRect)
-        if fragmentCharacterRange.length == fragmentParagraphRange.length {
-          label.attributedText = parentTextViewController.getAttributedStringForCharacterRange(fragmentParagraphRange)
-        } else {
-          let attributedStringBeforeLineBreak = NSMutableAttributedString(attributedString: parentTextViewController.getAttributedStringForCharacterRange(fragmentCharacterRange))
-          attributedStringBeforeLineBreak.appendAttributedString(NSAttributedString(string: "\n"))
-          let attributedStringAfterLineBreak = parentTextViewController.getAttributedStringForCharacterRange(NSRange(location: NSMaxRange(fragmentCharacterRange), length: (fragmentParagraphRange.length - fragmentCharacterRange.length)))
-          attributedStringBeforeLineBreak.appendAttributedString(attributedStringAfterLineBreak)
-          label.lineBreakMode = NSLineBreakMode.ByWordWrapping
-          label.numberOfLines = 0
-          var paragraphStyle = NSMutableParagraphStyle()
-          paragraphStyle.lineSpacing = lineSpacing
-          attributedStringBeforeLineBreak.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: NSRange(location: 0, length: attributedStringBeforeLineBreak.length))
-          label.attributedText = attributedStringBeforeLineBreak
-          label.frame.size.height += font.lineHeight + lineSpacing
-        }
-        
-        //Insert a line break
-        label.sizeToFit()
+        let label = createLineLabel(labelTextFrame, fragmentCharacterRange: fragmentCharacterRange)
         label.frame.origin.x += gutterPadding
         label.frame.origin.y += lineSpacing + 3.5 //I have no idea why this isn't aligning properly, probably has to do with the sizeToFit()
         label.backgroundColor = UIColor.clearColor()
@@ -492,6 +473,47 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
       }
     }
     layoutManager.enumerateLineFragmentsForGlyphRange(visibleGlyphs, usingBlock: fragmentEnumerator)
+  }
+  
+  func createLineLabel(lineFragmentRect:CGRect, fragmentCharacterRange:NSRange) -> UILabel {
+    let label = UILabel(frame: lineFragmentRect)
+    let editorTextStorage = textStorage as EditorTextStorage
+    let fragmentParagraphRange = editorTextStorage.string()!.paragraphRangeForRange(fragmentCharacterRange)
+    if fragmentCharacterRange.length == fragmentParagraphRange.length {
+      label.attributedText = parentTextViewController.getAttributedStringForCharacterRange(fragmentParagraphRange)
+    } else {
+      let attributedStringBeforeLineBreak = NSMutableAttributedString(attributedString: parentTextViewController.getAttributedStringForCharacterRange(fragmentCharacterRange))
+      attributedStringBeforeLineBreak.appendAttributedString(NSAttributedString(string: "\n"))
+      let attributedStringAfterLineBreak = parentTextViewController.getAttributedStringForCharacterRange(NSRange(location: NSMaxRange(fragmentCharacterRange), length: (fragmentParagraphRange.length - fragmentCharacterRange.length)))
+      attributedStringBeforeLineBreak.appendAttributedString(attributedStringAfterLineBreak)
+      label.lineBreakMode = NSLineBreakMode.ByWordWrapping
+      label.numberOfLines = 0
+      var paragraphStyle = NSMutableParagraphStyle()
+      paragraphStyle.lineSpacing = lineSpacing
+      attributedStringBeforeLineBreak.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: NSRange(location: 0, length: attributedStringBeforeLineBreak.length))
+      label.attributedText = attributedStringBeforeLineBreak
+      label.frame.size.height += font.lineHeight + lineSpacing
+    }
+    //Handle any argument overlays here
+    for (overlayLocation, overlay) in overlayLocationToViewMap {
+      if overlayLocation >= fragmentCharacterRange.location && overlayLocation < fragmentCharacterRange.location + fragmentCharacterRange.length {
+        //Render the view into an image
+        UIGraphicsBeginImageContext(overlay.bounds.size)
+        overlay.layer.renderInContext(UIGraphicsGetCurrentContext())
+        let resultingImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        let imageView = UIImageView(image: resultingImage)
+        //Insert the image into the correct place
+        //Get substring of everything before location
+        let charactersBeforeOverlay = overlayLocation - fragmentCharacterRange.location
+        let substringBeforeOverlay = label.attributedText.attributedSubstringFromRange(NSRange(location: 0, length: charactersBeforeOverlay))
+        let widthToShiftOverBy = substringBeforeOverlay.size().width
+        imageView.frame.origin.x = widthToShiftOverBy
+        label.addSubview(imageView)
+      }
+    }
+    label.sizeToFit()
+    return label
   }
   
   func adjustLineViewsForDragLocation(loc:CGPoint) {
