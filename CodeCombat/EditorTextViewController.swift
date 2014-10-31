@@ -29,8 +29,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   override func viewDidLoad() {
     super.viewDidLoad()
     setupGestureRecognizers()
-    setupWebManagerSubscriptions()
-    addNotificationCenterObservers()
+    setupSubscriptionsAndObservers()
   }
   
   private func setupGestureRecognizers() {
@@ -41,12 +40,9 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     tapGestureRecognizer.requireGestureRecognizerToFail(dragGestureRecognizer)
   }
   
-  func setupWebManagerSubscriptions() {
+  func setupSubscriptionsAndObservers() {
     WebManager.sharedInstance.subscribe(self, channel: "tome:highlight-line", selector: Selector("onSpellStatementIndexUpdated:"))
     WebManager.sharedInstance.subscribe(self, channel: "problem:problem-created", selector: Selector("onProblemCreated:"))
-  }
-  
-  func addNotificationCenterObservers() {
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onCodeRun"), name: "codeRun", object: nil)
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onTextStorageFinishedTopLevelEditing"), name: "textStorageFinishedTopLevelEditing", object: nil)
   }
@@ -73,21 +69,18 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   }
   
   func onTap(recognizer:UITapGestureRecognizer) {
-    if recognizer != tapGestureRecognizer {
-      return
-    }
-    var locationInTextView = recognizer.locationInView(textView)
-    let tappedCharacterIndex = textView.layoutManager.characterIndexForPoint(locationInTextView, inTextContainer: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
-    if textStorage.characterIsPartOfString(tappedCharacterIndex) {
-      let stringRange = textStorage.stringRangeContainingCharacterIndex(tappedCharacterIndex)
-      
-      switch LevelSettingsManager.sharedInstance.level {
-      case .TrueNames:
-        createStringPickerPopoverWithChoices(["\"Brak\"","\"Treg\""], characterRange: stringRange, delegate: self)
-      case .TheRaisedSword:
-        createStringPickerPopoverWithChoices(["\"Gurt\"","\"Rig\"","\"Ack\""], characterRange: stringRange, delegate: self)
-      default:
-        break
+    if recognizer == tapGestureRecognizer {
+      let tappedCharacterIndex = textView.characterIndexAtPoint(recognizer.locationInView(textView))
+      if textStorage.characterIsPartOfString(tappedCharacterIndex) {
+        let stringRange = textStorage.stringRangeContainingCharacterIndex(tappedCharacterIndex)
+        switch LevelSettingsManager.sharedInstance.level {
+        case .TrueNames:
+          createStringPickerPopoverWithChoices(["\"Brak\"","\"Treg\""], characterRange: stringRange, delegate: self)
+        case .TheRaisedSword:
+          createStringPickerPopoverWithChoices(["\"Gurt\"","\"Rig\"","\"Ack\""], characterRange: stringRange, delegate: self)
+        default:
+          break
+        }
       }
     }
   }
@@ -99,51 +92,49 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   }
   
   func onDrag(recognizer:UIPanGestureRecognizer) {
-    if recognizer == textView.panGestureRecognizer {
-      return
-    }
-    
-    var locationInParentView = recognizer.locationInView(parentViewController!.view)
-    locationInParentView.y += (textView.lineSpacing + textView.font.lineHeight) / 2
-    var locationInTextView = recognizer.locationInView(textView)
-    switch recognizer.state {
-    case .Began:
-      var lineFragmentRect = getLineFragmentRectForDrag(locationInTextView)
-      var characterRange = getCharacterRangeForLineFragmentRect(lineFragmentRect)
-      let fragmentParagraphRange = textStorage.string()!.paragraphRangeForRange(characterRange)
-      draggedLabel = createDraggedLabel(lineFragmentRect, loc: locationInParentView, fragmentCharacterRange: characterRange)
-      draggedCharacterRange = fragmentParagraphRange
-      parentViewController!.view.addSubview(draggedLabel)
-      textView.draggedLineNumber = lineNumberForDraggedCharacterRange(characterRange)
-      
-      textView.createTextViewCoverView()
-      textView.createViewsForAllLinesExceptDragged(lineFragmentRect, draggedCharacterRange: characterRange)
-      textView.createDeletionOverlayView()
-      break
-    case .Changed:
-      draggedLabel.center = locationInParentView
-      textView.adjustLineViewsForDragLocation(locationInTextView)
-      scrollWhileDraggingIfNecessary(locationInParentView)
-      hideOrShowDeleteOverlay()
-      break
-    case .Ended:
-      textView.clearLineOverlayLabels()
-      if draggedLineInDeletionZone() {
-        deleteDraggedLine()
-      } else {
-        shiftAroundLines(locationInTextView)
+    if recognizer != textView.panGestureRecognizer {
+      var locationInParentView = recognizer.locationInView(parentViewController!.view)
+      locationInParentView.y += (textView.lineSpacing + textView.font.lineHeight) / 2
+      var locationInTextView = recognizer.locationInView(textView)
+      switch recognizer.state {
+      case .Began:
+        var lineFragmentRect = getLineFragmentRectForDrag(locationInTextView)
+        var characterRange = getCharacterRangeForLineFragmentRect(lineFragmentRect)
+        let fragmentParagraphRange = textStorage.string()!.paragraphRangeForRange(characterRange)
+        draggedLabel = createDraggedLabel(lineFragmentRect, loc: locationInParentView, fragmentCharacterRange: characterRange)
+        draggedCharacterRange = fragmentParagraphRange
+        parentViewController!.view.addSubview(draggedLabel)
+        textView.draggedLineNumber = lineNumberForDraggedCharacterRange(characterRange)
+        
+        textView.createTextViewCoverView()
+        textView.createViewsForAllLinesExceptDragged(lineFragmentRect, draggedCharacterRange: characterRange)
+        textView.createDeletionOverlayView()
+        break
+      case .Changed:
+        draggedLabel.center = locationInParentView
+        textView.adjustLineViewsForDragLocation(locationInTextView)
+        scrollWhileDraggingIfNecessary(locationInParentView)
+        hideOrShowDeleteOverlay()
+        break
+      case .Ended:
+        textView.clearLineOverlayLabels()
+        if draggedLineInDeletionZone() {
+          deleteDraggedLine()
+        } else {
+          shiftAroundLines(locationInTextView)
+        }
+        //These eventually should run only when the code significantly changes
+        textView.removeCurrentLineNumberHighlight()
+        textView.clearCodeProblemGutterAnnotations()
+        textView.removeUserCodeProblemLineHighlights()
+        textView.removeDeletionOverlayView()
+        textView.removeTextViewCoverView()
+        draggedLabel.removeFromSuperview()
+        draggedLabel = nil
+        break
+      default:
+        break
       }
-      //These eventually should run only when the code significantly changes
-      textView.removeCurrentLineNumberHighlight()
-      textView.clearCodeProblemGutterAnnotations()
-      textView.removeUserCodeProblemLineHighlights()
-      textView.removeDeletionOverlayView()
-      textView.removeTextViewCoverView()
-      draggedLabel.removeFromSuperview()
-      draggedLabel = nil
-      break
-    default:
-      break
     }
   }
   
@@ -183,7 +174,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     var stringToInsert = code
     var newlinesToInsert = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex
     //Check if dragging onto an empty line in between two other lines of code.
-    stringToInsert = textView.fixIndentationLevelForPython(nearestCharacterIndex, lineNumber: draggedOntoLine, rawString: stringToInsert)
+    stringToInsert = fixIndentationLevelForPython(nearestCharacterIndex, lineNumber: draggedOntoLine, rawString: stringToInsert)
     //Adjust code to match indentation level and other languages
     if characterAtGlyphIndex == 10 && characterBeforeGlyphIndex == 10 {
     } else if draggedOntoLine == numberOfNewlinesBeforeGlyphIndex && characterAtGlyphIndex != 10 {
@@ -196,15 +187,87 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
       }
     }
     //Check if code contains a placeholder
-    if textView.codeContainsPlaceholder(stringToInsert) {
+    if codeContainsPlaceholder(stringToInsert) {
       println(stringToInsert)
-      let placeholderReplacement = textView.getPlaceholderWidthString(stringToInsert)
-      stringToInsert = textView.replacePlaceholderInString(stringToInsert, replacement: placeholderReplacement)
+      let placeholderReplacement = getPlaceholderWidthString(stringToInsert)
+      stringToInsert = replacePlaceholderInString(stringToInsert, replacement: placeholderReplacement)
     }
     
     storage.replaceCharactersInRange(NSRange(location: nearestGlyphIndex, length: 0), withString: stringToInsert)
     textView.setNeedsDisplay()
   }
+  
+  func codeContainsPlaceholder(code:String) -> Bool {
+    var error:NSErrorPointer = nil
+    let regex = NSRegularExpression(pattern: "\\$\\{.*\\}", options: nil, error: error)
+    let matches = regex!.matchesInString(code, options: nil, range: NSRange(location: 0, length: countElements(code)))
+    return matches.count > 0
+  }
+  
+  func fixIndentationLevelForPython(firstCharacterIndex:Int, lineNumber:Int, rawString:String) -> String {
+    let numberOfSpacesForIndentation = 4
+    var indentationLevel = indentationLevelOfLine(lineNumber - 1)
+    //58 is ASCII for :
+    if firstNonWhitespaceCharacterBeforeCharacterIndex(firstCharacterIndex) == 58 {
+      indentationLevel++
+    }
+    
+    let stringToReturn = String(count: numberOfSpacesForIndentation * indentationLevel, repeatedValue: " " as Character) + rawString
+    println("Returning string \(stringToReturn)")
+    return stringToReturn
+  }
+  
+  private func firstNonWhitespaceCharacterBeforeCharacterIndex(index:Int) -> unichar {
+    let storage = textStorage as EditorTextStorage
+    
+    var firstNonWhitespaceCharacter = unichar(10)
+    for var charIndex = index; charIndex > 0; charIndex-- {
+      let character = storage.string()!.characterAtIndex(charIndex)
+      if !NSCharacterSet.whitespaceAndNewlineCharacterSet().characterIsMember(character) {
+        firstNonWhitespaceCharacter = character
+        break
+      }
+    }
+    return firstNonWhitespaceCharacter
+  }
+  
+  func replacePlaceholderInString(code:String, replacement:String) -> String {
+    var error:NSErrorPointer = nil
+    let regex = NSRegularExpression(pattern: "\\$\\{.*\\}", options: nil, error: error)
+    let matches = regex!.matchesInString(code, options: nil, range: NSRange(location: 0, length: countElements(code)))
+    let firstMatch = matches[0] as NSTextCheckingResult
+    let newString = NSString(string: code).stringByReplacingCharactersInRange(firstMatch.range, withString: replacement)
+    return newString
+  }
+  
+  private func indentationLevelOfLine(lineNumber:Int) -> Int {
+    let storage = textStorage as EditorTextStorage
+    if lineNumber <= 0 {
+      return 0
+    } else {
+      let lines = storage.string()!.componentsSeparatedByCharactersInSet(NSCharacterSet.newlineCharacterSet())
+      let line = lines[lineNumber - 1] as NSString
+      var spacesCount = 0
+      for var charIndex = 0; charIndex < line.length; charIndex++ {
+        let character = line.characterAtIndex(charIndex)
+        if NSCharacterSet.whitespaceCharacterSet().characterIsMember(character) {
+          spacesCount++
+        } else {
+          break
+        }
+      }
+      let indentationLevel = spacesCount / 4
+      return indentationLevel
+    }
+  }
+  
+  
+  
+  func getPlaceholderWidthString(code:String) -> String {
+    return "${1:d}"
+  }
+  
+  
   
   func getArgumentOverlays() -> [(String, NSRange)] {
     return textStorage.findArgumentOverlays()

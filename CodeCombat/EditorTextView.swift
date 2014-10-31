@@ -127,6 +127,10 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     addSubview(textViewCoverView!)
   }
   
+  func characterIndexAtPoint(point:CGPoint) -> Int{
+    return layoutManager.characterIndexForPoint(point, inTextContainer: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
+  }
+  
   func removeTextViewCoverView() {
     textViewCoverView?.removeFromSuperview()
     textViewCoverView = nil
@@ -590,76 +594,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   private func lineNumberOfLocationInTextView(loc:CGPoint) -> Int {
     return Int((loc.y - lineSpacing) / (lineSpacing + font.lineHeight) + 1)
   }
-  
-  func fixIndentationLevelForPython(firstCharacterIndex:Int, lineNumber:Int, rawString:String) -> String {
-    let numberOfSpacesForIndentation = 4
-    var indentationLevel = indentationLevelOfLine(lineNumber - 1)
-    //58 is ASCII for :
-    if firstNonWhitespaceCharacterBeforeCharacterIndex(firstCharacterIndex) == 58 {
-      indentationLevel++
-    }
-    
-    let stringToReturn = String(count: numberOfSpacesForIndentation * indentationLevel, repeatedValue: " " as Character) + rawString
-    println("Returning string \(stringToReturn)")
-    return stringToReturn
-  }
-  
-  private func indentationLevelOfLine(lineNumber:Int) -> Int {
-    let storage = textStorage as EditorTextStorage
-    if lineNumber <= 0 {
-      return 0
-    } else {
-      let lines = storage.string()!.componentsSeparatedByCharactersInSet(NSCharacterSet.newlineCharacterSet())
-      let line = lines[lineNumber - 1] as NSString
-      var spacesCount = 0
-      for var charIndex = 0; charIndex < line.length; charIndex++ {
-        let character = line.characterAtIndex(charIndex)
-        if NSCharacterSet.whitespaceCharacterSet().characterIsMember(character) {
-          spacesCount++
-        } else {
-          break
-        }
-      }
-      let indentationLevel = spacesCount / 4
-      return indentationLevel
-    }
-  }
-  
-  private func firstNonWhitespaceCharacterBeforeCharacterIndex(index:Int) -> unichar {
-    let storage = textStorage as EditorTextStorage
-    
-    var firstNonWhitespaceCharacter = unichar(10)
-    for var charIndex = index; charIndex > 0; charIndex-- {
-      let character = storage.string()!.characterAtIndex(charIndex)
-      if !NSCharacterSet.whitespaceAndNewlineCharacterSet().characterIsMember(character) {
-        firstNonWhitespaceCharacter = character
-        break
-      }
-    }
-    return firstNonWhitespaceCharacter
-  }
-  
-  func codeContainsPlaceholder(code:String) -> Bool {
-    var error:NSErrorPointer = nil
-    
-    let regex = NSRegularExpression(pattern: "\\$\\{.*\\}", options: nil, error: error)
-    let matches = regex!.matchesInString(code, options: nil, range: NSRange(location: 0, length: countElements(code)))
-    return matches.count > 0
-  }
-  
-  func getPlaceholderWidthString(code:String) -> String {
-    return "${1:d}"
-  }
-  
-  func replacePlaceholderInString(code:String, replacement:String) -> String {
-    var error:NSErrorPointer = nil
-    let regex = NSRegularExpression(pattern: "\\$\\{.*\\}", options: nil, error: error)
-    let matches = regex!.matchesInString(code, options: nil, range: NSRange(location: 0, length: countElements(code)))
-    let firstMatch = matches[0] as NSTextCheckingResult
-    let newString = NSString(string: code).stringByReplacingCharactersInRange(firstMatch.range, withString: replacement)
-    return newString
-  }
-  
+
   func getLineNumberRect(lineNumber:Int) -> CGRect{
     let LineHeight = font.lineHeight + lineSpacing
     let LineNumberRect = CGRect(
