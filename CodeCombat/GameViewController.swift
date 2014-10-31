@@ -14,23 +14,13 @@ var autoLoggedIn: Bool = false  // Wish class variables were supported.
 class GameViewController: UIViewController, UIActionSheetDelegate {
   var webManager = WebManagerSharedInstance
   var webView: WKWebView = WebManagerSharedInstance.webView!
-//  override var view: UIView {
-//    get { return webView as UIView }
-//    set { webView = newValue as WKWebView }
-//  }
   var playViewController: PlayViewController?
   var playLevelRoutePrefix = "/play/level/"
-//  override func loadView() {
-//    view = WebManagerSharedInstance.webView!
-//  }
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
     webView = WebManagerSharedInstance.webView!
     view.addSubview(webView)
-    //delay(5) {
-    //  self.listenToNotifications()
-    //}
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("listenToNotifications"), name: "webViewDidFinishNavigation", object: nil)
   }
   
@@ -83,10 +73,16 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
       playViewController = mainStoryboard.instantiateViewControllerWithIdentifier("PlayViewController") as? PlayViewController
       playViewController?.view  // Access this early to get it set up and listening for events.
       playViewController!.levelName = currentLevelName
+      if let newLevel = LevelName(rawValue: currentLevelName) {
+        LevelSettingsManager.sharedInstance.level = newLevel
+      } else {
+        LevelSettingsManager.sharedInstance.level = .Unknown
+      }
       println("Created a playViewController for \(route)")
     }
     else {
       println("Route is not a level \(route), so dismissing playViewController \(playViewController), have presentedViewController \(presentedViewController)")
+      LevelSettingsManager.sharedInstance.level = .Unknown
       if presentedViewController != nil {
         dismissViewControllerAnimated(false, completion: nil)
         playViewController = nil
@@ -103,14 +99,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
       adjustPlayView(route)
     }
   }
-  
-  //  func onProgressUpdate(note: NSNotification) {
-  //    if let event = note.userInfo {
-  //      let progress = event["progress"]! as Float
-  //      levelLoadingProgressView.setProgress(progress, animated: true)
-  //    }
-  //  }
-  
+
   func onLevelStarted(note: NSNotification) {
     if presentedViewController != nil {
       println("Hmmm, trying to start level again?");

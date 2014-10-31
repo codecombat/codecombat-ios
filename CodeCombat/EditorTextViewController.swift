@@ -80,19 +80,19 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       let pvc = parentViewController as PlayViewController
       if pvc.levelName == "true-names" {
         let choices = ["\"Brak\"","\"Treg\""]
-        createStringPickerPopoverWithChoices(choices, stringCharacterRange: stringRange)
+        createStringPickerPopoverWithChoices(choices, characterRange: stringRange, delegate: self)
       } else if pvc.levelName == "the-raised-sword" {
         let choices = ["\"Gurt\"","\"Rig\"","\"Ack\""]
-        createStringPickerPopoverWithChoices(choices, stringCharacterRange: stringRange)
+        createStringPickerPopoverWithChoices(choices, characterRange: stringRange, delegate: self)
       }
     }
   }
   
-  func createStringPickerPopoverWithChoices(choices:[String], stringCharacterRange:NSRange) {
+  func createStringPickerPopoverWithChoices(choices:[String], characterRange:NSRange, delegate:StringPickerPopoverDelegate) {
     
     let stringPickerViewController = ArgumentStringPickerPopoverViewController(stringChoices: choices)
-    stringPickerViewController.pickerDelegate = self
-    let glyphRange = layoutManager.glyphRangeForCharacterRange(stringCharacterRange, actualCharacterRange: nil)
+    stringPickerViewController.pickerDelegate = delegate
+    let glyphRange = layoutManager.glyphRangeForCharacterRange(characterRange, actualCharacterRange: nil)
     var boundingRect = layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: textContainer)
     boundingRect.origin.y += textView.lineSpacing
     let popover = UIPopoverController(contentViewController: stringPickerViewController)
@@ -101,8 +101,12 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     
   }
   
+  func replaceCharactersInCharacterRange(characterRange:NSRange, str:String) {
+    textStorage.replaceCharactersInRange(characterRange, withString: str)
+  }
+  
   func stringWasSelectedByStringPickerPopover(selected:String) {
-    textStorage.replaceCharactersInRange(tappedStringRange, withString: selected)
+    replaceCharactersInCharacterRange(tappedStringRange, str: selected)
   }
   
   func setupWebManagerSubscriptions() {
@@ -174,11 +178,12 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       let range = overlayRange
       //to render views http://stackoverflow.com/questions/788662/rendering-uiview-with-its-children
       let defaultRect = CGRect()
-      let newView = ArgumentOverlayView(frame: defaultRect)
-      newView.editorTextViewController = self
-      newView.characterRange = range
-      newView.setupView(pvc.levelName, functionName: "blah")
-      newView.resetLocationToCurrentCharacterRange()
+      let newView = ArgumentOverlayView(
+        frame: defaultRect,
+        textViewController: self,
+        characterRange: overlayRange,
+        functionName: "blah")
+      
       overlayViewMap[range.location] = newView
       self.textView.addSubview(newView)
     }
