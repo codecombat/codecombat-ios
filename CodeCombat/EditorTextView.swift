@@ -12,11 +12,13 @@ class GutterProblemLineAnnotationButton: UIButton {
   var problemDescription:String = ""
 }
 
-class EditorTextView: UITextView {
+class EditorTextView: UITextView, NSLayoutManagerDelegate {
   var parentTextViewController:EditorTextViewController!
   var shouldShowLineNumbers = false
   var numberOfCharactersInLineNumberGutter = 0
   var lineNumberWidth = CGFloat(20.0)
+  let deletionOverlayWidth:CGFloat = 75
+  var deletionOverlayView:UIView?
   var currentDragView:UIView? = nil
   var currentDragHintView:ParticleView?
   var currentHighlightingView:UIView? = nil
@@ -32,6 +34,39 @@ class EditorTextView: UITextView {
   
   var keyboardModeEnabled:Bool {
     return editable && selectable
+  }
+  
+  func layoutManager(layoutManager: NSLayoutManager, lineSpacingAfterGlyphAtIndex glyphIndex: Int, withProposedLineFragmentRect rect: CGRect) -> CGFloat {
+    return lineSpacing
+  }
+  
+  func layoutManager(layoutManager: NSLayoutManager, didCompleteLayoutForTextContainer textContainer: NSTextContainer?, atEnd layoutFinishedFlag: Bool) {
+    processOverlayRequests(parentTextViewController.getArgumentOverlays())
+  }
+  
+  func createDeletionOverlayView() {
+    var deleteOverlayFrame = frame
+    deleteOverlayFrame.origin.x = deleteOverlayFrame.width - deletionOverlayWidth
+    deleteOverlayFrame.size.width = deletionOverlayWidth
+    
+    let overlay = UIView(frame: deleteOverlayFrame)
+    overlay.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.3)
+    deletionOverlayView = overlay
+    deletionOverlayView!.hidden = true
+    addSubview(deletionOverlayView!)
+  }
+  
+  func hideDeletionOverlayView() {
+    deletionOverlayView?.hidden = true
+  }
+  
+  func showDeletionOverlayView() {
+    deletionOverlayView?.hidden = false
+  }
+  
+  func removeDeletionOverlayView() {
+    deletionOverlayView?.removeFromSuperview()
+    deletionOverlayView = nil
   }
   
   //Will create a blank view covering entire text view
@@ -119,6 +154,7 @@ class EditorTextView: UITextView {
       green: CGFloat(212.0 / 256.0),
       blue: CGFloat(145.0 / 256.0),
       alpha: 1)
+    layoutManager.delegate = self
     
   }
 

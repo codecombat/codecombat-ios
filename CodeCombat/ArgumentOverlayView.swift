@@ -85,8 +85,8 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
   }
   
   private func resetLocationToCurrentCharacterRange() {
-    let glyphRange = editorTextViewController.layoutManager.glyphRangeForCharacterRange(characterRange, actualCharacterRange: nil)
-    var boundingRect = editorTextViewController.layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: editorTextViewController.textContainer)
+    let glyphRange = editorTextViewController.textView.layoutManager.glyphRangeForCharacterRange(characterRange, actualCharacterRange: nil)
+    var boundingRect = editorTextViewController.textView.layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: editorTextViewController.textContainer)
     boundingRect.origin.y += editorTextViewController.textView.lineSpacing
     frame = boundingRect
     setNeedsDisplay()

@@ -8,16 +8,15 @@
 
 import UIKit
 
-class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutManagerDelegate, UIGestureRecognizerDelegate, StringPickerPopoverDelegate {
+class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureRecognizerDelegate, StringPickerPopoverDelegate {
   let textStorage = EditorTextStorage()
-  let layoutManager = NSLayoutManager()
   let textContainer = NSTextContainer()
+  
   var draggedLabel:UILabel!
   var draggedCharacterRange:NSRange!
   var draggedLineNumber = -1
   var highlightedLineNumber = -1
-  var deleteOverlayView:UIView!
-  let deleteOverlayWidth:CGFloat = 75
+  
   var dragGestureRecognizer:UIPanGestureRecognizer!
   var tapGestureRecognizer:UITapGestureRecognizer!
   var dragOverlayLabels:[Int:UILabel] = Dictionary<Int,UILabel>()
@@ -43,10 +42,10 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     let storage = textStorage as EditorTextStorage
     
     let dragPoint = CGPoint(x: 0, y: location.y)
-    let nearestGlyphIndex = layoutManager.glyphIndexForPoint(dragPoint,
+    let nearestGlyphIndex = textView.layoutManager.glyphIndexForPoint(dragPoint,
       inTextContainer: textContainer) //nearest glyph index
     //This may cause some really really weird bugs if glyphs and character indices don't correspond.
-    let nearestCharacterIndex = layoutManager.characterIndexForGlyphAtIndex(nearestGlyphIndex)
+    let nearestCharacterIndex = textView.layoutManager.characterIndexForGlyphAtIndex(nearestGlyphIndex)
     
     let draggedOntoLine = Int(location.y / (textView.font.lineHeight + textView.lineSpacing)) + 1
     var numberOfNewlinesBeforeGlyphIndex = 1
@@ -87,18 +86,17 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     textView.setNeedsDisplay()
   }
   
-  func layoutManager(layoutManager: NSLayoutManager, didCompleteLayoutForTextContainer textContainer: NSTextContainer?, atEnd layoutFinishedFlag: Bool) {
-    let overlayRequests = textStorage.findArgumentOverlays()
-    textView.processOverlayRequests(overlayRequests)
+  func getArgumentOverlays() -> [(String, NSRange)] {
+    return textStorage.findArgumentOverlays()
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    layoutManager.delegate = self
     setupDragGestureRecognizer()
     setupTapGestureRecognizer()
     setupWebManagerSubscriptions()
     addNotificationCenterObservers()
+    
   }
   
   func setupDragGestureRecognizer() {
@@ -135,8 +133,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   func createStringPickerPopoverWithChoices(choices:[String], characterRange:NSRange, delegate:StringPickerPopoverDelegate) {
     let stringPickerViewController = ArgumentStringPickerPopoverViewController(stringChoices: choices, characterRange:characterRange)
     stringPickerViewController.pickerDelegate = delegate
-    let glyphRange = layoutManager.glyphRangeForCharacterRange(characterRange, actualCharacterRange: nil)
-    var boundingRect = layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: textContainer)
+    let glyphRange = textView.layoutManager.glyphRangeForCharacterRange(characterRange, actualCharacterRange: nil)
+    var boundingRect = textView.layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: textContainer)
     boundingRect.origin.y += textView.lineSpacing
     let popover = UIPopoverController(contentViewController: stringPickerViewController)
     popover.setPopoverContentSize(CGSize(width: 100, height: stringPickerViewController.rowHeight*choices.count), animated: true)
@@ -214,26 +212,16 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     toggleKeyboardMode()
   }
   
-  private func createDeleteOverlayView() -> UIView {
-    var deleteOverlayFrame = self.textView.frame
-    deleteOverlayFrame.origin.x = deleteOverlayFrame.width - deleteOverlayWidth
-    deleteOverlayFrame.size.width = deleteOverlayWidth
-    
-    let overlay = UIView(frame: deleteOverlayFrame)
-    overlay.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 0.3)
-    return overlay
-  }
-  
   private func getLineFragmentRectForDrag(dragLocation:CGPoint) -> CGRect {
-    let nearestGlyphIndexToDrag = layoutManager.glyphIndexForPoint(dragLocation, inTextContainer: textContainer)
+    let nearestGlyphIndexToDrag = textView.layoutManager.glyphIndexForPoint(dragLocation, inTextContainer: textContainer)
     var effectiveGlyphRange:NSRange = NSRange(location:0, length:0)
-    var lineFragmentRectToDrag = layoutManager.lineFragmentRectForGlyphAtIndex(nearestGlyphIndexToDrag, effectiveRange: &effectiveGlyphRange)
+    var lineFragmentRectToDrag = textView.layoutManager.lineFragmentRectForGlyphAtIndex(nearestGlyphIndexToDrag, effectiveRange: &effectiveGlyphRange)
     return lineFragmentRectToDrag
   }
   
   private func getCharacterRangeForLineFragmentRect(lineFragmentRect:CGRect) -> NSRange {
-    let glyphRange = layoutManager.glyphRangeForBoundingRect(lineFragmentRect, inTextContainer: textContainer)
-    let characterRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
+    let glyphRange = textView.layoutManager.glyphRangeForBoundingRect(lineFragmentRect, inTextContainer: textContainer)
+    let characterRange = textView.layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
     return characterRange
   }
   
@@ -266,15 +254,17 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   }
   
   private func hideOrShowDeleteOverlay() {
-    if draggedLabel.center.x > parentViewController!.view.bounds.maxX - deleteOverlayWidth {
-      deleteOverlayView.hidden = false
+    if draggedLineInDeletionZone() {
+      textView.showDeletionOverlayView()
     } else {
-      deleteOverlayView.hidden = true
+      textView.hideDeletionOverlayView()
     }
   }
+  
   private func draggedLineInDeletionZone() -> Bool {
-    return draggedLabel.center.x > parentViewController!.view.bounds.maxX - deleteOverlayWidth
+    return draggedLabel.center.x > parentViewController!.view.bounds.maxX - textView.deletionOverlayWidth
   }
+  
   private func deleteDraggedLine() {
     textStorage.beginEditing()
     if draggedCharacterRange.location != 0 {
@@ -287,8 +277,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   }
 
   private func deleteSubviewsOnDragEnd() {
-    deleteOverlayView.removeFromSuperview()
-    deleteOverlayView = nil
+    textView.removeDeletionOverlayView()
     textView.removeTextViewCoverView()
     draggedLabel.removeFromSuperview()
     draggedLabel = nil
@@ -296,12 +285,12 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
 
   //This function will put views identical to the text over every line so that they may be dragged around.
   private func createViewsForAllLinesExceptDragged(draggedLineFragmentRect:CGRect, draggedCharacterRange:NSRange) {
-    let visibleCharacterRange = layoutManager.glyphRangeForBoundingRect(textView.frame, inTextContainer: textContainer)
-    let visibleGlyphs = layoutManager.glyphRangeForCharacterRange(visibleCharacterRange, actualCharacterRange: nil)
+    let visibleCharacterRange = textView.layoutManager.glyphRangeForBoundingRect(textView.frame, inTextContainer: textContainer)
+    let visibleGlyphs = textView.layoutManager.glyphRangeForCharacterRange(visibleCharacterRange, actualCharacterRange: nil)
     //when I refer to line numbers, I am referring to them by height, not in the document
     var currentLineNumber = 1
     func fragmentEnumerator(aRect:CGRect, aUsedRect:CGRect, textContainer:NSTextContainer!, glyphRange:NSRange, stop:UnsafeMutablePointer<ObjCBool>) -> Void {
-      let fragmentCharacterRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
+      let fragmentCharacterRange = textView.layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
       let fragmentParagraphRange = textStorage.string()!.paragraphRangeForRange(fragmentCharacterRange)
       if NSEqualRanges(draggedCharacterRange,fragmentCharacterRange) {
         //This means we've found the dragged line
@@ -343,7 +332,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
         println("Trying to create a view for a wrapped line")
       }
     }
-    layoutManager.enumerateLineFragmentsForGlyphRange(visibleGlyphs, usingBlock: fragmentEnumerator)
+    textView.layoutManager.enumerateLineFragmentsForGlyphRange(visibleGlyphs, usingBlock: fragmentEnumerator)
   }
   
   //Note, this won't take doubled lines into account
@@ -502,10 +491,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       //Create a view for each of the lines to support drag live preview
       createViewsForAllLinesExceptDragged(lineFragmentRect, draggedCharacterRange: characterRange)
       //create the deletion overlay view that turns red when you are about to delete something
-      deleteOverlayView = createDeleteOverlayView()
-      deleteOverlayView.hidden = true
-      textView.addSubview(deleteOverlayView)
-      
+      textView.createDeletionOverlayView()
       break
       
     case .Changed:
@@ -546,8 +532,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
       return false
     }
     //find if the nearest glyph is a newline (aka not dragging on a thing)
-    let nearestGlyphIndexToDrag = layoutManager.glyphIndexForPoint(gestureRecognizer.locationInView(textView), inTextContainer: textContainer)
-    let characterIndex = layoutManager.characterIndexForGlyphAtIndex(nearestGlyphIndexToDrag)
+    let nearestGlyphIndexToDrag = textView.layoutManager.glyphIndexForPoint(gestureRecognizer.locationInView(textView), inTextContainer: textContainer)
+    let characterIndex = textView.layoutManager.characterIndexForGlyphAtIndex(nearestGlyphIndexToDrag)
     let character = textStorage.string()!.characterAtIndex(characterIndex)
     if character == 10 {
       return false
@@ -556,6 +542,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   }
   
   func createTextViewWithFrame(frame:CGRect) {
+    
     setupTextKitHierarchy()
     textView = EditorTextView(frame: frame, textContainer: textContainer)
     textView.delegate = self
@@ -568,8 +555,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
   }
   
   private func setupTextKitHierarchy() {
+    let layoutManager = NSLayoutManager()
     layoutManager.allowsNonContiguousLayout = true
-    layoutManager.delegate = self
     textStorage.addLayoutManager(layoutManager)
     textContainer.lineBreakMode = NSLineBreakMode.ByWordWrapping
     textContainer.widthTracksTextView = true
@@ -592,7 +579,4 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, NSLayoutMa
     self.textView.resizeLineNumberGutter()
   }
   
-  func layoutManager(layoutManager: NSLayoutManager, lineSpacingAfterGlyphAtIndex glyphIndex: Int, withProposedLineFragmentRect rect: CGRect) -> CGFloat {
-    return textView.lineSpacing
-  }
 }
