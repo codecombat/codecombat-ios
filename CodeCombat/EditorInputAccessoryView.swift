@@ -58,4 +58,32 @@ class EditorInputAccessoryView:UIView {
     addSubview(cursorLeftButton)
     addSubview(cursorRightButton)
   }
+  
+  func expandSelectionLeft() {
+    if parentTextView.selectedRange.location > 0 {
+      parentTextView.selectedRange.location--
+      parentTextView.selectedRange.length++
+    }
+  }
+  
+  func expandSelectionRight() {
+    if parentTextView.selectedRange.location < parentTextView.textStorage.length {
+      parentTextView.selectedRange.length++
+    }
+  }
+  
+  func moveCursorLeft() {
+    if parentTextView.selectedRange.location > 0 {
+      parentTextView.selectedRange.location--
+    }
+  }
+  
+  func moveCursorRight() {
+    if parentTextView.selectedRange.location < parentTextView.textStorage.length {
+      parentTextView.selectedRange.location++
+      if parentTextView.selectedRange.length > 0 {
+        parentTextView.selectedRange.length--
+      }
+    }
+  }
 }

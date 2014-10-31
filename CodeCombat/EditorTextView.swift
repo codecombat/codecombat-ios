@@ -31,11 +31,54 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   let lineSpacing:CGFloat = 5
   var accessoryView:UIView?
   var textViewCoverView:UIView?
-  
   var keyboardModeEnabled:Bool {
     return editable && selectable
   }
+  override var inputAccessoryView: UIView? {
+    get {
+      if self.accessoryView == nil {
+        let accessoryViewFrame = CGRect(x: 0, y: 0, width: self.frame.width, height: 55)
+        let accessory = EditorInputAccessoryView(frame: accessoryViewFrame)
+        accessory.parentTextView = self
+        self.accessoryView = accessory
+      }
+      return self.accessoryView
+    }
+    set {
+      self.accessoryView = newValue
+    }
+  }
   
+  required init(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+  }
+  
+  override init(frame: CGRect, textContainer: NSTextContainer?) {
+    super.init(frame: frame, textContainer: textContainer)
+    autocorrectionType = UITextAutocorrectionType.No
+    autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
+    selectable = false
+    editable = false
+    //Not sure if this will get reset, if it does it will cause bugs
+    font = UIFont(name: "Courier", size: 22)
+    showLineNumbers()
+    backgroundColor = UIColor(
+      red: CGFloat(230.0 / 256.0),
+      green: CGFloat(212.0 / 256.0),
+      blue: CGFloat(145.0 / 256.0),
+      alpha: 1)
+    layoutManager.delegate = self
+  }
+  
+  override func drawRect(rect: CGRect) {
+    if shouldShowLineNumbers {
+      drawLineNumberBackground()
+      drawLineNumbers(rect)
+    }
+    super.drawRect(rect)
+  }
+  
+  //LayoutManager delegate functions
   func layoutManager(layoutManager: NSLayoutManager, lineSpacingAfterGlyphAtIndex glyphIndex: Int, withProposedLineFragmentRect rect: CGRect) -> CGFloat {
     return lineSpacing
   }
@@ -44,6 +87,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     processOverlayRequests(parentTextViewController.getArgumentOverlays())
   }
   
+  //Deletion overlay functions
   func createDeletionOverlayView() {
     var deleteOverlayFrame = frame
     deleteOverlayFrame.origin.x = deleteOverlayFrame.width - deletionOverlayWidth
@@ -69,7 +113,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     deletionOverlayView = nil
   }
   
-  //Will create a blank view covering entire text view
+  //Text view cover view functions
   func createTextViewCoverView() {
     var coverTextFrame = bounds
     coverTextFrame.origin.x += lineNumberWidth + gutterPadding
@@ -93,17 +137,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     }
   }
   
-  func removeAllOverlaysNotRequested(requestedOverlayFunctionNamesAndRanges:[(String, NSRange)]) {
-    let overlayRequestLocations = requestedOverlayFunctionNamesAndRanges.map({$0.1.location})
-    for (overlayLocation, overlay) in overlayLocationToViewMap {
-      if !contains(overlayRequestLocations, overlayLocation) {
-        overlay.removeFromSuperview()
-        overlayLocationToViewMap.removeValueForKey(overlayLocation)
-      }
-    }
-  }
-  
-  func processOverlayRequests(requestedOverlayFunctionNamesAndRanges:[(String, NSRange)]) {
+  private func processOverlayRequests(requestedOverlayFunctionNamesAndRanges:[(String, NSRange)]) {
     removeAllOverlaysNotRequested(requestedOverlayFunctionNamesAndRanges)
     for (functionName,overlayRange) in requestedOverlayFunctionNamesAndRanges {
       //if view already exists and is requested, don't redraw
@@ -124,80 +158,16 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     }
   }
   
-  
-  override var inputAccessoryView: UIView? {
-    get {
-      if self.accessoryView == nil {
-        let accessoryViewFrame = CGRect(x: 0, y: 0, width: self.frame.width, height: 55)
-        let accessory = EditorInputAccessoryView(frame: accessoryViewFrame)
-        accessory.parentTextView = self
-        self.accessoryView = accessory
+  private func removeAllOverlaysNotRequested(requestedOverlayFunctionNamesAndRanges:[(String, NSRange)]) {
+    let overlayRequestLocations = requestedOverlayFunctionNamesAndRanges.map({$0.1.location})
+    for (overlayLocation, overlay) in overlayLocationToViewMap {
+      if !contains(overlayRequestLocations, overlayLocation) {
+        overlay.removeFromSuperview()
+        overlayLocationToViewMap.removeValueForKey(overlayLocation)
       }
-      return self.accessoryView
     }
-    set {
-      self.accessoryView = newValue
-    }
-  }
-  
-  override init(frame: CGRect, textContainer: NSTextContainer?) {
-    super.init(frame: frame, textContainer: textContainer)
-    autocorrectionType = UITextAutocorrectionType.No
-    autoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
-    selectable = false
-    editable = false
-    //Not sure if this will get reset, if it does it will cause bugs
-    font = UIFont(name: "Courier", size: 22)
-    showLineNumbers()
-    backgroundColor = UIColor(
-      red: CGFloat(230.0 / 256.0),
-      green: CGFloat(212.0 / 256.0),
-      blue: CGFloat(145.0 / 256.0),
-      alpha: 1)
-    layoutManager.delegate = self
-    
   }
 
-  required init(coder aDecoder: NSCoder) {
-      super.init(coder: aDecoder)
-  }
-  
-  override func drawRect(rect: CGRect) {
-    if shouldShowLineNumbers {
-      drawLineNumberBackground()
-      drawLineNumbers(rect)
-    }
-    super.drawRect(rect)
-  }
-  
-  func expandSelectionLeft() {
-    if selectedRange.location > 0 {
-      selectedRange.location--
-      selectedRange.length++
-    }
-  }
-  
-  func expandSelectionRight() {
-    if selectedRange.location < textStorage.length {
-      selectedRange.length++
-    }
-  }
-  
-  func moveCursorLeft() {
-    if selectedRange.location > 0 {
-      selectedRange.location--
-    }
-  }
-  
-  func moveCursorRight() {
-    if selectedRange.location < textStorage.length {
-      selectedRange.location++
-      if selectedRange.length > 0 {
-        selectedRange.length--
-      }
-    }
-  }
-  
   func drawDragHintViewOnLastLine() {
     let glyphRange = layoutManager.glyphRangeForTextContainer(textContainer)
     var lastLineFragmentRect = layoutManager.lineFragmentRectForGlyphAtIndex(NSMaxRange(glyphRange) - 1, effectiveRange: nil)

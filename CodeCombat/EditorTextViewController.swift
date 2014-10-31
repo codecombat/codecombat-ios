@@ -27,6 +27,128 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     return textView.keyboardModeEnabled
   }
   
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    setupDragGestureRecognizer()
+    setupTapGestureRecognizer()
+    setupWebManagerSubscriptions()
+    addNotificationCenterObservers()
+  }
+  
+  private func setupDragGestureRecognizer() {
+    dragGestureRecognizer = UIPanGestureRecognizer(target: self, action: "onDrag:")
+    dragGestureRecognizer.delegate = self
+  }
+  
+  private func setupTapGestureRecognizer() {
+    tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "onTap:")
+    tapGestureRecognizer.delegate = self
+    tapGestureRecognizer.requireGestureRecognizerToFail(dragGestureRecognizer)
+  }
+  
+  func setupWebManagerSubscriptions() {
+    WebManager.sharedInstance.subscribe(self, channel: "tome:highlight-line", selector: Selector("onSpellStatementIndexUpdated:"))
+    WebManager.sharedInstance.subscribe(self, channel: "problem:problem-created", selector: Selector("onProblemCreated:"))
+  }
+  
+  func addNotificationCenterObservers() {
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onCodeRun"), name: "codeRun", object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onTextStorageFinishedTopLevelEditing"), name: "textStorageFinishedTopLevelEditing", object: nil)
+  }
+  
+  func onSpellStatementIndexUpdated(note:NSNotification) {
+    if let event = note.userInfo {
+      var lineIndex = event["line"]! as Int
+      lineIndex++
+      if lineIndex != highlightedLineNumber {
+        highlightedLineNumber = lineIndex
+        textView.highlightLineNumber(lineIndex)
+      }
+    }
+  }
+  
+  func onProblemCreated(note:NSNotification) {
+    if let event = note.userInfo {
+      var lineIndex = event["line"]! as Int
+      var errorText = event["text"]! as String
+      lineIndex++
+      textView.addUserCodeProblemGutterAnnotationOnLine(lineIndex, message: errorText)
+      textView.highlightUserCodeProblemLine(lineIndex)
+    }
+  }
+  
+  func onTap(recognizer:UITapGestureRecognizer) {
+    if recognizer != tapGestureRecognizer {
+      return
+    }
+    var locationInTextView = recognizer.locationInView(textView)
+    let tappedCharacterIndex = textView.layoutManager.characterIndexForPoint(locationInTextView, inTextContainer: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
+    if textStorage.characterIsPartOfString(tappedCharacterIndex) {
+      let stringRange = textStorage.stringRangeContainingCharacterIndex(tappedCharacterIndex)
+      
+      switch LevelSettingsManager.sharedInstance.level {
+      case .TrueNames:
+        createStringPickerPopoverWithChoices(["\"Brak\"","\"Treg\""], characterRange: stringRange, delegate: self)
+      case .TheRaisedSword:
+        createStringPickerPopoverWithChoices(["\"Gurt\"","\"Rig\"","\"Ack\""], characterRange: stringRange, delegate: self)
+      default:
+        break
+      }
+    }
+  }
+  
+  func onCodeRun() {
+    textView.clearCodeProblemGutterAnnotations()
+    textView.clearErrorMessageView()
+    textView.removeUserCodeProblemLineHighlights()
+  }
+  
+  func onDrag(recognizer:UIPanGestureRecognizer) {
+    if recognizer == textView.panGestureRecognizer {
+      return
+    }
+    
+    var locationInParentView = recognizer.locationInView(parentViewController!.view)
+    locationInParentView.y += (textView.lineSpacing + textView.font.lineHeight) / 2
+    var locationInTextView = recognizer.locationInView(textView)
+    switch recognizer.state {
+    case .Began:
+      var lineFragmentRect = getLineFragmentRectForDrag(locationInTextView)
+      var characterRange = getCharacterRangeForLineFragmentRect(lineFragmentRect)
+      let fragmentParagraphRange = textStorage.string()!.paragraphRangeForRange(characterRange)
+      draggedLabel = createDraggedLabel(lineFragmentRect, loc: locationInParentView, fragmentCharacterRange: characterRange)
+      draggedCharacterRange = fragmentParagraphRange
+      parentViewController!.view.addSubview(draggedLabel)
+      draggedLineNumber = lineNumberForDraggedCharacterRange(characterRange)
+      
+      textView.createTextViewCoverView()
+      createViewsForAllLinesExceptDragged(lineFragmentRect, draggedCharacterRange: characterRange)
+      textView.createDeletionOverlayView()
+      break
+    case .Changed:
+      draggedLabel.center = locationInParentView
+      adjustLineViewsForDragLocation(locationInTextView)
+      scrollWhileDraggingIfNecessary(locationInParentView)
+      hideOrShowDeleteOverlay()
+      break
+    case .Ended:
+      clearLineOverlayLabels()
+      if draggedLineInDeletionZone() {
+        deleteDraggedLine()
+      } else {
+        shiftAroundLines(locationInTextView)
+      }
+      //These eventually should run only when the code significantly changes
+      textView.removeCurrentLineNumberHighlight()
+      textView.clearCodeProblemGutterAnnotations()
+      textView.removeUserCodeProblemLineHighlights()
+      deleteSubviewsOnDragEnd()
+      break
+    default:
+      break
+    }
+  }
+  
   func handleItemPropertyDragBegan() {
     textView.drawDragHintViewOnLastLine()
   }
@@ -90,46 +212,6 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     return textStorage.findArgumentOverlays()
   }
   
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    setupDragGestureRecognizer()
-    setupTapGestureRecognizer()
-    setupWebManagerSubscriptions()
-    addNotificationCenterObservers()
-    
-  }
-  
-  func setupDragGestureRecognizer() {
-    dragGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handleDrag:")
-    dragGestureRecognizer.delegate = self
-  }
-  
-  func setupTapGestureRecognizer() {
-    tapGestureRecognizer = UITapGestureRecognizer(target: self, action: "onTap:")
-    tapGestureRecognizer.delegate = self
-    tapGestureRecognizer.requireGestureRecognizerToFail(dragGestureRecognizer)
-  }
-  
-  func onTap(recognizer:UITapGestureRecognizer) {
-    if recognizer != tapGestureRecognizer {
-      return
-    }
-    var locationInTextView = recognizer.locationInView(textView)
-    let tappedCharacterIndex = textView.layoutManager.characterIndexForPoint(locationInTextView, inTextContainer: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
-    if textStorage.characterIsPartOfString(tappedCharacterIndex) {
-      let stringRange = textStorage.stringRangeContainingCharacterIndex(tappedCharacterIndex)
-      
-      switch LevelSettingsManager.sharedInstance.level {
-      case .TrueNames:
-        createStringPickerPopoverWithChoices(["\"Brak\"","\"Treg\""], characterRange: stringRange, delegate: self)
-      case .TheRaisedSword:
-        createStringPickerPopoverWithChoices(["\"Gurt\"","\"Rig\"","\"Ack\""], characterRange: stringRange, delegate: self)
-      default:
-        break
-      }
-    }
-  }
-  
   func createStringPickerPopoverWithChoices(choices:[String], characterRange:NSRange, delegate:StringPickerPopoverDelegate) {
     let stringPickerViewController = ArgumentStringPickerPopoverViewController(stringChoices: choices, characterRange:characterRange)
     stringPickerViewController.pickerDelegate = delegate
@@ -150,50 +232,11 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     replaceCharactersInCharacterRange(characterRange, str: selected)
   }
   
-  func setupWebManagerSubscriptions() {
-    WebManager.sharedInstance.subscribe(self, channel: "tome:highlight-line", selector: Selector("onSpellStatementIndexUpdated:"))
-    WebManager.sharedInstance.subscribe(self, channel: "problem:problem-created", selector: Selector("onProblemCreated:"))
-  }
-  
-  func addNotificationCenterObservers() {
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onCodeRun"), name: "codeRun", object: nil)
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onTextStorageFinishedTopLevelEditing"), name: "textStorageFinishedTopLevelEditing", object: nil)
-  }
-  
   func onTextStorageFinishedTopLevelEditing() {
     ensureNewlineAtEndOfCode()
   }
   
-  func onSpellStatementIndexUpdated(note:NSNotification) {
-    if let event = note.userInfo {
-      var lineIndex = event["line"]! as Int
-      lineIndex++
-      if lineIndex != highlightedLineNumber {
-        highlightedLineNumber = lineIndex
-        textView.highlightLineNumber(lineIndex)
-      }
-    }
-  }
   
-  func onProblemCreated(note:NSNotification) {
-    if let event = note.userInfo {
-      var lineIndex = event["line"]! as Int
-      var errorText = event["text"]! as String
-      lineIndex++
-      textView.addUserCodeProblemGutterAnnotationOnLine(lineIndex, message: errorText)
-      textView.highlightUserCodeProblemLine(lineIndex)
-    }
-  }
-  
-  func onCodeRun() {
-    textView.clearCodeProblemGutterAnnotations()
-    textView.clearErrorMessageView()
-    textView.removeUserCodeProblemLineHighlights()
-  }
-  
-  func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-    return true
-  }
   
   func toggleKeyboardMode() {
     textView.toggleKeyboardMode()
@@ -466,58 +509,6 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     return matches + 1
   }
   
-  func handleDrag(recognizer:UIPanGestureRecognizer) {
-    if recognizer == textView.panGestureRecognizer {
-      return
-    }
-    //get glyph under point
-    var locationInParentView = recognizer.locationInView(parentViewController!.view)
-    locationInParentView.y += (textView.lineSpacing + textView.font.lineHeight) / 2
-    var locationInTextView = recognizer.locationInView(textView)
-    //println("Location in text view: \(locationInTextView.y), line \(lineNumberOfLocationInTextView(locationInTextView))")
-    switch recognizer.state {
-      
-    case .Began:
-      var lineFragmentRect = getLineFragmentRectForDrag(recognizer.locationInView(textView))
-      var characterRange = getCharacterRangeForLineFragmentRect(lineFragmentRect)
-      let fragmentParagraphRange = textStorage.string()!.paragraphRangeForRange(characterRange)
-      //Create the dragged label with text on it
-      draggedLabel = createDraggedLabel(lineFragmentRect, loc: locationInParentView, fragmentCharacterRange: characterRange)
-      draggedCharacterRange = fragmentParagraphRange
-      parentViewController!.view.addSubview(draggedLabel)
-      draggedLineNumber = lineNumberForDraggedCharacterRange(characterRange)
-      //Create the solid colored label that covers up the dragged text in the text view
-      textView.createTextViewCoverView()
-      //Create a view for each of the lines to support drag live preview
-      createViewsForAllLinesExceptDragged(lineFragmentRect, draggedCharacterRange: characterRange)
-      //create the deletion overlay view that turns red when you are about to delete something
-      textView.createDeletionOverlayView()
-      break
-      
-    case .Changed:
-      draggedLabel.center = locationInParentView
-      adjustLineViewsForDragLocation(recognizer.locationInView(textView))
-      scrollWhileDraggingIfNecessary(locationInParentView)
-      hideOrShowDeleteOverlay()
-      break
-    case .Ended:
-      clearLineOverlayLabels()
-      if draggedLineInDeletionZone() {
-        deleteDraggedLine()
-      } else {
-        shiftAroundLines(recognizer.locationInView(textView))
-      }
-      //These eventually should run only when the code significantly changes
-      textView.removeCurrentLineNumberHighlight()
-      textView.clearCodeProblemGutterAnnotations()
-      textView.removeUserCodeProblemLineHighlights()
-      deleteSubviewsOnDragEnd()
-      break
-    default:
-      break
-    }
-  }
-  
   func scrollWhileDraggingIfNecessary(locationInParentView:CGPoint) {
     let pvc = parentViewController as PlayViewController
     if locationInParentView.y > 760 {
@@ -541,8 +532,11 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     return true
   }
   
+  func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    return true
+  }
+  
   func createTextViewWithFrame(frame:CGRect) {
-    
     setupTextKitHierarchy()
     textView = EditorTextView(frame: frame, textContainer: textContainer)
     textView.delegate = self
