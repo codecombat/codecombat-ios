@@ -279,7 +279,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
       return 0
     } else {
       let lines = storage.string()!.componentsSeparatedByCharactersInSet(NSCharacterSet.newlineCharacterSet())
-      let line = lines[lineNumber - 1] as NSString
+      let line = lines[min(lineNumber - 1, lines.count - 1)] as NSString
       var spacesCount = 0
       for var charIndex = 0; charIndex < line.length; charIndex++ {
         let character = line.characterAtIndex(charIndex)
