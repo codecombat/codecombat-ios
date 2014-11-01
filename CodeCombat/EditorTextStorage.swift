@@ -112,7 +112,7 @@ class EditorTextStorage: NSTextStorage {
       let node = stack.last!
       stack.removeLast()
       //This is such a hack
-      if node.name == nil || node.name == "" {
+      if (node.name == nil || node.name == "") && node.data != "loop"{
         definedVariables.append(node.data)
       }
       for child in node.children {
@@ -133,7 +133,7 @@ class EditorTextStorage: NSTextStorage {
       let node = stack.last!
       stack.removeLast()
       //This is such a hack
-      if node.name == nil || node.name == "" {
+      if (node.name == nil || node.name == "") && node.data != "loop" {
         definedVariables.append(node.range)
       }
       for child in node.children {
