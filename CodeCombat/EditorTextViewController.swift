@@ -77,6 +77,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
         switch LevelSettingsManager.sharedInstance.level {
         case .TrueNames:
           createStringPickerPopoverWithChoices(["\"Brak\"","\"Treg\""], characterRange: stringRange, delegate: self)
+        case .FavorableOdds:
+          createStringPickerPopoverWithChoices(["\"Krug\"","\"Grump\""], characterRange: stringRange, delegate: self)
         case .TheRaisedSword:
           createStringPickerPopoverWithChoices(["\"Gurt\"","\"Rig\"","\"Ack\""], characterRange: stringRange, delegate: self)
         default:
@@ -84,7 +86,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
         }
       } else if let variableRange = textStorage.characterIsPartOfDefinedVariable(tappedCharacterIndex) {
         switch LevelSettingsManager.sharedInstance.level {
-        case .LowlyKithmen:
+        case .LowlyKithmen, .ClosingTheDistance, .KnownEnemy,.MasterOfNames, .TacticalStrike, .TheFinalKithmaze, .TheGauntlet:
           var variables = textStorage.getDefinedVariableNames()
           let substringBeforeOverlay = textStorage.string()!.substringToIndex(variableRange.location + variableRange.length + 1)
           variables = variables.filter({
@@ -190,12 +192,10 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     var newlinesToInsert = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex
     //DO SPECIAL EDITS FOR CODE RIGHT HERE
     switch LevelSettingsManager.sharedInstance.level {
-    case .LowlyKithmen:
+    case .LowlyKithmen, .ClosingTheDistance, .MasterOfNames, .TacticalStrike, .TheFinalKithmaze, .TheGauntlet:
       if LevelSettingsManager.sharedInstance.language == .Python {
         if code == "self.findNearestEnemy()" {
-          println("Adapted code!")
           stringToInsert = "${variable} = " + code
-          println(stringToInsert)
         }
       }
       break

@@ -41,11 +41,13 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
     switch LevelSettingsManager.sharedInstance.level {
     case .TrueNames:
       makeStringChoicePopoverWithChoices(["\"Brak\"","\"Treg\""])
+    case .FavorableOdds:
+      makeStringChoicePopoverWithChoices(["\"Krug\"","\"Grump\""])
     case .TheRaisedSword:
       makeStringChoicePopoverWithChoices(["\"Gurt\"","\"Rig\"","\"Ack\""])
     case .NewSight:
       makeStringChoicePopoverWithChoices(["\"Door\""])
-    case .LowlyKithmen:
+    case .LowlyKithmen, .ClosingTheDistance, .KnownEnemy, .MasterOfNames, .TacticalStrike, .TheFinalKithmaze, .TheGauntlet:
       var variables = editorTextViewController.textStorage.getDefinedVariableNames()
       
       let substringBeforeOverlay = editorTextViewController.textStorage.string()!.substringToIndex(characterRange.location)
@@ -80,11 +82,13 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
     switch LevelSettingsManager.sharedInstance.level {
     case .TrueNames:
       addSubview(makeDefaultLabelWithText("\"Brak\""))
+    case .FavorableOdds:
+      addSubview(makeDefaultLabelWithText("\"Krug\""))
     case .TheRaisedSword:
       addSubview(makeDefaultLabelWithText("\"Gurt\""))
     case .NewSight:
       addSubview(makeDefaultLabelWithText("\"Door\""))
-    case .LowlyKithmen:
+    case .LowlyKithmen, .ClosingTheDistance, .KnownEnemy, .MasterOfNames, .TacticalStrike, .TheFinalKithmaze, .TheGauntlet:
       //get variables
       let variables = editorTextViewController.textStorage.getDefinedVariableNames()
       //enemy is the target variable, search for variables already defined
