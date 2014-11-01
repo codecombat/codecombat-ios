@@ -58,6 +58,8 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
         variables.append(defaultContentsToInsertOnRun)
       }
       makeStringChoicePopoverWithChoices(variables)
+    case .KithgardGates:
+      makeStringChoicePopoverWithChoices(["\"fence\""])
     default:
       break
     }
@@ -112,6 +114,8 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
         placeholder += String(lowestFree)
       }
       addSubview(makeDefaultLabelWithText(placeholder))
+    case .KithgardGates:
+      addSubview(makeDefaultLabelWithText("\"fence\""))
     default:
       break
     }

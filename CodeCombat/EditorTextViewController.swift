@@ -200,10 +200,12 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     var newlinesToInsert = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex
     //DO SPECIAL EDITS FOR CODE RIGHT HERE
     switch LevelSettingsManager.sharedInstance.level {
-    case .LowlyKithmen, .ClosingTheDistance, .MasterOfNames, .TacticalStrike, .TheFinalKithmaze, .TheGauntlet:
+    case .LowlyKithmen, .ClosingTheDistance, .MasterOfNames, .TacticalStrike, .TheFinalKithmaze, .TheGauntlet, .KithgardGates:
       if LevelSettingsManager.sharedInstance.language == .Python {
         if code == "self.findNearestEnemy()" {
           stringToInsert = "${variable} = " + code
+        } else if code.hasPrefix("self.buildXY") {
+          stringToInsert = "self.buildXY(${d}, 36, 34)"
         }
       }
       break
@@ -303,7 +305,12 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   }
 
   func getPlaceholderWidthString(code:String) -> String {
-    return "${1:d}"
+    switch LevelSettingsManager.sharedInstance.level {
+    case .KithgardGates:
+      return "${eeee}"
+    default:
+      return "${1:d}"
+    }
   }
   
   func getArgumentOverlays() -> [(String, NSRange)] {
