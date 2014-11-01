@@ -173,8 +173,23 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     let characterBeforeGlyphIndex = storage.string()!.characterAtIndex(nearestGlyphIndex - 1)
     var stringToInsert = code
     var newlinesToInsert = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex
+    //DO SPECIAL EDITS FOR CODE RIGHT HERE
+    switch LevelSettingsManager.sharedInstance.level {
+    case .LowlyKithmen:
+      if LevelSettingsManager.sharedInstance.language == .Python {
+        if code == "self.findNearestEnemy()" {
+          println("Adapted code!")
+          stringToInsert = "${variable} = " + code
+          println(stringToInsert)
+        }
+      }
+      break
+    default:
+      break
+    }
     //Check if dragging onto an empty line in between two other lines of code.
     stringToInsert = fixIndentationLevelForPython(nearestCharacterIndex, lineNumber: draggedOntoLine, rawString: stringToInsert)
+    
     //Adjust code to match indentation level and other languages
     if characterAtGlyphIndex == 10 && characterBeforeGlyphIndex == 10 {
     } else if draggedOntoLine == numberOfNewlinesBeforeGlyphIndex && characterAtGlyphIndex != 10 {
@@ -235,6 +250,9 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     var error:NSErrorPointer = nil
     let regex = NSRegularExpression(pattern: "\\$\\{.*\\}", options: nil, error: error)
     let matches = regex!.matchesInString(code, options: nil, range: NSRange(location: 0, length: countElements(code)))
+    if matches.count == 0 {
+      return code
+    }
     let firstMatch = matches[0] as NSTextCheckingResult
     let newString = NSString(string: code).stringByReplacingCharactersInRange(firstMatch.range, withString: replacement)
     return newString

@@ -67,7 +67,6 @@ class EditorTextStorage: NSTextStorage {
   func findArgumentOverlays() -> [(String,NSRange)] {
     var argumentOverlays:[(String,NSRange)] = []
     let documentRange = NSRange(location: 0, length: string()!.length)
-    
     for var charIndex = documentRange.location; charIndex < NSMaxRange(documentRange); charIndex++ {
       let scopeName = highlighter.scopeName(charIndex)
       let scopes = scopeName.componentsSeparatedByString(" ")
@@ -92,6 +91,40 @@ class EditorTextStorage: NSTextStorage {
       }
     }
     return argumentOverlays
+  }
+  
+  func getDefinedVariableNames() -> [String] {
+    var definedVariables:[String] = []
+    //DFS, optimize later
+    var stack:[DocumentNode] = []
+    let rootNode = highlighter.rootNode
+    stack.append(rootNode)
+    while stack.count > 0 {
+      let node = stack.last!
+      stack.removeLast()
+      //This is such a hack
+      if node.name == nil || node.name == "" {
+        definedVariables.append(node.data)
+      }
+      for child in node.children {
+        stack.append(child)
+      }
+    }
+    definedVariables = removeDuplicatesFromArrayOfStrings(definedVariables)
+    return definedVariables
+  }
+  
+  func removeDuplicatesFromArrayOfStrings(arr:[String]) -> [String] {
+    var extantItems:[String] = []
+    return arr.filter({
+      if !contains(extantItems, $0) {
+        extantItems.append($0)
+        return true
+      } else {
+        return false
+      }
+    })
+    
   }
   
   func highlightSyntax() {

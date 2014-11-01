@@ -45,6 +45,17 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
       makeStringChoicePopoverWithChoices(["\"Gurt\"","\"Rig\"","\"Ack\""])
     case .NewSight:
       makeStringChoicePopoverWithChoices(["\"Door\""])
+    case .LowlyKithmen:
+      var variables = editorTextViewController.textStorage.getDefinedVariableNames()
+      
+      let substringBeforeOverlay = editorTextViewController.textStorage.string()!.substringToIndex(characterRange.location)
+      variables = variables.filter({
+        return substringBeforeOverlay.rangeOfString($0) != nil
+      })
+      if !contains(variables, defaultContentsToInsertOnRun) {
+        variables.append(defaultContentsToInsertOnRun)
+      }
+      makeStringChoicePopoverWithChoices(variables)
     default:
       break
     }
@@ -73,6 +84,30 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
       addSubview(makeDefaultLabelWithText("\"Gurt\""))
     case .NewSight:
       addSubview(makeDefaultLabelWithText("\"Door\""))
+    case .LowlyKithmen:
+      //get variables
+      let variables = editorTextViewController.textStorage.getDefinedVariableNames()
+      //enemy is the target variable, search for variables already defined
+      var lowestFree = 0
+      if contains(variables, "enemy") {
+        lowestFree = 2
+      }
+      for variable in variables {
+        if variable.hasPrefix("enemy") {
+          let restOfString = variable.stringByReplacingOccurrencesOfString("enemy", withString: "", options: nil, range: nil)
+          let numericString = restOfString.stringByTrimmingCharactersInSet(NSCharacterSet.letterCharacterSet())
+          if let number = numericString.toInt() {
+            if number >= lowestFree {
+              lowestFree = number + 1
+            }
+          }
+        }
+      }
+      var placeholder = "enemy"
+      if lowestFree != 0 {
+        placeholder += String(lowestFree)
+      }
+      addSubview(makeDefaultLabelWithText(placeholder))
     default:
       break
     }

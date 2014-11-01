@@ -18,6 +18,7 @@ enum LevelName:String {
   case TheRaisedSword = "the-raised-sword"
   case TrueNames = "true-names"
   case NewSight = "new-sight"
+  case LowlyKithmen = "lowly-kithmen"
   case Unknown = "unknown"
 }
 class LevelSettingsManager {
