@@ -54,9 +54,12 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
       variables = variables.filter({
         return substringBeforeOverlay.rangeOfString($0) != nil
       })
-      if !contains(variables, defaultContentsToInsertOnRun) {
-        variables.append(defaultContentsToInsertOnRun)
+      if functionName != "attack" {
+        if !contains(variables, defaultContentsToInsertOnRun) {
+          variables.append(defaultContentsToInsertOnRun)
+        }
       }
+      
       makeStringChoicePopoverWithChoices(variables)
     case .KithgardGates:
       makeStringChoicePopoverWithChoices(["\"fence\""])
@@ -110,7 +113,7 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
         }
       }
       var placeholder = "enemy"
-      if lowestFree != 0 {
+      if lowestFree != 0 && functionName != "attack" {
         placeholder += String(lowestFree)
       }
       addSubview(makeDefaultLabelWithText(placeholder))

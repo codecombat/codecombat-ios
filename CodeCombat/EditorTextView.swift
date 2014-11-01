@@ -159,7 +159,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
         frame: defaultRect,
         textViewController: parentTextViewController,
         characterRange: overlayRange,
-        functionName: "blah")
+        functionName: functionName)
       
       overlayLocationToViewMap[range.location] = newView
       addSubview(newView)
