@@ -322,13 +322,14 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   }
   
   func createNumberPickerPopover(#characterRange:NSRange, delegate:NumberPickerPopoverDelegate) {
-    let picker = NumberPickerPopoverViewController()
+    let picker = NumberPickerPopoverViewController(nibName: "NumberPickerPopoverViewController", bundle: nil)
     picker.pickerDelegate = self
+    picker.characterRange = characterRange
     let glyphRange = textView.layoutManager.glyphRangeForCharacterRange(characterRange, actualCharacterRange: nil)
     var boundingRect = textView.layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: textContainer)
     boundingRect.origin.y += textView.lineSpacing
     let popover = UIPopoverController(contentViewController: picker)
-    popover.setPopoverContentSize(CGSize(width: 400, height: 400), animated: true)
+    popover.setPopoverContentSize(CGSize(width: 330, height: 400), animated: true)
     popover.presentPopoverFromRect(boundingRect, inView: textView, permittedArrowDirections: .Down | .Up, animated: true)
     
   }

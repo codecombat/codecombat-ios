@@ -16,10 +16,10 @@ class NumberPickerPopoverViewController: UIViewController {
   
   @IBOutlet weak var entryNumberLabel: UILabel!
   var pickerDelegate:NumberPickerPopoverDelegate? = nil
-  
+  var characterRange:NSRange!
   override func viewDidLoad() {
     super.viewDidLoad()
-    println("VIEW LOADED")
+    entryNumberLabel.text! = "0"
     // Do any additional setup after loading the view.
   }
   
@@ -32,7 +32,26 @@ class NumberPickerPopoverViewController: UIViewController {
   
   
   @IBAction func numberButtonWasTapped(sender:UIButton) {
-    entryNumberLabel.text = "1"
+    if entryNumberLabel.text! == "0" {
+      entryNumberLabel.text = sender.titleLabel!.text!
+    } else {
+      entryNumberLabel.text = entryNumberLabel.text!.stringByAppendingString(sender.titleLabel!.text!)
+    }
+    
+  }
+  
+  @IBAction func okayWasTapped(sender:UIButton) {
+    pickerDelegate?.didSelectNumber(entryNumberLabel.text!.toInt()!, characterRange: characterRange)
+    dismissViewControllerAnimated(true, completion: nil)
+  }
+  
+  @IBAction func deleteWasTapped(sender:UIButton) {
+    if countElements(entryNumberLabel.text!) == 1{
+      entryNumberLabel.text! = "0"
+    } else {
+      entryNumberLabel.text!.removeAtIndex(entryNumberLabel.text!.endIndex.predecessor())
+    }
+    
   }
   
   /*
