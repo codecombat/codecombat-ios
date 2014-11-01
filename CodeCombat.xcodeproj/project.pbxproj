@@ -91,6 +91,8 @@
 		28B3E3BC19B4F6DD00C6B12A /* example.tmLanguageJSON in Resources */ = {isa = PBXBuildFile; fileRef = 28B3E3BB19B4F6DD00C6B12A /* example.tmLanguageJSON */; };
 		28BA9B561992D5DA006ACB3A /* PlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28BA9B551992D5DA006ACB3A /* PlayViewController.swift */; };
 		28C650C51A03E15F006220EA /* LevelSettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C650C41A03E15F006220EA /* LevelSettingsManager.swift */; };
+		28C650CC1A0534AC006220EA /* NumberPickerPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C650CA1A0534AC006220EA /* NumberPickerPopoverViewController.swift */; };
+		28C650CD1A0534AC006220EA /* NumberPickerPopoverViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28C650CB1A0534AC006220EA /* NumberPickerPopoverViewController.xib */; };
 		28C96DF71993D09C009FCD9E /* EditorTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C96DF61993D09C009FCD9E /* EditorTextView.swift */; };
 		28DE0CDD1999305700C6699D /* TomeInventoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28DE0CDC1999305700C6699D /* TomeInventoryViewController.swift */; };
 		28DE0CFF199AE1D600C6699D /* javascriptSyntax.json in Resources */ = {isa = PBXBuildFile; fileRef = 28DE0CFE199AE1D600C6699D /* javascriptSyntax.json */; };
@@ -255,6 +257,8 @@
 		28B3E3BB19B4F6DD00C6B12A /* example.tmLanguageJSON */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = example.tmLanguageJSON; sourceTree = "<group>"; };
 		28BA9B551992D5DA006ACB3A /* PlayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayViewController.swift; sourceTree = "<group>"; };
 		28C650C41A03E15F006220EA /* LevelSettingsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LevelSettingsManager.swift; sourceTree = "<group>"; };
+		28C650CA1A0534AC006220EA /* NumberPickerPopoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberPickerPopoverViewController.swift; sourceTree = "<group>"; };
+		28C650CB1A0534AC006220EA /* NumberPickerPopoverViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NumberPickerPopoverViewController.xib; sourceTree = "<group>"; };
 		28C96DF61993D09C009FCD9E /* EditorTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorTextView.swift; sourceTree = "<group>"; };
 		28DE0CDC1999305700C6699D /* TomeInventoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventoryViewController.swift; sourceTree = "<group>"; };
 		28DE0CFE199AE1D600C6699D /* javascriptSyntax.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = javascriptSyntax.json; sourceTree = "<group>"; };
@@ -689,6 +693,8 @@
 				28DFD0B519FBFBA400C302F0 /* EditorInputAccessoryView.swift */,
 				2879938319FFF741005F6369 /* ArgumentOverlayView.swift */,
 				287993851A007281005F6369 /* ArgumentStringPickerPopoverViewController.swift */,
+				28C650CA1A0534AC006220EA /* NumberPickerPopoverViewController.swift */,
+				28C650CB1A0534AC006220EA /* NumberPickerPopoverViewController.xib */,
 			);
 			name = Play;
 			sourceTree = "<group>";
@@ -794,6 +800,7 @@
 				28DE0CFF199AE1D600C6699D /* javascriptSyntax.json in Resources */,
 				287AE0B71992926400EEE4F0 /* Main.storyboard in Resources */,
 				285A5427199C34BD00932DDE /* COPYING in Resources */,
+				28C650CD1A0534AC006220EA /* NumberPickerPopoverViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -881,6 +888,7 @@
 				287AE108199294CC00EEE4F0 /* ParticleScene.swift in Sources */,
 				287E931119C8C4D100E68F03 /* AbstractActionSheetPicker.m in Sources */,
 				287E931719C8C4D100E68F03 /* DistancePickerView.m in Sources */,
+				28C650CC1A0534AC006220EA /* NumberPickerPopoverViewController.swift in Sources */,
 				285A542D199C34BD00932DDE /* regerror.c in Sources */,
 				285A5435199C34BD00932DDE /* OnigRegexpUtility.m in Sources */,
 				C824BF1119FD854E0097AE14 /* TomeInventoryItemPropertyDocumentationView.swift in Sources */,

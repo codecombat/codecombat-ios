@@ -64,6 +64,15 @@ class EditorTextStorage: NSTextStorage {
     return node.range
   }
   
+  func characterIsPartOfNumber(characterIndex:Int) -> Bool {
+    let scopeName = highlighter.scopeName(characterIndex)
+    let node = highlighter.lastScopeNode
+    if node == nil {
+      return false
+    }
+    return node.name.hasPrefix("constant.numeric")
+  }
+  
   func findArgumentOverlays() -> [(String,NSRange)] {
     var argumentOverlays:[(String,NSRange)] = []
     let documentRange = NSRange(location: 0, length: string()!.length)
