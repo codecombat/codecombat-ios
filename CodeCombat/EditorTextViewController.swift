@@ -71,6 +71,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   func onTap(recognizer:UITapGestureRecognizer) {
     if recognizer == tapGestureRecognizer {
       let tappedCharacterIndex = textView.characterIndexAtPoint(recognizer.locationInView(textView))
+      
       if textStorage.characterIsPartOfString(tappedCharacterIndex) {
         let stringRange = textStorage.stringRangeContainingCharacterIndex(tappedCharacterIndex)
         switch LevelSettingsManager.sharedInstance.level {
@@ -81,9 +82,23 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
         default:
           break
         }
+      } else if let variableRange = textStorage.characterIsPartOfDefinedVariable(tappedCharacterIndex) {
+        switch LevelSettingsManager.sharedInstance.level {
+        case .LowlyKithmen:
+          var variables = textStorage.getDefinedVariableNames()
+          let substringBeforeOverlay = textStorage.string()!.substringToIndex(variableRange.location + variableRange.length + 1)
+          variables = variables.filter({
+            return substringBeforeOverlay.rangeOfString($0) != nil
+          })
+          createStringPickerPopoverWithChoices(variables, characterRange: variableRange, delegate: self)
+          break
+        default:
+          break
+        }
       }
     }
   }
+  
   
   func onCodeRun() {
     textView.clearCodeProblemGutterAnnotations()

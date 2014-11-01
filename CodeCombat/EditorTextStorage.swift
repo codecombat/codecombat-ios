@@ -114,6 +114,36 @@ class EditorTextStorage: NSTextStorage {
     return definedVariables
   }
   
+  func getDefinedVariableRanges() -> [NSRange] {
+    var definedVariables:[NSRange] = []
+    //DFS, optimize later
+    var stack:[DocumentNode] = []
+    let rootNode = highlighter.rootNode
+    stack.append(rootNode)
+    while stack.count > 0 {
+      let node = stack.last!
+      stack.removeLast()
+      //This is such a hack
+      if node.name == nil || node.name == "" {
+        definedVariables.append(node.range)
+      }
+      for child in node.children {
+        stack.append(child)
+      }
+    }
+    return definedVariables
+  }
+  
+  func characterIsPartOfDefinedVariable(characterIndex:Int) -> NSRange? {
+    let definedVariableRanges = getDefinedVariableRanges()
+    for range in definedVariableRanges {
+      if characterIndex >= range.location && characterIndex < range.location + range.length {
+        return range
+      }
+    }
+    return nil
+  }
+  
   func removeDuplicatesFromArrayOfStrings(arr:[String]) -> [String] {
     var extantItems:[String] = []
     return arr.filter({
