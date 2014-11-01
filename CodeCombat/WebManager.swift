@@ -49,10 +49,18 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     //Inject the no-zoom javascript
     let noZoomJS = "var meta = document.createElement('meta');meta.setAttribute('name', 'viewport');meta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');document.getElementsByTagName('head')[0].appendChild(meta);"
     webView.evaluateJavaScript(noZoomJS, completionHandler: nil)
+    println("webView didCommitNavigation")
   }
   
   func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
     NSNotificationCenter.defaultCenter().postNotificationName("webViewDidFinishNavigation", object: nil)
+    println("webView didFinishNavigation")
+    for (channel, count) in activeSubscriptions {
+      if count > 0 {
+        println("Reregistering \(channel)")
+        registerSubscription(channel)
+      }
+    }
   }
   
   func logIn(#email: String, password: String) {
@@ -76,21 +84,25 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     }
     activeObservers[observer as NSObject]!.append(channel)
     if activeSubscriptions[channel] == 1 {
-        evaluateJavaScript("\n".join([
-            "window.addIPadSubscriptionIfReady = function(channel) {",
-            "  if (window.addIPadSubscription) {",
-            "    window.addIPadSubscription(channel);",
-            "    console.log('Totally subscribed to', channel);",
-            "  }",
-            "  else {",
-            "    console.log('Could not add iPad subscription', channel, 'yet.')",
-            "    setTimeout(function() { window.addIPadSubcriptionIfReady(channel); }, 500);",
-            "  }",
-            "}",
-            "window.addIPadSubscriptionIfReady('\(channel)');"
-        ]), completionHandler: nil)
+      registerSubscription(channel)
     }
     //println("Subscribed \(observer) to \(channel) so now have activeSubscriptions \(activeSubscriptions) activeObservers \(activeObservers)")
+  }
+  
+  private func registerSubscription(channel: String) {
+    evaluateJavaScript("\n".join([
+      "window.addIPadSubscriptionIfReady = function(channel) {",
+      "  if (window.addIPadSubscription) {",
+      "    window.addIPadSubscription(channel);",
+      "    console.log('Totally subscribed to', channel);",
+      "  }",
+      "  else {",
+      "    console.log('Could not add iPad subscription', channel, 'yet.')",
+      "    setTimeout(function() { window.addIPadSubcriptionIfReady(channel); }, 500);",
+      "  }",
+      "}",
+      "window.addIPadSubscriptionIfReady('\(channel)');"
+      ]), completionHandler: nil)
   }
   
   func unsubscribe(observer: AnyObject) {
