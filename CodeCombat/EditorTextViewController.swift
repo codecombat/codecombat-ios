@@ -8,7 +8,7 @@
 
 import UIKit
 
-class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureRecognizerDelegate, StringPickerPopoverDelegate {
+class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureRecognizerDelegate, StringPickerPopoverDelegate, NumberPickerPopoverDelegate {
   let textStorage = EditorTextStorage()
   let textContainer = NSTextContainer()
   
@@ -94,6 +94,14 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
           })
           createStringPickerPopoverWithChoices(variables, characterRange: variableRange, delegate: self)
           break
+        default:
+          break
+        }
+      } else if textStorage.characterIsPartOfNumber(tappedCharacterIndex) {
+        let numberRange = textStorage.stringRangeContainingCharacterIndex(tappedCharacterIndex)
+        switch LevelSettingsManager.sharedInstance.level {
+        case .KithgardGates:
+          createNumberPickerPopover(characterRange: numberRange, delegate: self)
         default:
           break
         }
@@ -311,7 +319,21 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     let popover = UIPopoverController(contentViewController: stringPickerViewController)
     popover.setPopoverContentSize(CGSize(width: 100, height: stringPickerViewController.rowHeight*choices.count), animated: true)
     popover.presentPopoverFromRect(boundingRect, inView: textView, permittedArrowDirections: .Down | .Up, animated: true)
+  }
+  
+  func createNumberPickerPopover(#characterRange:NSRange, delegate:NumberPickerPopoverDelegate) {
+    let picker = NumberPickerPopoverViewController()
+    picker.pickerDelegate = self
+    let glyphRange = textView.layoutManager.glyphRangeForCharacterRange(characterRange, actualCharacterRange: nil)
+    var boundingRect = textView.layoutManager.boundingRectForGlyphRange(glyphRange, inTextContainer: textContainer)
+    boundingRect.origin.y += textView.lineSpacing
+    let popover = UIPopoverController(contentViewController: picker)
+    popover.setPopoverContentSize(CGSize(width: 400, height: 400), animated: true)
+    popover.presentPopoverFromRect(boundingRect, inView: textView, permittedArrowDirections: .Down | .Up, animated: true)
     
+  }
+  func didSelectNumber(number: Int, characterRange: NSRange) {
+    textStorage.replaceCharactersInRange(characterRange, withString: String(number))
   }
   
   func replaceCharactersInCharacterRange(characterRange:NSRange, str:String) {
