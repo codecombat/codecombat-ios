@@ -15,7 +15,7 @@ class TomeInventoryItemView: UIView {
   let imageSize = CGFloat(75)
   let marginH = CGFloat(10)  // Left side to image, image to prop, prop to right padding
   let marginV = CGFloat(3)  // Between props
-  let padding = CGFloat(30)  // Top, right, and bottom padding (left padding is just a weird hack)
+  let padding = CGFloat(15)  // Top, right, and bottom padding (left padding is just a weird hack)
   
   required init(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
@@ -45,7 +45,7 @@ class TomeInventoryItemView: UIView {
           frame: CGRect(
             x: itemWidth,
             y: y + marginV,
-            width: frame.width - padding - marginH - itemWidth,
+            width: frame.width - 2 * padding - marginH - itemWidth,
             height: 50.0))
         addSubview(propertyView)
         y += propertyView.frame.height + marginV
@@ -72,7 +72,7 @@ class TomeInventoryItemView: UIView {
       height: height)
     let backgroundImage = UIImage(named: "tome_item_background")
     let background = UIImageView(image: backgroundImage)
-    background.frame = CGRect(x: -30, y: 0, width: frame.width + 30, height: frame.height)
+    background.frame = CGRect(x: frame.size.width - background.frame.size.width - padding, y: 0, width: background.frame.size.width, height: frame.height)
     insertSubview(background, atIndex: 0)
   }
   

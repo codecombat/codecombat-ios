@@ -49,7 +49,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
       subviewsToRemove[index].removeFromSuperview()
     }
     var itemHeight = 0
-    let itemMargin = 10
+    let itemMargin = 3
     for item in inventory.items {
       let width = Int(inventoryView.frame.width) - itemMargin
       let height = Int(inventoryView.frame.height) - itemHeight - itemMargin
