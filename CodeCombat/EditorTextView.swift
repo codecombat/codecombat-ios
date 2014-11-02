@@ -67,11 +67,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     //Not sure if this will get reset, if it does it will cause bugs
     font = UIFont(name: "Courier", size: 22)
     showLineNumbers()
-    backgroundColor = UIColor(
-      red: CGFloat(230.0 / 256.0),
-      green: CGFloat(212.0 / 256.0),
-      blue: CGFloat(145.0 / 256.0),
-      alpha: 1)
+    backgroundColor = UIColor.clearColor()
     layoutManager.delegate = self
   }
   
@@ -394,16 +390,16 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
       usingBlock: lineFragmentClosure)
   }
   
-  //Draws a solid brown background behind the lines
+  //Draws a faint right border line alongside the line numbers–actually a few pixels past them
   private func drawLineNumberBackground() {
     let context = UIGraphicsGetCurrentContext()
-    let LineNumberBackgroundColor = ColorManager.sharedInstance.inventoryBackground
+    let LineNumberBackgroundColor = ColorManager.sharedInstance.gutterBorder
     CGContextSetFillColorWithColor(context, LineNumberBackgroundColor.CGColor)
     let LineNumberBackgroundRect = CGRect(
-      x: bounds.origin.x,
-      y: bounds.origin.y,
-      width: lineNumberWidth,
-      height: bounds.size.height)
+      x: bounds.origin.x + lineNumberWidth + 4,
+      y: bounds.origin.y + 5,
+      width: 1,
+      height: bounds.size.height - 50)
     CGContextFillRect(context, LineNumberBackgroundRect)
   }
   
@@ -435,7 +431,8 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
         width: Size.width + gutterPadding,
         height: CGFloat.max)
       lineNumberWidth = Rect.size.width
-      textContainer.exclusionPaths = [UIBezierPath(rect: Rect)]
+      let exclusionRect = CGRect(x: Rect.origin.x, y: Rect.origin.y, width: Rect.size.width + 20, height: Rect.size.height)
+      textContainer.exclusionPaths = [UIBezierPath(rect: exclusionRect)]
       numberOfCharactersInLineNumberGutter = NumberOfCharacters
     }
     setNeedsDisplay()

@@ -14,6 +14,7 @@ class TomeInventoryItemView: UIView {
   var imageView: UIImageView?
   let imageSize = CGFloat(75)
   let margin = CGFloat(3)
+  let padding = CGFloat(30)
   
   required init(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
@@ -32,10 +33,10 @@ class TomeInventoryItemView: UIView {
   }
   
   func buildSubviews() {
-    var y = CGFloat(0)
-    let itemWidth = imageSize + 2 * margin
+    var y = padding
+    let itemWidth = imageSize + 2 * margin + padding
+    var propertyViews: [TomeInventoryItemPropertyView] = []
     if let name = item.itemData["name"].asString {
-      
       for property in item.properties {
         let propertyView = TomeInventoryItemPropertyView(
           item: item,
@@ -43,27 +44,35 @@ class TomeInventoryItemView: UIView {
           frame: CGRect(
             x: itemWidth,
             y: y + margin,
-            width: frame.width - margin - itemWidth,
+            width: frame.width - padding - margin - itemWidth,
             height: 50.0))
         addSubview(propertyView)
         y += propertyView.frame.height + margin
+        propertyViews.append(propertyView)
       }
       if item.properties.count > 0 {
         showsProperties = true
+        y += margin + padding
         buildItemImage()
       }
     }
-    let height = showsProperties ? max(y + margin, imageSize + 2 * margin) : 0
+    let minHeight = imageSize + 2 * (margin + padding)
+    let height = showsProperties ? max(y, minHeight) : 0
+    if y < height {
+      // Center the properties in the view.
+      for propertyView in propertyViews {
+        propertyView.frame.origin.y += (height - y) / CGFloat(propertyViews.count) / 2.0
+      }
+    }
     frame = CGRect(
       x: frame.origin.x,
       y: frame.origin.y,
       width: frame.width,
       height: height)
-    backgroundColor = UIColor(
-      red: CGFloat(211.0/256.0),
-      green: CGFloat(191.0/256.0),
-      blue: CGFloat(129.0/256.0),
-      alpha: 1)
+    let backgroundImage = UIImage(named: "tome_item_background")
+    let background = UIImageView(image: backgroundImage)
+    background.frame = CGRect(x: -30, y: 0, width: frame.width + 30, height: frame.height)
+    insertSubview(background, atIndex: 0)
   }
   
   func buildItemImage() {
@@ -74,7 +83,7 @@ class TomeInventoryItemView: UIView {
         // update some UI
         if imageData != nil {
           let image = UIImage(data: imageData!)
-          let y = max(self.margin, (self.frame.size.height - self.imageSize) / 2)
+          let y = max(self.margin + self.padding, (self.frame.size.height - self.imageSize) / 2)
           let imageFrame = CGRect(x: self.margin, y: y, width: self.imageSize, height: self.imageSize)
           self.imageView = UIImageView(frame: imageFrame)
           self.imageView!.image = image

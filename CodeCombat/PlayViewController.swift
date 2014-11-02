@@ -18,6 +18,7 @@ class PlayViewScrollView:UIScrollView, UIGestureRecognizerDelegate {
 class PlayViewController: UIViewController, UITextViewDelegate {
 
   @IBOutlet weak var runButton: UIButton!
+  @IBOutlet weak var submitButton: UIButton!
   @IBOutlet weak var redoButton: UIButton!
   @IBOutlet weak var undoButton: UIButton!
   @IBOutlet weak var keyboardButton: UIButton!
@@ -25,13 +26,13 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   
   var levelName = ""
   var scrollView: UIScrollView!
-  let screenshotView = UIImageView(image: UIImage(named: "largeScreenshot"))
   var webView: WKWebView?
   let editorContainerView = UIView()
   var textViewController: EditorTextViewController!
   var inventoryViewController: TomeInventoryViewController!
   var inventoryFrame: CGRect!
   let webManager = WebManager.sharedInstance
+  let backgroundImage = UIImage(named: "play_background")!
   
   let lastSubmitString:String = ""
   
@@ -66,18 +67,19 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     let frameWidth = view.frame.size.width
     let frameHeight = view.frame.size.height
     let aspectRatio:CGFloat = 1.56888
-    screenshotView.frame = CGRectMake(0, 0, frameWidth, frameWidth / aspectRatio)
-    editorContainerView.frame = CGRectMake(0, screenshotView.frame.height, frameWidth, frameHeight)
+    let backgroundImageVerticalOverlap: CGFloat = 11
+    editorContainerView.frame = CGRectMake(0, frameWidth / aspectRatio - backgroundImageVerticalOverlap, frameWidth, backgroundImage.size.height)
     setupScrollView()
     setupInventory()
     setupEditor()
+    setupBackgrounds()
+    setupToolbar()
     setUndoRedoEnabled()
   }
   
   func setupScrollView() {
     scrollView = PlayViewScrollView(frame: view.frame)
-    scrollView.addSubview(screenshotView)
-    scrollView.contentSize = CGSizeMake(view.frame.size.width, screenshotView.frame.height + view.frame.size.height)
+    scrollView.contentSize = CGSizeMake(view.frame.size.width, editorContainerView.frame.origin.y + editorContainerView.frame.size.height)
     scrollView.addSubview(editorContainerView)
     scrollView.bounces = false
     scrollView.contentOffset = CGPoint(x: 0, y: 200)  // Helps for testing.
@@ -85,9 +87,12 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   }
   
   func setupInventory() {
-    inventoryFrame = CGRectMake(0, 0, editorContainerView.frame.width / 4, editorContainerView.frame.height)
+    let inventoryTopMargin: CGFloat = 51
+    let inventoryBottomMargin: CGFloat = 25
+    inventoryFrame = CGRectMake(0, inventoryTopMargin, 300, editorContainerView.frame.height - inventoryTopMargin - inventoryBottomMargin)
     inventoryViewController = TomeInventoryViewController()
     inventoryViewController.view.frame = inventoryFrame
+    inventoryViewController.inventoryView.frame = CGRect(x: 0, y: 0, width: inventoryFrame.width, height: inventoryFrame.height)
     //helps to fix a scrolling bug
     scrollView.panGestureRecognizer.requireGestureRecognizerToFail(inventoryViewController.inventoryView.panGestureRecognizer)
     addChildViewController(inventoryViewController)
@@ -95,7 +100,8 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   }
   
   func setupEditor() {
-    let editorTextViewFrame = CGRectMake(inventoryFrame.width, 0, editorContainerView.frame.width - inventoryFrame.width, editorContainerView.frame.height)
+    let editorVerticalMargin: CGFloat = 50
+    let editorTextViewFrame = CGRectMake(370, editorVerticalMargin, 630, editorContainerView.frame.height - 2 * editorVerticalMargin)
     textViewController = EditorTextViewController()
     textViewController.view.frame = editorTextViewFrame
     
@@ -115,6 +121,24 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     if webView != nil {
       scrollView.addSubview(webView!)
     }
+  }
+  
+  func setupBackgrounds() {
+    var editorBackground = UIImageView(image: backgroundImage)
+    editorContainerView.addSubview(editorBackground)
+    editorContainerView.sendSubviewToBack(editorBackground)
+
+    var bottomBackground = UIImageView(image: UIImage(named: "play_background_bottom"))
+    bottomBackground.frame.origin.y = view.frame.size.height - bottomBackground.frame.size.height
+    view.insertSubview(bottomBackground, aboveSubview: editorContainerView)
+    
+    for button in [runButton, submitButton, redoButton, undoButton, keyboardButton, resetCodeButton] {
+      view.insertSubview(button, aboveSubview: bottomBackground)
+    }
+  }
+
+  func setupToolbar() {
+
   }
 
   func onSpriteSpeechUpdated(note:NSNotification) {

@@ -26,13 +26,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    let screenBounds = UIScreen.mainScreen().bounds
-    let inventoryFrame = CGRect(
-      x: 0,
-      y: 0,
-      width: screenBounds.width / 3,
-      height: screenBounds.height)
-    inventoryView = UIScrollView(frame: inventoryFrame)
+    inventoryView = UIScrollView()
     inventoryView.delegate = self
     
     let DragAndDropRecognizer = UIPanGestureRecognizer(
@@ -43,7 +37,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
     inventoryView.panGestureRecognizer.requireGestureRecognizerToFail(DragAndDropRecognizer)
     
     inventoryView.bounces = false
-    inventoryView.backgroundColor = ColorManager.sharedInstance.inventoryBackground
+    inventoryView.backgroundColor = UIColor.clearColor()
     view.addSubview(inventoryView)
     
     addScriptMessageNotificationObservers()

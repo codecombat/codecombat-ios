@@ -37,13 +37,13 @@ class TomeInventoryItemPropertyView: UIButton {
   }
   
   func buildSubviews() {
-    let Padding = CGFloat(5.0)
+    let padding = CGFloat(5.0)
     if let name = property?.propertyData["name"].asString {
       var label = UILabel(
         frame: CGRect(
-          x: Padding,
-          y: Padding,
-          width: frame.width - 2 * Padding,
+          x: padding,
+          y: padding,
+          width: frame.width - 2 * padding,
           height: frame.height))
       label.text = name
       label.textColor = UIColor.blackColor()
@@ -53,8 +53,8 @@ class TomeInventoryItemPropertyView: UIButton {
         x: frame.origin.x,
         y: frame.origin.y,
         width: frame.width,
-        height: label.frame.height + 2 * Padding)
-      backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
+        height: label.frame.height + 2 * padding)
+      backgroundColor = UIColor(red: 225.0 / 255.0, green: 219.0 / 255.0, blue: 198.0 / 255.0, alpha: 1.0)
     }
   }
   
