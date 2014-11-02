@@ -66,7 +66,8 @@ class TomeInventoryItemPropertyView: UIButton {
         y: frame.origin.y,
         width: frame.width,
         height: label.frame.height + 2 * padding)
-      backgroundColor = UIColor(red: 225.0 / 255.0, green: 219.0 / 255.0, blue: 198.0 / 255.0, alpha: 1.0)
+      //backgroundColor = UIColor(red: 225.0 / 255.0, green: 219.0 / 255.0, blue: 198.0 / 255.0, alpha: 1.0)
+      backgroundColor = UIColor.clearColor()
     }
   }
   

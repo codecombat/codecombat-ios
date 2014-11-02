@@ -27,11 +27,10 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   var currentProblemGutterLineAnnotations:[Int:GutterProblemLineAnnotationButton] = [:]
   var currentProblemLineHighlights:[Int:UIView] = [:]
   var overlayLocationToViewMap:[Int:ArgumentOverlayView] = [:]
-  
   var dragOverlayLabels:[Int:UILabel] = Dictionary<Int,UILabel>()
   var originalDragOverlayLabelOffsets:[Int:CGFloat] = Dictionary<Int,CGFloat>()
   var draggedLineNumber = -1
-  
+  var defaultFont = UIFont(name: "Menlo", size: 20)
   let gutterPadding = CGFloat(5.0)
   let lineSpacing:CGFloat = 5
   var accessoryView:UIView?
@@ -65,7 +64,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     selectable = false
     editable = false
     //Not sure if this will get reset, if it does it will cause bugs
-    font = UIFont(name: "Courier", size: 22)
+    font = defaultFont
     showLineNumbers()
     backgroundColor = UIColor.clearColor()
     layoutManager.delegate = self
@@ -409,7 +408,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     if shouldShowLineNumbers {
       return
     }
-    font = UIFont(name: "Courier", size: 20)
+    font = defaultFont
     contentSize = CGSize(
       width: bounds.size.width - lineNumberWidth,
       height: bounds.size.height)
