@@ -45,6 +45,12 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     WebManager.sharedInstance.subscribe(self, channel: "problem:problem-created", selector: Selector("onProblemCreated:"))
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onCodeRun"), name: "codeRun", object: nil)
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onTextStorageFinishedTopLevelEditing"), name: "textStorageFinishedTopLevelEditing", object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onKeyboardHide"), name: UIKeyboardDidHideNotification, object: nil)
+  }
+  
+  func onKeyboardHide() {
+    textView.selectable = false
+    textView.editable = false
   }
   
   func onSpellStatementIndexUpdated(note:NSNotification) {
