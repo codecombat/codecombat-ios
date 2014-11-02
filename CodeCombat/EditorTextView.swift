@@ -34,7 +34,6 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   let gutterPadding = CGFloat(5.0)
   let lineSpacing:CGFloat = 5
   var accessoryView:UIView?
-  var textViewCoverView:UIView?
   var keyboardModeEnabled:Bool {
     return editable && selectable
   }
@@ -113,24 +112,11 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     deletionOverlayView = nil
   }
   
-  //Text view cover view functions
-  func createTextViewCoverView() {
-    var coverTextFrame = bounds
-    coverTextFrame.origin.x += lineNumberWidth + gutterPadding
-    textViewCoverView = UIView(frame: coverTextFrame)
-    textViewCoverView!.backgroundColor = backgroundColor
-    addSubview(textViewCoverView!)
-  }
   
   func characterIndexAtPoint(point:CGPoint) -> Int{
     return layoutManager.characterIndexForPoint(point, inTextContainer: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
   }
-  
-  func removeTextViewCoverView() {
-    textViewCoverView?.removeFromSuperview()
-    textViewCoverView = nil
-  }
-  
+
   func toggleKeyboardMode() {
     if keyboardModeEnabled {
       editable = false
@@ -440,8 +426,8 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   }
   
   func createViewsForAllLinesExceptDragged(draggedLineFragmentRect:CGRect, draggedCharacterRange:NSRange) {
-    let visibleCharacterRange = layoutManager.glyphRangeForBoundingRect(frame, inTextContainer: textContainer)
-    let visibleGlyphs = layoutManager.glyphRangeForCharacterRange(visibleCharacterRange, actualCharacterRange: nil)
+    let entireCharacterRange = layoutManager.glyphRangeForTextContainer(textContainer)
+    let visibleGlyphs = layoutManager.glyphRangeForCharacterRange(entireCharacterRange, actualCharacterRange: nil)
     //when I refer to line numbers, I am referring to them by height, not in the document
     var currentLineNumber = 1
     let editorTextStorage = textStorage as EditorTextStorage

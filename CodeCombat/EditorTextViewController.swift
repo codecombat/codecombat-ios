@@ -140,8 +140,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
         parentViewController!.view.addSubview(draggedLabel)
         textView.draggedLineNumber = lineNumberForDraggedCharacterRange(characterRange)
         
-        textView.createTextViewCoverView()
         textView.createViewsForAllLinesExceptDragged(lineFragmentRect, draggedCharacterRange: characterRange)
+        textStorage.makeTextClear()
         textView.createDeletionOverlayView()
         break
       case .Changed:
@@ -162,7 +162,6 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
         textView.clearCodeProblemGutterAnnotations()
         textView.removeUserCodeProblemLineHighlights()
         textView.removeDeletionOverlayView()
-        textView.removeTextViewCoverView()
         draggedLabel.removeFromSuperview()
         draggedLabel = nil
         break
@@ -453,6 +452,11 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
         textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
         //textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
       }
+      textStorage.endEditing()
+      textView.setNeedsDisplay()
+    } else {
+      textStorage.beginEditing()
+      textStorage.highlightSyntax()
       textStorage.endEditing()
       textView.setNeedsDisplay()
     }

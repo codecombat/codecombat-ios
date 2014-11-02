@@ -17,6 +17,7 @@ class EditorTextStorage: NSTextStorage {
   let language = "python"
   let undoManager = NSUndoManager()
   var nestedEditingLevel = 0
+  var makingTextClear = false
   
   override init() {
     super.init()
@@ -41,7 +42,8 @@ class EditorTextStorage: NSTextStorage {
     super.endEditing()
     //If you need to do things which require laying out glyphs, do them here. If you trigger them
     //before, you'll crash.
-    if nestedEditingLevel == 1 {
+    //Not counting clearing text as an edit per se, we shouldn't highlight if just doing that
+    if nestedEditingLevel == 1 && !makingTextClear {
       NSNotificationCenter.defaultCenter().postNotificationName("textStorageFinishedTopLevelEditing", object: nil)
       highlightSyntax()
     }
@@ -168,6 +170,12 @@ class EditorTextStorage: NSTextStorage {
       }
     })
     
+  }
+  
+  func makeTextClear() {
+    makingTextClear = true
+    addAttribute(NSForegroundColorAttributeName, value: UIColor.clearColor(), range: NSRange(location: 0, length: string()!.length))
+    makingTextClear = false
   }
   
   func highlightSyntax() {
