@@ -113,6 +113,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
     let EditorView = Parent.textViewController.textView
     let LocationInParentView = recognizer.locationInView(Parent.view)
     let LocationInEditorContainerView = recognizer.locationInView(Parent.editorContainerView)
+    let locationInEditorTextView = recognizer.locationInView(Parent.textViewController.textView)
     switch recognizer.state {
       
     case .Began:
@@ -147,7 +148,8 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
         if Snippet != nil {
           Snippet = draggedProperty.name
         }
-        Parent.textViewController.handleItemPropertyDragChangedAtLocation(LocationInEditorContainerView)
+        
+        Parent.textViewController.handleItemPropertyDragChangedAtLocation(locationInEditorTextView)
       } else {
         Parent.textViewController.textView.removeLineDimmingOverlay()
       }
@@ -159,7 +161,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
         Snippet = draggedProperty.name
       }
       if EditorView.frame.contains(LocationInParentView) {
-        Parent.textViewController.handleItemPropertyDragEndedAtLocation(LocationInEditorContainerView, code: Snippet!)
+        Parent.textViewController.handleItemPropertyDragEndedAtLocation(locationInEditorTextView, code: Snippet!)
       } else {
         Parent.textViewController.textView.removeDragHintView()
         Parent.textViewController.textView.removeLineDimmingOverlay()
