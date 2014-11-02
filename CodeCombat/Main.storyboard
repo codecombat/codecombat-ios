@@ -129,10 +129,11 @@
                                     <action selector="onCodeRun:" destination="mL5-Kq-7bx" eventType="touchUpInside" id="Jcn-Vq-Gen"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yWl-nf-cCN">
-                                <rect key="frame" x="550" y="728" width="100" height="34"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yWl-nf-cCN">
+                                <rect key="frame" x="550" y="728" width="98" height="34"/>
                                 <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="14"/>
-                                <state key="normal" title="UNDO" backgroundImage="small_button_active">
+                                <inset key="imageEdgeInsets" minX="-12" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <state key="normal" title="UNDO" image="undo_icon" backgroundImage="small_button_active">
                                     <color key="titleColor" red="0.74142278439999998" green="0.55129184639999995" blue="0.3582515751" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -145,10 +146,11 @@
                                     <action selector="onUndo:" destination="mL5-Kq-7bx" eventType="touchUpInside" id="a0Z-kk-CeT"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZvF-zO-AH3">
-                                <rect key="frame" x="650" y="728" width="100" height="34"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZvF-zO-AH3">
+                                <rect key="frame" x="650" y="728" width="98" height="34"/>
                                 <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="14"/>
-                                <state key="normal" title="REDO" backgroundImage="small_button_active">
+                                <inset key="imageEdgeInsets" minX="-12" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <state key="normal" title="REDO" image="redo_icon" backgroundImage="small_button_active">
                                     <color key="titleColor" red="0.74142278439999998" green="0.55129184639999995" blue="0.3582515751" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -431,9 +433,11 @@
         <image name="loginModalBackground" width="533" height="639"/>
         <image name="play_background" width="1024" height="659"/>
         <image name="play_background_bottom" width="1011" height="73"/>
+        <image name="redo_icon" width="19" height="15"/>
         <image name="small_button_active" width="98" height="38"/>
         <image name="small_button_inactive" width="98" height="38"/>
         <image name="small_button_pressed" width="98" height="38"/>
+        <image name="undo_icon" width="19" height="15"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

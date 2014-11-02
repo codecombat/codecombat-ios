@@ -13,8 +13,9 @@ class TomeInventoryItemView: UIView {
   var showsProperties = false
   var imageView: UIImageView?
   let imageSize = CGFloat(75)
-  let margin = CGFloat(3)
-  let padding = CGFloat(30)
+  let marginH = CGFloat(10)  // Left side to image, image to prop, prop to right padding
+  let marginV = CGFloat(3)  // Between props
+  let padding = CGFloat(30)  // Top, right, and bottom padding (left padding is just a weird hack)
   
   required init(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
@@ -34,7 +35,7 @@ class TomeInventoryItemView: UIView {
   
   func buildSubviews() {
     var y = padding
-    let itemWidth = imageSize + 2 * margin + padding
+    let itemWidth = imageSize + 2 * marginH
     var propertyViews: [TomeInventoryItemPropertyView] = []
     if let name = item.itemData["name"].asString {
       for property in item.properties {
@@ -43,20 +44,20 @@ class TomeInventoryItemView: UIView {
           property: property,
           frame: CGRect(
             x: itemWidth,
-            y: y + margin,
-            width: frame.width - padding - margin - itemWidth,
+            y: y + marginV,
+            width: frame.width - padding - marginH - itemWidth,
             height: 50.0))
         addSubview(propertyView)
-        y += propertyView.frame.height + margin
+        y += propertyView.frame.height + marginV
         propertyViews.append(propertyView)
       }
       if item.properties.count > 0 {
         showsProperties = true
-        y += margin + padding
+        y += marginV + padding
         buildItemImage()
       }
     }
-    let minHeight = imageSize + 2 * (margin + padding)
+    let minHeight = imageSize + 2 * (marginV + padding)
     let height = showsProperties ? max(y, minHeight) : 0
     if y < height {
       // Center the properties in the view.
@@ -83,8 +84,8 @@ class TomeInventoryItemView: UIView {
         // update some UI
         if imageData != nil {
           let image = UIImage(data: imageData!)
-          let y = max(self.margin + self.padding, (self.frame.size.height - self.imageSize) / 2)
-          let imageFrame = CGRect(x: self.margin, y: y, width: self.imageSize, height: self.imageSize)
+          let y = max(self.marginV + self.padding, (self.frame.size.height - self.imageSize) / 2)
+          let imageFrame = CGRect(x: self.marginH, y: y, width: self.imageSize, height: self.imageSize)
           self.imageView = UIImageView(frame: imageFrame)
           self.imageView!.image = image
           self.addSubview(self.imageView!)

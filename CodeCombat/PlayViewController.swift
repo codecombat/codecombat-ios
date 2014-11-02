@@ -90,7 +90,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   func setupInventory() {
     let inventoryTopMargin: CGFloat = 51
     let inventoryBottomMargin: CGFloat = 25
-    inventoryFrame = CGRectMake(0, inventoryTopMargin, 300, editorContainerView.frame.height - inventoryTopMargin - inventoryBottomMargin)
+    inventoryFrame = CGRectMake(0, inventoryTopMargin, 320, editorContainerView.frame.height - inventoryTopMargin - inventoryBottomMargin)
     inventoryViewController = TomeInventoryViewController()
     inventoryViewController.view.frame = inventoryFrame
     inventoryViewController.inventoryView.frame = CGRect(x: 0, y: 0, width: inventoryFrame.width, height: inventoryFrame.height)

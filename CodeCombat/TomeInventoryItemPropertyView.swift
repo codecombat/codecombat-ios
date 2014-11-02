@@ -39,14 +39,26 @@ class TomeInventoryItemPropertyView: UIButton {
   func buildSubviews() {
     let padding = CGFloat(5.0)
     if let name = property?.propertyData["name"].asString {
-      var label = UILabel(
+      var dotLabel = UILabel(
         frame: CGRect(
           x: padding,
           y: padding,
-          width: frame.width - 2 * padding,
+          width: 25,
           height: frame.height))
+      dotLabel.font = UIFont(name: "Menlo", size: 12)
+      dotLabel.text = " ● "
+      dotLabel.textColor = UIColor(red: 117.0 / 255.0, green: 110.0 / 255.0, blue: 90.0 / 255.0, alpha: 1.0)
+      dotLabel.sizeToFit()
+      var label = UILabel(
+        frame: CGRect(
+          x: padding + dotLabel.frame.width,
+          y: padding,
+          width: frame.width - 2 * padding - dotLabel.frame.width,
+          height: frame.height))
+      label.font = dotLabel.font
       label.text = name
-      label.textColor = UIColor.blackColor()
+      label.textColor = UIColor(red: 26.0 / 255.0, green: 20.0 / 255.0, blue: 12.0 / 255.0, alpha: 1.0)
+      addSubview(dotLabel)
       addSubview(label)
       label.sizeToFit()
       frame = CGRect(
