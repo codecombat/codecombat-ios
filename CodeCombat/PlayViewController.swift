@@ -45,6 +45,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   private func listenToNotifications() {
     //webManager.subscribe(self, channel: "sprite:speech-updated", selector: Selector("onSpriteSpeechUpdated:"))
     webManager.subscribe(self, channel: "tome:spell-loaded", selector: Selector("onTomeSpellLoaded:"))
+    webManager.subscribe(self, channel: "tome:winnability-updated", selector: Selector("onTomeWinnabilityUpdated:"))
     let nc = NSNotificationCenter.defaultCenter()
     //additional notifications are listened to below concerning undo manager in setupEditor
     nc.addObserver(self, selector: Selector("setUndoRedoEnabled"), name: "textEdited", object: nil)
@@ -162,6 +163,15 @@ class PlayViewController: UIViewController, UITextViewDelegate {
         setUndoRedoEnabled()
 
       }
+    }
+  }
+  
+  func onTomeWinnabilityUpdated(note: NSNotification) {
+    println("winnability updated \(note)")
+    if let event = note.userInfo {
+      let winnable = event["winnable"] as Bool
+      runButton.selected = !winnable
+      submitButton.selected = winnable
     }
   }
 

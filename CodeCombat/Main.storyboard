@@ -94,62 +94,103 @@
                         <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <imageView hidden="YES" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" image="play_background" translatesAutoresizingMaskIntoConstraints="NO" id="XTe-fX-TVu">
+                                <rect key="frame" x="0.0" y="109" width="1024" height="659"/>
+                            </imageView>
+                            <imageView hidden="YES" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" image="play_background_bottom" translatesAutoresizingMaskIntoConstraints="NO" id="o1a-7D-j7k">
+                                <rect key="frame" x="0.0" y="695" width="1011" height="73"/>
+                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uGs-wC-Lym">
-                                <rect key="frame" x="840" y="710" width="184" height="50"/>
-                                <state key="normal" title="Submit" image="submit_button">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                <rect key="frame" x="885" y="715" width="113" height="45"/>
+                                <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="18"/>
+                                <state key="normal" title="SUBMIT" backgroundImage="large_green_active">
+                                    <color key="titleColor" red="1" green="0.74104259174095843" blue="0.48882501297454573" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
+                                <state key="disabled" backgroundImage="large_green_inactive"/>
+                                <state key="selected" backgroundImage="large_green_pressed"/>
+                                <state key="highlighted" backgroundImage="large_green_pressed"/>
                                 <connections>
                                     <action selector="onCodeSubmitted:" destination="mL5-Kq-7bx" eventType="touchUpInside" id="uYl-wp-v6A"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SkL-FP-pol">
-                                <rect key="frame" x="700" y="710" width="101" height="50"/>
-                                <state key="normal" title="Run" image="run_button">
+                                <rect key="frame" x="774" y="715" width="113" height="45"/>
+                                <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="18"/>
+                                <state key="normal" title="RUN" backgroundImage="large_button_inactive">
+                                    <color key="titleColor" red="0.74142278439153442" green="0.5512918464294071" blue="0.35825157513350053" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <state key="disabled" backgroundImage="large_button_inactive"/>
+                                <state key="selected" backgroundImage="large_button_pressed">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted" backgroundImage="large_button_pressed"/>
                                 <connections>
                                     <action selector="onCodeRun:" destination="mL5-Kq-7bx" eventType="touchUpInside" id="Jcn-Vq-Gen"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yWl-nf-cCN">
-                                <rect key="frame" x="519" y="720" width="38" height="30"/>
-                                <size key="titleShadowOffset" width="1" height="1"/>
-                                <state key="normal" title="Undo">
+                                <rect key="frame" x="550" y="728" width="100" height="34"/>
+                                <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="14"/>
+                                <state key="normal" title="UNDO" backgroundImage="small_button_active">
+                                    <color key="titleColor" red="0.74142278439999998" green="0.55129184639999995" blue="0.3582515751" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <state key="disabled" backgroundImage="small_button_inactive">
+                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="selected" backgroundImage="small_button_pressed"/>
+                                <state key="highlighted" backgroundImage="small_button_pressed"/>
                                 <connections>
                                     <action selector="onUndo:" destination="mL5-Kq-7bx" eventType="touchUpInside" id="a0Z-kk-CeT"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZvF-zO-AH3">
-                                <rect key="frame" x="606" y="720" width="37" height="30"/>
-                                <size key="titleShadowOffset" width="1" height="1"/>
-                                <state key="normal" title="Redo">
+                                <rect key="frame" x="650" y="728" width="100" height="34"/>
+                                <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="14"/>
+                                <state key="normal" title="REDO" backgroundImage="small_button_active">
+                                    <color key="titleColor" red="0.74142278439999998" green="0.55129184639999995" blue="0.3582515751" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <state key="disabled" backgroundImage="small_button_inactive">
+                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="selected" backgroundImage="small_button_pressed"/>
+                                <state key="highlighted" backgroundImage="small_button_pressed"/>
                                 <connections>
                                     <action selector="onRedo:" destination="mL5-Kq-7bx" eventType="touchUpInside" id="utY-xp-0Hh"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OTR-hY-aNL">
-                                <rect key="frame" x="408" y="720" width="66" height="30"/>
-                                <size key="titleShadowOffset" width="1" height="1"/>
-                                <state key="normal" title="Keyboard">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="toggleKeyboard:" destination="mL5-Kq-7bx" eventType="touchUpInside" id="JLm-Rf-UlQ"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lwx-zM-L4H">
-                                <rect key="frame" x="295" y="720" width="81" height="30"/>
-                                <size key="titleShadowOffset" width="1" height="1"/>
-                                <state key="normal" title="Reset Code">
+                                <rect key="frame" x="350" y="728" width="100" height="34"/>
+                                <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="14"/>
+                                <state key="normal" title="RESET CODE" backgroundImage="small_button_active">
+                                    <color key="titleColor" red="0.74142278439999998" green="0.55129184639999995" blue="0.3582515751" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <state key="disabled" backgroundImage="small_button_inactive">
+                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="selected" backgroundImage="small_button_pressed"/>
+                                <state key="highlighted" backgroundImage="small_button_pressed"/>
                                 <connections>
                                     <action selector="onClickResetCode:" destination="mL5-Kq-7bx" eventType="touchUpInside" id="pa9-tt-rwP"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OTR-hY-aNL">
+                                <rect key="frame" x="450" y="728" width="100" height="34"/>
+                                <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="14"/>
+                                <state key="normal" title="KEYBOARD" backgroundImage="small_button_active">
+                                    <color key="titleColor" red="0.74142278439999998" green="0.55129184639999995" blue="0.3582515751" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="disabled" backgroundImage="small_button_inactive">
+                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="selected" backgroundImage="small_button_pressed"/>
+                                <state key="highlighted" backgroundImage="small_button_pressed"/>
+                                <connections>
+                                    <action selector="toggleKeyboard:" destination="mL5-Kq-7bx" eventType="touchUpInside" id="JLm-Rf-UlQ"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -380,11 +421,19 @@
     <resources>
         <image name="Logo" width="86" height="20"/>
         <image name="amuletOfConditional" width="32" height="32"/>
+        <image name="large_button_inactive" width="113" height="49"/>
+        <image name="large_button_pressed" width="113" height="49"/>
+        <image name="large_green_active" width="113" height="49"/>
+        <image name="large_green_inactive" width="113" height="49"/>
+        <image name="large_green_pressed" width="113" height="49"/>
         <image name="loginArtBackground" width="1024" height="435"/>
         <image name="loginInfoBackground" width="411" height="88"/>
         <image name="loginModalBackground" width="533" height="639"/>
-        <image name="run_button" width="302" height="150"/>
-        <image name="submit_button" width="551" height="150"/>
+        <image name="play_background" width="1024" height="659"/>
+        <image name="play_background_bottom" width="1011" height="73"/>
+        <image name="small_button_active" width="98" height="38"/>
+        <image name="small_button_inactive" width="98" height="38"/>
+        <image name="small_button_pressed" width="98" height="38"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
