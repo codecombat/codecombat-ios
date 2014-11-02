@@ -71,7 +71,11 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   func onTap(recognizer:UITapGestureRecognizer) {
     if recognizer == tapGestureRecognizer {
       let tappedCharacterIndex = textView.characterIndexAtPoint(recognizer.locationInView(textView))
-      
+      if textView.keyboardModeEnabled {
+        recognizer.enabled = false
+        recognizer.enabled = true
+        return
+      }
       if textStorage.characterIsPartOfString(tappedCharacterIndex) {
         let stringRange = textStorage.stringRangeContainingCharacterIndex(tappedCharacterIndex)
         switch LevelSettingsManager.sharedInstance.level {
@@ -118,6 +122,11 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   
   func onDrag(recognizer:UIPanGestureRecognizer) {
     if recognizer != textView.panGestureRecognizer {
+      if textView.keyboardModeEnabled {
+        recognizer.enabled = false
+        recognizer.enabled = true
+        return
+      }
       var locationInParentView = recognizer.locationInView(parentViewController!.view)
       locationInParentView.y += (textView.lineSpacing + textView.font.lineHeight) / 2
       var locationInTextView = recognizer.locationInView(textView)

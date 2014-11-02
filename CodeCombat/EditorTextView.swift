@@ -137,11 +137,13 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   }
   
   func toggleKeyboardMode() {
-    editable = !editable
-    selectable = !selectable
-    if isFirstResponder() {
+    if keyboardModeEnabled {
+      editable = false
+      selectable = false
       resignFirstResponder()
     } else {
+      editable = true
+      selectable = true
       becomeFirstResponder()
     }
   }
