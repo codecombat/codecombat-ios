@@ -61,7 +61,8 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   private func updateFrame(route: String) {
     var webViewFrame = CGRectMake(0, 0, 1024, 768)  // Full-size
     if isRouteLevel(route) {
-      webViewFrame = CGRectMake(0, 0, 1024, 1024 * (589 / 924))  // Full-width Surface, preserving aspect ratio.
+      let topBarHeight: CGFloat = 50
+      webViewFrame = CGRectMake(0, 0, 1024, topBarHeight + 1024 * (589 / 924))  // Full-width Surface, preserving aspect ratio.
     }
     WebManager.sharedInstance.webView!.frame = webViewFrame
   }

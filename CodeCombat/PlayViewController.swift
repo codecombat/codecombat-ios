@@ -68,8 +68,9 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     let frameWidth = view.frame.size.width
     let frameHeight = view.frame.size.height
     let aspectRatio:CGFloat = 1.56888
+    let topBarHeight: CGFloat = 50
     let backgroundImageVerticalOverlap: CGFloat = 11
-    editorContainerView.frame = CGRectMake(0, frameWidth / aspectRatio - backgroundImageVerticalOverlap, frameWidth, backgroundImage.size.height)
+    editorContainerView.frame = CGRectMake(0, topBarHeight + frameWidth / aspectRatio - backgroundImageVerticalOverlap, frameWidth, backgroundImage.size.height)
     setupScrollView()
     setupInventory()
     setupEditor()
