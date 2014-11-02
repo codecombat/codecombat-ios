@@ -71,7 +71,11 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   func onTap(recognizer:UITapGestureRecognizer) {
     if recognizer == tapGestureRecognizer {
       let tappedCharacterIndex = textView.characterIndexAtPoint(recognizer.locationInView(textView))
-      
+      if textView.keyboardModeEnabled {
+        recognizer.enabled = false
+        recognizer.enabled = true
+        return
+      }
       if textStorage.characterIsPartOfString(tappedCharacterIndex) {
         let stringRange = textStorage.stringRangeContainingCharacterIndex(tappedCharacterIndex)
         switch LevelSettingsManager.sharedInstance.level {
@@ -118,6 +122,11 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   
   func onDrag(recognizer:UIPanGestureRecognizer) {
     if recognizer != textView.panGestureRecognizer {
+      if textView.keyboardModeEnabled {
+        recognizer.enabled = false
+        recognizer.enabled = true
+        return
+      }
       var locationInParentView = recognizer.locationInView(parentViewController!.view)
       locationInParentView.y += (textView.lineSpacing + textView.font.lineHeight) / 2
       var locationInTextView = recognizer.locationInView(textView)
@@ -423,9 +432,16 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     //get the text underneath the drag end
     let lineFragmentRect = getLineFragmentRectForDrag(dragEndLocation);
     let characterRange = getCharacterRangeForLineFragmentRect(lineFragmentRect)
-    let replacedString = textStorage.string()!.substringWithRange(characterRange)
-    let replacingString = textStorage.string()!.substringWithRange(draggedCharacterRange)
+    var replacedString = textStorage.string()!.substringWithRange(characterRange)
+    var replacingString = textStorage.string()!.substringWithRange(draggedCharacterRange)
     if !NSEqualRanges(draggedCharacterRange, characterRange) {
+      var replacedLineIndentation = indentationLevelOfLine(lineNumberForDraggedCharacterRange(characterRange))
+      let draggedLineIndentation = indentationLevelOfLine(lineNumberForDraggedCharacterRange(draggedCharacterRange))
+      let trimmedString = replacedString.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+      if countElements(trimmedString) > 0 && trimmedString.substringFromIndex(trimmedString.endIndex.predecessor()) == ":" {
+        replacedLineIndentation++
+      }
+      replacingString = reindentString(replacingString, indentationLevel: replacedLineIndentation)
       textStorage.beginEditing()
       //edit the latter range first
       let replacingRange = NSRange(location: characterRange.location, length: 0)
@@ -439,6 +455,17 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
       }
       textStorage.endEditing()
       textView.setNeedsDisplay()
+    }
+  }
+  
+  private func reindentString(str:String, indentationLevel:Int) -> String {
+    let strippedString = str.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+    switch LevelSettingsManager.sharedInstance.language {
+    case .Python:
+      return String(count: 4 * indentationLevel, repeatedValue: " " as Character) + strippedString
+    default:
+      println("WILL NOT REINDENT STRING FOR UNRECOGNIZED LANGUAGE")
+      return str
     }
   }
 
