@@ -31,6 +31,17 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
     
     addTarget(self, action: Selector("onTapped"), forControlEvents: .TouchUpInside)
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onCodeRun"), name: "codeRun", object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onOverlayHideRequest"), name: "overlayHideRequest", object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onOverlayUnhideRequest"), name: "overlayUnhideRequest", object: nil)
+    
+  }
+  
+  func onOverlayHideRequest() {
+    hidden = true
+  }
+  
+  func onOverlayUnhideRequest() {
+    hidden = false
   }
   
   deinit {

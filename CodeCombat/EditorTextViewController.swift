@@ -142,6 +142,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
         
         textView.createViewsForAllLinesExceptDragged(lineFragmentRect, draggedCharacterRange: characterRange)
         textStorage.makeTextClear()
+        NSNotificationCenter.defaultCenter().postNotificationName("overlayHideRequest", object: nil)
         textView.createDeletionOverlayView()
         break
       case .Changed:
@@ -158,6 +159,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
           shiftAroundLines(locationInTextView)
         }
         //These eventually should run only when the code significantly changes
+        NSNotificationCenter.defaultCenter().postNotificationName("overlayUnhideRequest", object: nil)
         textView.removeCurrentLineNumberHighlight()
         textView.clearCodeProblemGutterAnnotations()
         textView.removeUserCodeProblemLineHighlights()

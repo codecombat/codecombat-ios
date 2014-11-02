@@ -93,10 +93,12 @@ class EditorTextStorage: NSTextStorage {
           var functionName = "unsetForLanguage\(language)"
           if language == "python" {
             let parentNode = highlighter.lastScopeNode
-            if parentNode.name == nil || !parentNode.name.hasPrefix("meta.function-call") {
-              functionName = ""
-            } else {
-              functionName = parentNode.data
+            if parentNode != nil {
+              if parentNode.name == nil || !parentNode.name.hasPrefix("meta.function-call") {
+                functionName = ""
+              } else {
+                functionName = parentNode.data
+              }
             }
           }
           let argumentOverlayTuple = (functionName, scopeExtent!)
