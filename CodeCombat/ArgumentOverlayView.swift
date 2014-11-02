@@ -65,7 +65,7 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
       variables = variables.filter({
         return substringBeforeOverlay.rangeOfString($0) != nil
       })
-      if functionName != "attack" {
+      if functionName != "attack" || variables.count == 0 {
         if !contains(variables, defaultContentsToInsertOnRun) {
           variables.append(defaultContentsToInsertOnRun)
         }
