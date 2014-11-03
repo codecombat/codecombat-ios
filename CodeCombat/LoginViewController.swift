@@ -114,6 +114,7 @@ class LoginViewController: UIViewController {
           User.sharedInstance.email = userJSON["email"] as? String
           User.sharedInstance.password = password
           dispatch_async(dispatch_get_main_queue(), {
+            self!.loginActivityIndicatorView.stopAnimating()
             WebManager.sharedInstance.saveUser()
             self!.segueToMainMenu()
           })

@@ -39,12 +39,11 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   }
   
   func onLogout() {
-    println("Logging out!")
     webManager.clearCredentials()
-    //segue to login view and kill the webview
-    let mainStoryboard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
-    let loginViewController = mainStoryboard.instantiateInitialViewController() as LoginViewController
-    presentViewController(loginViewController, animated: true, completion: nil)
+    webManager.unsubscribe(self)
+    NSNotificationCenter.defaultCenter().removeObserver(self)
+    webManager.removeAllUserScripts()
+    dismissViewControllerAnimated(true, completion: nil)
   }
   
   private func loadLevel(levelSlug:String) {

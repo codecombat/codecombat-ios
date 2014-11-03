@@ -72,6 +72,10 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     }
   }
   
+  func removeAllUserScripts() {
+    webViewConfiguration!.userContentController.removeAllUserScripts()
+  }
+  
   func webView(webView: WKWebView, didCommitNavigation navigation: WKNavigation!) {
     //Inject the no-zoom javascript
     let noZoomJS = "var meta = document.createElement('meta');meta.setAttribute('name', 'viewport');meta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');document.getElementsByTagName('head')[0].appendChild(meta);"
