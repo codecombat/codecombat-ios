@@ -89,6 +89,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   //Deletion overlay functions
   func createDeletionOverlayView() {
     var deleteOverlayFrame = frame
+    deleteOverlayFrame.origin.y = 0
     deleteOverlayFrame.origin.x = deleteOverlayFrame.width - deletionOverlayWidth
     deleteOverlayFrame.size.width = deletionOverlayWidth
     
