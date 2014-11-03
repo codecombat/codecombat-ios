@@ -142,16 +142,14 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
       break
     case .Changed:
       draggedView.center = LocationInParentView
-      
-      if EditorView.frame.contains(LocationInParentView) {
+      if EditorView.frame.contains(LocationInEditorContainerView) {
         var Snippet = draggedProperty.codeSnippetForLanguage("python")
         if Snippet != nil {
           Snippet = draggedProperty.name
         }
-        
         Parent.textViewController.handleItemPropertyDragChangedAtLocation(locationInEditorTextView)
       } else {
-        Parent.textViewController.textView.removeLineDimmingOverlay()
+        EditorView.removeLineDimmingOverlay()
       }
       break
     case .Ended:
@@ -160,11 +158,11 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
       if Snippet == nil {
         Snippet = draggedProperty.name
       }
-      if EditorView.frame.contains(LocationInParentView) {
+      if EditorView.frame.contains(LocationInEditorContainerView) {
         Parent.textViewController.handleItemPropertyDragEndedAtLocation(locationInEditorTextView, code: Snippet!)
       } else {
-        Parent.textViewController.textView.removeDragHintView()
-        Parent.textViewController.textView.removeLineDimmingOverlay()
+        EditorView.removeDragHintView()
+        EditorView.removeLineDimmingOverlay()
       }
       draggedView = nil
       
