@@ -183,12 +183,19 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   
   
   func dimLineUnderLocation(location:CGPoint) {
-    let currentLine = lineNumberUnderPoint(location)
+    //let currentLine = lineNumberUnderPoint(location)
+    let currentLine = Int((location.y / (font.lineHeight + lineSpacing)))
     slightlyDimLineWhileDraggingOver(lineNumber: currentLine)
   }
   
   func slightlyDimLineWhileDraggingOver(#lineNumber:Int) {
-    let FirstLineNumberRect = getLineNumberRect(lineNumber)
+    //let FirstLineNumberRect = getLineNumberRect(lineNumber)
+    let LineHeight = font.lineHeight + lineSpacing
+    let FirstLineNumberRect = CGRect(
+      x: 0,
+      y: LineHeight * CGFloat(lineNumber ),
+      width: frame.width,
+      height: LineHeight)
     let HighlightingRect = CGRect(
       x: FirstLineNumberRect.origin.x,
       y: FirstLineNumberRect.origin.y,
@@ -478,16 +485,23 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
             stop.initialize(true)
           }
         } else {
-          numberOfExtraLines++
+          var characterRangeString = storage.string()!.substringWithRange(charRange).stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet())
+          if countElements(characterRangeString) > 0 {
+            numberOfExtraLines++
+          }
+          
+          
         }
     }
     layoutManager.enumerateLineFragmentsForGlyphRange(glyphsToShow,
       usingBlock: lineFragmentClosure)
     if  boundingRect == nil {
+      println(lineNumber)
+      println(numberOfExtraLines)
       let LineHeight = font.lineHeight + lineSpacing
       let LineNumberRect = CGRect(
         x: 0,
-        y: LineHeight * CGFloat(lineNumber - numberOfExtraLines + 1),
+        y: LineHeight * CGFloat(lineNumber - numberOfExtraLines),
         width: frame.width,
         height: LineHeight)
       boundingRect = LineNumberRect
