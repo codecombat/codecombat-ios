@@ -12,14 +12,14 @@ import WebKit
 var autoLoggedIn: Bool = false  // Wish class variables were supported.
 
 class GameViewController: UIViewController, UIActionSheetDelegate {
-  var webManager = WebManagerSharedInstance
-  var webView: WKWebView = WebManagerSharedInstance.webView!
+  var webManager = WebManager.sharedInstance
+  var webView: WKWebView = WebManager.sharedInstance.webView!
   var playViewController: PlayViewController?
   var playLevelRoutePrefix = "/play/level/"
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    webView = WebManagerSharedInstance.webView!
+    webView = WebManager.sharedInstance.webView!
     view.addSubview(webView)
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("listenToNotifications"), name: "webViewDidFinishNavigation", object: nil)
   }
@@ -28,6 +28,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
     delay(1, {
       self.webManager.subscribe(self, channel: "router:navigated", selector: Selector("onNavigated:"))
       self.webManager.subscribe(self, channel: "level:loading-view-unveiled", selector: Selector("onLevelStarted:"))
+      self.webManager.subscribe(self, channel: "auth:logging-out", selector: Selector("onLogout"))
       //webManager.subscribe(self, channel: "supermodel:load-progress-changed", selector: Selector("onProgressUpdate:"))
     })
     
@@ -35,6 +36,15 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   
   deinit {
     WebManager.sharedInstance.unsubscribe(self)
+  }
+  
+  func onLogout() {
+    println("Logging out!")
+    webManager.clearCredentials()
+    //segue to login view and kill the webview
+    let mainStoryboard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
+    let loginViewController = mainStoryboard.instantiateInitialViewController() as LoginViewController
+    presentViewController(loginViewController, animated: true, completion: nil)
   }
   
   private func loadLevel(levelSlug:String) {

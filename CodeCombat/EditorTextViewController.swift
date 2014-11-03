@@ -122,6 +122,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   
   func onCodeRun() {
     textView.clearCodeProblemGutterAnnotations()
+    textView.removeCurrentLineNumberHighlight()
     textView.clearErrorMessageView()
     textView.removeUserCodeProblemLineHighlights()
   }

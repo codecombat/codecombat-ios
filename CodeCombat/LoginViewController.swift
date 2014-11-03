@@ -16,27 +16,19 @@ class LoginViewController: UIViewController {
   @IBOutlet weak var usernameTextField: UITextField!
   @IBOutlet weak var loginActivityIndicatorView: UIActivityIndicatorView!
   
-  var loginProtectionSpace: NSURLProtectionSpace?
-  
   override func viewDidLoad() {
     super.viewDidLoad()
     drawBackgroundGradient()
-    createLoginProtectionSpace()
+    WebManager.sharedInstance.createLoginProtectionSpace()
   }
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     rememberUser()
   }
-  
-  func createLoginProtectionSpace() {
-    // http://stackoverflow.com/a/17997943/540620
-    let url = WebManager.sharedInstance.rootURL
-    loginProtectionSpace = NSURLProtectionSpace(host: url!.host!, port: url!.port!.integerValue, `protocol`: url!.scheme!, realm: nil, authenticationMethod: nil)  //.HTTPDigest)
-  }
-  
+
   func rememberUser() {
-    let credentialsValues = getCredentials()
+    let credentialsValues = WebManager.sharedInstance.getCredentials()
     if !credentialsValues.isEmpty {
       let credential = credentialsValues.first! as NSURLCredential
       println("User \(credential.user) already connected with saved password; logging in.")
@@ -47,25 +39,6 @@ class LoginViewController: UIViewController {
     }
   }
   
-  func saveUser() {
-    let credential = NSURLCredential(user: User.sharedInstance.email!, password: User.sharedInstance.password!, persistence: .Permanent)
-    NSURLCredentialStorage.sharedCredentialStorage().setCredential(credential, forProtectionSpace: loginProtectionSpace!)
-  }
-  
-  func clearCredentials() {
-    let credentialsValues = getCredentials()
-    for credential in credentialsValues {
-      NSURLCredentialStorage.sharedCredentialStorage().removeCredential(credential, forProtectionSpace: loginProtectionSpace!)
-    }
-  }
-  
-  func getCredentials() -> [NSURLCredential] {
-    let credentialsDictionary = NSURLCredentialStorage.sharedCredentialStorage().credentialsForProtectionSpace(loginProtectionSpace!)
-    if credentialsDictionary == nil {
-      return []
-    }
-    return credentialsDictionary!.values.array as [NSURLCredential]
-  }
   
   @IBAction func login(button:UIButton) {
     loginActivityIndicatorView.startAnimating()
@@ -141,7 +114,7 @@ class LoginViewController: UIViewController {
           User.sharedInstance.email = userJSON["email"] as? String
           User.sharedInstance.password = password
           dispatch_async(dispatch_get_main_queue(), {
-            self!.saveUser()
+            WebManager.sharedInstance.saveUser()
             self!.segueToMainMenu()
           })
         }
