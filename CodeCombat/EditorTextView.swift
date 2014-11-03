@@ -183,7 +183,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   
   
   func dimLineUnderLocation(location:CGPoint) {
-    let currentLine = Int(location.y / (font.lineHeight + lineSpacing))
+    let currentLine = lineNumberUnderPoint(location)
     slightlyDimLineWhileDraggingOver(lineNumber: currentLine)
   }
   
@@ -407,6 +407,13 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     }
   }
   
+  func paragraphRangeUnderLocation(loc:CGPoint) -> NSRange {
+    /*let storage = textStorage as EditorTextStorage
+    let nearestCharacterIndex = layoutManager.characterIndexForPoint(loc, inTextContainer: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
+    return storage.string()!.paragraphRangeForRange(<#range: NSRange#>)*/
+    return NSRange(location:0, length: 0)
+  }
+  
   func lineNumberUnderPoint(var point:CGPoint) -> Int {
     //point.y += lineSpacing
     let storage = textStorage as EditorTextStorage
@@ -442,6 +449,51 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
       lineNumberToReturn = Int(point.y / (font.lineHeight + lineSpacing)) + 1 - numberOfExtraLines
     }
     return lineNumberToReturn
+  }
+  
+  func boundingRectForLineNumber(lineNumber:Int) -> CGRect {
+    //point.y += lineSpacing
+    let storage = textStorage as EditorTextStorage
+    let Context = UIGraphicsGetCurrentContext()
+    let Bounds = bounds
+    
+    let textRange = layoutManager.glyphRangeForTextContainer(textContainer)
+    let glyphsToShow = layoutManager.glyphRangeForCharacterRange(textRange,
+      actualCharacterRange: nil)
+    
+    var currentLineNumber = 0
+    var boundingRect:CGRect?
+    var numberOfExtraLines = 0
+    func lineFragmentClosure(aRect:CGRect, aUsedRect:CGRect,
+      textContainer:NSTextContainer!, glyphRange:NSRange,
+      stop:UnsafeMutablePointer<ObjCBool>) -> Void {
+        let charRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
+        let paraRange = storage.string()!.paragraphRangeForRange(charRange)
+        if charRange.location == paraRange.location {
+          currentLineNumber++
+          if currentLineNumber == lineNumber {
+            boundingRect = layoutManager.boundingRectForGlyphRange(layoutManager.glyphRangeForCharacterRange(paraRange, actualCharacterRange: nil), inTextContainer: textContainer)
+            boundingRect!.origin.x = 0
+            boundingRect!.size.width = frame.width
+            stop.initialize(true)
+          }
+        } else {
+          numberOfExtraLines++
+        }
+    }
+    layoutManager.enumerateLineFragmentsForGlyphRange(glyphsToShow,
+      usingBlock: lineFragmentClosure)
+    if  boundingRect == nil {
+      let LineHeight = font.lineHeight + lineSpacing
+      let LineNumberRect = CGRect(
+        x: 0,
+        y: LineHeight * CGFloat(lineNumber - numberOfExtraLines + 1),
+        width: frame.width,
+        height: LineHeight)
+      boundingRect = LineNumberRect
+    }
+    
+    return boundingRect!
   }
   
   private func drawLineNumbers(rect:CGRect) {
@@ -535,7 +587,8 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     func fragmentEnumerator(aRect:CGRect, aUsedRect:CGRect, textContainer:NSTextContainer!, glyphRange:NSRange, stop:UnsafeMutablePointer<ObjCBool>) -> Void {
       let fragmentCharacterRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
       let fragmentParagraphRange = editorTextStorage.string()!.paragraphRangeForRange(fragmentCharacterRange)
-      if NSEqualRanges(draggedCharacterRange,fragmentCharacterRange) {
+      let draggedParagraphRange = editorTextStorage.string()!.paragraphRangeForRange(draggedCharacterRange)
+      if NSEqualRanges(draggedParagraphRange, fragmentParagraphRange) {
         //This means we've found the dragged line
         currentLineNumber++
         return
@@ -567,10 +620,22 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     if fragmentCharacterRange.length == fragmentParagraphRange.length {
       label.attributedText = parentTextViewController.getAttributedStringForCharacterRange(fragmentParagraphRange)
     } else {
-      let attributedStringBeforeLineBreak = NSMutableAttributedString(attributedString: parentTextViewController.getAttributedStringForCharacterRange(fragmentCharacterRange))
-      attributedStringBeforeLineBreak.appendAttributedString(NSAttributedString(string: "\n"))
-      let attributedStringAfterLineBreak = parentTextViewController.getAttributedStringForCharacterRange(NSRange(location: NSMaxRange(fragmentCharacterRange), length: (fragmentParagraphRange.length - fragmentCharacterRange.length)))
-      attributedStringBeforeLineBreak.appendAttributedString(attributedStringAfterLineBreak)
+      var attributedStringBeforeLineBreak:NSMutableAttributedString!
+      var attributedStringAfterLineBreak:NSMutableAttributedString!
+      if fragmentCharacterRange.location == fragmentParagraphRange.location {
+        //Dragging first line
+        attributedStringBeforeLineBreak = NSMutableAttributedString(attributedString: parentTextViewController.getAttributedStringForCharacterRange(fragmentCharacterRange))
+        attributedStringBeforeLineBreak.appendAttributedString(NSAttributedString(string: "\n"))
+        attributedStringAfterLineBreak = NSMutableAttributedString(attributedString: parentTextViewController.getAttributedStringForCharacterRange(NSRange(location: NSMaxRange(fragmentCharacterRange), length: (fragmentParagraphRange.length - fragmentCharacterRange.length))))
+        attributedStringBeforeLineBreak.appendAttributedString(attributedStringAfterLineBreak)
+      } else {
+        //Dragging second line, character range is smaller than paragraph range
+        attributedStringBeforeLineBreak = NSMutableAttributedString(attributedString: parentTextViewController.getAttributedStringForCharacterRange(NSRange(location: fragmentParagraphRange.location, length: fragmentParagraphRange.length - fragmentCharacterRange.length)))
+        attributedStringBeforeLineBreak.appendAttributedString(NSAttributedString(string: "\n"))
+        attributedStringAfterLineBreak = NSMutableAttributedString(attributedString: parentTextViewController.getAttributedStringForCharacterRange(fragmentCharacterRange))
+        attributedStringBeforeLineBreak.appendAttributedString(attributedStringAfterLineBreak)
+      }
+      
       label.lineBreakMode = NSLineBreakMode.ByWordWrapping
       label.numberOfLines = 0
       var paragraphStyle = NSMutableParagraphStyle()
@@ -619,25 +684,28 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     if max(1,lineNumber) < draggedLineNumber {
       //Move the ones between the current drag location and dragged line
       for lineToMove in max(lineNumber,1)...(draggedLineNumber - 1) {
-        let labelToMove = dragOverlayLabels[lineToMove]!
-        //check if offset is supposed to move
-        if labelToMove.frame.origin.y == originalDragOverlayLabelOffsets[lineToMove]! {
-          //shift down
-          var oldFrame = labelToMove.frame
-          oldFrame.origin.y += lineSpacing + font.lineHeight
-          labelToMove.frame = oldFrame
-          labelToMove.setNeedsLayout()
+        if let labelToMove = dragOverlayLabels[lineToMove] {
+          //check if offset is supposed to move
+          if labelToMove.frame.origin.y == originalDragOverlayLabelOffsets[lineToMove]! {
+            //shift down
+            var oldFrame = labelToMove.frame
+            oldFrame.origin.y += lineSpacing + font.lineHeight
+            labelToMove.frame = oldFrame
+            labelToMove.setNeedsLayout()
+          }
         }
+        
       }
       //Reset the ones above that
       if lineNumber != 1 && draggedLineNumber != 1 {
         for lineToReset in 1...max(1,lineNumber - 1) {
-          let labelToReset = dragOverlayLabels[lineToReset]!
-          if labelToReset.frame.origin.y != originalDragOverlayLabelOffsets[lineToReset]! {
-            var oldFrame = labelToReset.frame
-            oldFrame.origin.y = originalDragOverlayLabelOffsets[lineToReset]!
-            labelToReset.frame = oldFrame
-            labelToReset.setNeedsLayout()
+          if let labelToReset = dragOverlayLabels[lineToReset] {
+            if labelToReset.frame.origin.y != originalDragOverlayLabelOffsets[lineToReset]! {
+              var oldFrame = labelToReset.frame
+              oldFrame.origin.y = originalDragOverlayLabelOffsets[lineToReset]!
+              labelToReset.frame = oldFrame
+              labelToReset.setNeedsLayout()
+            }
           }
         }
       }
@@ -645,23 +713,25 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     } else if min(lineNumber,maxLine) > draggedLineNumber {
       //Move the lines between the dragged line and the current drag
       for lineToMove in (draggedLineNumber + 1)...min(lineNumber,maxLine) {
-        let labelToMove = dragOverlayLabels[lineToMove]!
-        if labelToMove.frame.origin.y == originalDragOverlayLabelOffsets[lineToMove]! {
-          var oldFrame = labelToMove.frame
-          oldFrame.origin.y -= lineSpacing + font.lineHeight
-          labelToMove.frame = oldFrame
-          labelToMove.setNeedsLayout()
+        if let labelToMove = dragOverlayLabels[lineToMove] {
+          if labelToMove.frame.origin.y == originalDragOverlayLabelOffsets[lineToMove]! {
+            var oldFrame = labelToMove.frame
+            oldFrame.origin.y -= lineSpacing + font.lineHeight
+            labelToMove.frame = oldFrame
+            labelToMove.setNeedsLayout()
+          }
         }
       }
       //Reset the ones below that
       if lineNumber != maxLine {
         for lineToReset in min(maxLine,lineNumber + 1)...maxLine {
-          let labelToReset = dragOverlayLabels[lineToReset]!
-          if labelToReset.frame.origin.y != originalDragOverlayLabelOffsets[lineToReset]! {
-            var oldFrame = labelToReset.frame
-            oldFrame.origin.y = originalDragOverlayLabelOffsets[lineToReset]!
-            labelToReset.frame = oldFrame
-            labelToReset.setNeedsLayout()
+          if let labelToReset = dragOverlayLabels[lineToReset] {
+            if labelToReset.frame.origin.y != originalDragOverlayLabelOffsets[lineToReset]! {
+              var oldFrame = labelToReset.frame
+              oldFrame.origin.y = originalDragOverlayLabelOffsets[lineToReset]!
+              labelToReset.frame = oldFrame
+              labelToReset.setNeedsLayout()
+            }
           }
         }
       }
@@ -679,13 +749,15 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
         linesToReset.append(draggedLineNumber + 1)
       }
       for lineToReset in linesToReset {
-        let labelToReset = dragOverlayLabels[lineToReset]!
-        if labelToReset.frame.origin.y != originalDragOverlayLabelOffsets[lineToReset]! {
-          var oldFrame = labelToReset.frame
-          oldFrame.origin.y = originalDragOverlayLabelOffsets[lineToReset]!
-          labelToReset.frame = oldFrame
-          labelToReset.setNeedsLayout()
+        if let labelToReset = dragOverlayLabels[lineToReset] {
+          if labelToReset.frame.origin.y != originalDragOverlayLabelOffsets[lineToReset]! {
+            var oldFrame = labelToReset.frame
+            oldFrame.origin.y = originalDragOverlayLabelOffsets[lineToReset]!
+            labelToReset.frame = oldFrame
+            labelToReset.setNeedsLayout()
+          }
         }
+        
       }
     }
   }
@@ -699,17 +771,11 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   
   //Note, this won't take doubled lines into account
   private func lineNumberOfLocationInTextView(loc:CGPoint) -> Int {
-    return Int((loc.y - lineSpacing) / (lineSpacing + font.lineHeight) + 1)
+    return lineNumberUnderPoint(loc)
   }
 
   func getLineNumberRect(lineNumber:Int) -> CGRect{
-    let LineHeight = font.lineHeight + lineSpacing
-    let LineNumberRect = CGRect(
-      x: 0,
-      y: LineHeight * CGFloat(lineNumber) + lineSpacing,
-      width: frame.width,
-      height: LineHeight)
-    return LineNumberRect
+    return boundingRectForLineNumber(lineNumber)
   }
 
 

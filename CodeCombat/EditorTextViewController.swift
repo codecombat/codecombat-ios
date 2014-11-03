@@ -452,11 +452,12 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   
   private func shiftAroundLines(dragEndLocation:CGPoint) {
     //get the text underneath the drag end
-    let lineFragmentRect = getLineFragmentRectForDrag(dragEndLocation);
-    let characterRange = getCharacterRangeForLineFragmentRect(lineFragmentRect)
+    let characterIndexUnderDrag = textView.layoutManager.characterIndexForPoint(dragEndLocation, inTextContainer: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
+    let replacedCharacterRange = textStorage.string()!.paragraphRangeForRange(NSRange(location: characterIndexUnderDrag, length: 1))
+    let characterRange = replacedCharacterRange
     var replacedString = textStorage.string()!.substringWithRange(characterRange)
     var replacingString = textStorage.string()!.substringWithRange(draggedCharacterRange)
-    if !NSEqualRanges(draggedCharacterRange, characterRange) {
+    if !(draggedCharacterRange.location == characterRange.location) {
       var replacedLineIndentation = indentationLevelOfLine(lineNumberForDraggedCharacterRange(characterRange))
       let draggedLineIndentation = indentationLevelOfLine(lineNumberForDraggedCharacterRange(draggedCharacterRange))
       let trimmedString = replacedString.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
@@ -473,7 +474,6 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
       } else {
         textStorage.replaceCharactersInRange(characterRange, withString: replacedString + replacingString)
         textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
-        //textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
       }
       textStorage.endEditing()
       textView.setNeedsDisplay()
