@@ -201,11 +201,13 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   }
   
   @IBAction func onClickResetCode(sender:UIButton) {
+    
     let alertController = UIAlertController(title: "Are you sure?", message: "Reloading the original code will erase all of the code you've written. Are you sure?", preferredStyle: .Alert)
     let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
     alertController.addAction(cancelAction)
     
     let resetAction = UIAlertAction(title: "Reset", style: .Destructive, handler: {(action) in
+      NSNotificationCenter.defaultCenter().postNotificationName("codeReset", object: nil)
       self.webManager.publish("level:restart", event: [:])
     })
     alertController.addAction(resetAction)

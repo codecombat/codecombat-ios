@@ -152,11 +152,15 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   
   private func removeAllOverlaysNotRequested(requestedOverlayFunctionNamesAndRanges:[(String, NSRange)]) {
     let overlayRequestLocations = requestedOverlayFunctionNamesAndRanges.map({$0.1.location})
+    var keysToRemove:[Int] = []
     for (overlayLocation, overlay) in overlayLocationToViewMap {
       if !contains(overlayRequestLocations, overlayLocation) {
         overlay.removeFromSuperview()
-        overlayLocationToViewMap.removeValueForKey(overlayLocation)
+        keysToRemove.append(overlayLocation)
       }
+    }
+    for key in keysToRemove {
+      overlayLocationToViewMap.removeValueForKey(key)
     }
   }
 
@@ -175,6 +179,8 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     currentDragHintView?.removeFromSuperview()
     currentDragHintView = nil
   }
+  
+  
   
   func dimLineUnderLocation(location:CGPoint) {
     let currentLine = Int(location.y / (font.lineHeight + lineSpacing))
@@ -342,6 +348,100 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     layoutManager.enumerateLineFragmentsForGlyphRange(glyphsToShow,
       usingBlock: lineFragmentClosure)
     return lineFragmentRect
+  }
+  
+  func numberOfLinesInDocument() -> Int {
+    let storage = textStorage as EditorTextStorage
+    let Context = UIGraphicsGetCurrentContext()
+    let Bounds = bounds
+    
+    let textRange = layoutManager.glyphRangeForTextContainer(textContainer)
+    let glyphsToShow = layoutManager.glyphRangeForCharacterRange(textRange,
+      actualCharacterRange: nil)
+    
+    var currentLineNumber = 0
+    func lineFragmentClosure(aRect:CGRect, aUsedRect:CGRect,
+      textContainer:NSTextContainer!, glyphRange:NSRange,
+      stop:UnsafeMutablePointer<ObjCBool>) -> Void {
+        let charRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
+        let paraRange = storage.string()!.paragraphRangeForRange(charRange)
+        if charRange.location == paraRange.location {
+          currentLineNumber++
+        }
+    }
+    layoutManager.enumerateLineFragmentsForGlyphRange(glyphsToShow,
+      usingBlock: lineFragmentClosure)
+    return currentLineNumber
+  }
+  
+  func characterIndexForStartOfLine(lineNumber:Int) -> Int {
+    let storage = textStorage as EditorTextStorage
+    let Context = UIGraphicsGetCurrentContext()
+    let Bounds = bounds
+    
+    let textRange = layoutManager.glyphRangeForTextContainer(textContainer)
+    let glyphsToShow = layoutManager.glyphRangeForCharacterRange(textRange,
+      actualCharacterRange: nil)
+    
+    var characterIndex = -1
+    var currentLineNumber = 0
+    func lineFragmentClosure(aRect:CGRect, aUsedRect:CGRect,
+      textContainer:NSTextContainer!, glyphRange:NSRange,
+      stop:UnsafeMutablePointer<ObjCBool>) -> Void {
+        let charRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
+        let paraRange = storage.string()!.paragraphRangeForRange(charRange)
+        if charRange.location == paraRange.location {
+          currentLineNumber++
+          if lineNumber == currentLineNumber {
+            characterIndex = layoutManager.characterIndexForGlyphAtIndex(glyphRange.location)
+            stop.initialize(true)
+          }
+        }
+    }
+    layoutManager.enumerateLineFragmentsForGlyphRange(glyphsToShow,
+      usingBlock: lineFragmentClosure)
+    if characterIndex == -1 {
+      return storage.string()!.length
+    } else {
+      return characterIndex
+    }
+  }
+  
+  func lineNumberUnderPoint(var point:CGPoint) -> Int {
+    //point.y += lineSpacing
+    let storage = textStorage as EditorTextStorage
+    let Context = UIGraphicsGetCurrentContext()
+    let Bounds = bounds
+    
+    let textRange = layoutManager.glyphRangeForTextContainer(textContainer)
+    let glyphsToShow = layoutManager.glyphRangeForCharacterRange(textRange,
+      actualCharacterRange: nil)
+    
+    var currentLineNumber = 0
+    var lineNumberToReturn = -1
+    var numberOfExtraLines = 0
+    func lineFragmentClosure(aRect:CGRect, aUsedRect:CGRect,
+      textContainer:NSTextContainer!, glyphRange:NSRange,
+      stop:UnsafeMutablePointer<ObjCBool>) -> Void {
+        let charRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
+        let paraRange = storage.string()!.paragraphRangeForRange(charRange)
+        if charRange.location == paraRange.location {
+          currentLineNumber++
+        } else {
+          numberOfExtraLines++
+        }
+        let startY = aUsedRect.origin.y
+        if point.y >= startY && point.y < startY + aUsedRect.height {
+          lineNumberToReturn = currentLineNumber
+          stop.initialize(true)
+        }
+    }
+    layoutManager.enumerateLineFragmentsForGlyphRange(glyphsToShow,
+      usingBlock: lineFragmentClosure)
+    if lineNumberToReturn == -1 {
+      lineNumberToReturn = Int(point.y / (font.lineHeight + lineSpacing)) + 1 - numberOfExtraLines
+    }
+    return lineNumberToReturn
   }
   
   private func drawLineNumbers(rect:CGRect) {

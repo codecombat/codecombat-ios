@@ -44,6 +44,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     WebManager.sharedInstance.subscribe(self, channel: "tome:highlight-line", selector: Selector("onSpellStatementIndexUpdated:"))
     WebManager.sharedInstance.subscribe(self, channel: "problem:problem-created", selector: Selector("onProblemCreated:"))
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onCodeRun"), name: "codeRun", object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onCodeReset"), name: "codeReset", object: nil)
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onTextStorageFinishedTopLevelEditing"), name: "textStorageFinishedTopLevelEditing", object: nil)
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onKeyboardHide"), name: UIKeyboardDidHideNotification, object: nil)
   }
@@ -127,6 +128,13 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     textView.removeUserCodeProblemLineHighlights()
   }
   
+  func onCodeReset() {
+    textView.clearCodeProblemGutterAnnotations()
+    textView.removeCurrentLineNumberHighlight()
+    textView.clearErrorMessageView()
+    textView.removeUserCodeProblemLineHighlights()
+  }
+  
   func onDrag(recognizer:UIPanGestureRecognizer) {
     if recognizer != textView.panGestureRecognizer {
       if textView.keyboardModeEnabled {
@@ -200,7 +208,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     //This may cause some really really weird bugs if glyphs and character indices don't correspond.
     let nearestCharacterIndex = textView.layoutManager.characterIndexForGlyphAtIndex(nearestGlyphIndex)
     
-    let draggedOntoLine = Int(location.y / (textView.font.lineHeight + textView.lineSpacing)) + 1
+    let draggedOntoLine = textView.lineNumberUnderPoint(location)
+    
     var numberOfNewlinesBeforeGlyphIndex = 1
     for var index = 0; index < nearestGlyphIndex; numberOfNewlinesBeforeGlyphIndex++ {
       index = NSMaxRange(storage.string()!.lineRangeForRange(NSRange(location: index, length: 0)))
@@ -229,28 +238,32 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     default:
       break
     }
-    //Check if dragging onto an empty line in between two other lines of code.
-    stringToInsert = fixIndentationLevelForPython(nearestCharacterIndex, lineNumber: draggedOntoLine, rawString: stringToInsert)
     
-    //Adjust code to match indentation level and other languages
-    if characterAtGlyphIndex == 10 && characterBeforeGlyphIndex == 10 {
-    } else if draggedOntoLine == numberOfNewlinesBeforeGlyphIndex && characterAtGlyphIndex != 10 {
-      stringToInsert = stringToInsert + "\n"
-    } else if draggedOntoLine == numberOfNewlinesBeforeGlyphIndex && nearestGlyphIndex == storage.string()!.length - 1 {
-      stringToInsert = "\n" + stringToInsert
-    } else if draggedOntoLine > numberOfNewlinesBeforeGlyphIndex { //adapt to deal with wrapped lines
-      for var newlinesToInsertBeforeString = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex; newlinesToInsertBeforeString >= 0; newlinesToInsertBeforeString-- {
-        stringToInsert = "\n" + stringToInsert  // TODO: figure out why something was prepending newlines in Gems in the Deep; > 0 used to be >= 0, dunno if that works.
-      }
-    }
     //Check if code contains a placeholder
     if codeContainsPlaceholder(stringToInsert) {
       println(stringToInsert)
       let placeholderReplacement = getPlaceholderWidthString(stringToInsert)
       stringToInsert = replacePlaceholderInString(stringToInsert, replacement: placeholderReplacement)
     }
+    let numberOfLinesInDocument = textView.numberOfLinesInDocument()
+    println("Dragged onto line \(draggedOntoLine), \(numberOfLinesInDocument) lines total")
+    //Check if dragging onto an empty line in between two other lines of code.
+    stringToInsert = fixIndentationLevelForPython(nearestCharacterIndex, lineNumber: draggedOntoLine, rawString: stringToInsert)
+    let newline = 10 as unichar
+    //Adjust code to match indentation level and other languages
+    let startOfDraggedLineCharacterIndex = textView.characterIndexForStartOfLine(draggedOntoLine)
     
-    storage.replaceCharactersInRange(NSRange(location: nearestGlyphIndex, length: 0), withString: stringToInsert)
+    if draggedOntoLine > numberOfLinesInDocument {
+      for var i=numberOfLinesInDocument; i < draggedOntoLine; i++ {
+        stringToInsert = "\n" + stringToInsert
+      }
+      storage.replaceCharactersInRange(NSRange(location: startOfDraggedLineCharacterIndex - 1, length: 0), withString: stringToInsert)
+    } else {
+      if storage.string()!.characterAtIndex(startOfDraggedLineCharacterIndex) != 10 {
+        stringToInsert = stringToInsert + "\n"
+      }
+      storage.replaceCharactersInRange(NSRange(location: startOfDraggedLineCharacterIndex, length: 0), withString: stringToInsert)
+    }
     textView.setNeedsDisplay()
   }
   
@@ -370,6 +383,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   }
   
   func onTextStorageFinishedTopLevelEditing() {
+    textView?.removeCurrentLineNumberHighlight()
     ensureNewlineAtEndOfCode()
   }
   

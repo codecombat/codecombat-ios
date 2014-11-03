@@ -15,6 +15,9 @@ enum CodeLanguage:String {
 }
 
 enum LevelName:String {
+  case GemsInTheDeep = "gems-in-the-deep"
+  case DescendingFurther = "descending-further"
+  case TheSecondKithmaze = "the-second-kithmaze"
   case TheRaisedSword = "the-raised-sword"
   case TrueNames = "true-names"
   case FavorableOdds = "favorable-odds"

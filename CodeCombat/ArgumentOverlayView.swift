@@ -58,7 +58,9 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
       makeStringChoicePopoverWithChoices(["\"Gurt\"","\"Rig\"","\"Ack\""])
     case .NewSight:
       makeStringChoicePopoverWithChoices(["\"Door\""])
-    case .LowlyKithmen, .ClosingTheDistance, .KnownEnemy, .MasterOfNames, .TacticalStrike, .TheFinalKithmaze, .TheGauntlet:
+    case .KithgardGates:
+      makeStringChoicePopoverWithChoices(["\"fence\""])
+    default:
       var variables = editorTextViewController.textStorage.getDefinedVariableNames()
       
       let substringBeforeOverlay = editorTextViewController.textStorage.string()!.substringToIndex(characterRange.location)
@@ -72,10 +74,6 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
       }
       
       makeStringChoicePopoverWithChoices(variables)
-    case .KithgardGates:
-      makeStringChoicePopoverWithChoices(["\"fence\""])
-    default:
-      break
     }
   }
   
@@ -104,7 +102,9 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
       addSubview(makeDefaultLabelWithText("\"Gurt\""))
     case .NewSight:
       addSubview(makeDefaultLabelWithText("\"Door\""))
-    case .LowlyKithmen, .ClosingTheDistance, .KnownEnemy, .MasterOfNames, .TacticalStrike, .TheFinalKithmaze, .TheGauntlet:
+    case .KithgardGates:
+      addSubview(makeDefaultLabelWithText("\"fence\""))
+    default:
       //get variables
       let variables = editorTextViewController.textStorage.getDefinedVariableNames()
       //enemy is the target variable, search for variables already defined
@@ -128,10 +128,6 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
         placeholder += String(lowestFree)
       }
       addSubview(makeDefaultLabelWithText(placeholder))
-    case .KithgardGates:
-      addSubview(makeDefaultLabelWithText("\"fence\""))
-    default:
-      break
     }
   }
   
