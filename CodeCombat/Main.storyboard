@@ -58,11 +58,14 @@
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HiN-3d-9es">
-                                <rect key="frame" x="426" y="445" width="172" height="30"/>
+                                <rect key="frame" x="426" y="407" width="172" height="30"/>
                                 <state key="normal" title="Sign up for CodeCombat">
                                     <color key="titleColor" red="0.31372549020000001" green="0.25098039220000001" blue="0.1960784314" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="signup:" destination="akZ-k3-TF7" eventType="touchUpInside" id="8Yv-Mj-73h"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="0.31372549019607843" green="0.25098039215686274" blue="0.19607843137254902" alpha="1" colorSpace="calibratedRGB"/>

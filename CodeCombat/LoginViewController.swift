@@ -53,6 +53,13 @@ class LoginViewController: UIViewController {
     }
   }
   
+  @IBAction func signup(button: UIButton) {
+    let requestURL = NSURL(string: "/play?signup=true", relativeToURL: WebManager.sharedInstance.rootURL)
+    let request = NSMutableURLRequest(URL: requestURL!)
+    WebManager.sharedInstance.webView!.loadRequest(request)
+    self.performSegueWithIdentifier("successfulLoginSegue", sender:self)
+  }
+  
   func performLoginRequest(#username:String, password:String) {
     let RootURL = WebManager.sharedInstance.rootURL
     let LoginURL:NSURL = NSURL(string: "/auth/login", relativeToURL: RootURL)!
