@@ -183,19 +183,13 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   
   
   func dimLineUnderLocation(location:CGPoint) {
-    //let currentLine = lineNumberUnderPoint(location)
-    let currentLine = Int((location.y / (font.lineHeight + lineSpacing)))
+    let currentLine = lineNumberUnderPoint(location)
     slightlyDimLineWhileDraggingOver(lineNumber: currentLine)
   }
   
   func slightlyDimLineWhileDraggingOver(#lineNumber:Int) {
-    //let FirstLineNumberRect = getLineNumberRect(lineNumber)
+    let FirstLineNumberRect = boundingRectForLineNumber(lineNumber)
     let LineHeight = font.lineHeight + lineSpacing
-    let FirstLineNumberRect = CGRect(
-      x: 0,
-      y: LineHeight * CGFloat(lineNumber ),
-      width: frame.width,
-      height: LineHeight)
     let HighlightingRect = CGRect(
       x: FirstLineNumberRect.origin.x,
       y: FirstLineNumberRect.origin.y,
@@ -471,9 +465,13 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     var currentLineNumber = 0
     var boundingRect:CGRect?
     var numberOfExtraLines = 0
+    var stoppedOnEnumeration = -1
+    var totalEnumerations = 0
+    
     func lineFragmentClosure(aRect:CGRect, aUsedRect:CGRect,
       textContainer:NSTextContainer!, glyphRange:NSRange,
       stop:UnsafeMutablePointer<ObjCBool>) -> Void {
+        totalEnumerations++
         let charRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
         let paraRange = storage.string()!.paragraphRangeForRange(charRange)
         if charRange.location == paraRange.location {
@@ -482,29 +480,34 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
             boundingRect = layoutManager.boundingRectForGlyphRange(layoutManager.glyphRangeForCharacterRange(paraRange, actualCharacterRange: nil), inTextContainer: textContainer)
             boundingRect!.origin.x = 0
             boundingRect!.size.width = frame.width
-            stop.initialize(true)
+            stoppedOnEnumeration = totalEnumerations
+            //stop.initialize(true)
           }
         } else {
+          if stoppedOnEnumeration != -1 {
+            stoppedOnEnumeration++
+          }
           var characterRangeString = storage.string()!.substringWithRange(charRange).stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet())
           if countElements(characterRangeString) > 0 {
             numberOfExtraLines++
           }
-          
-          
         }
+        
     }
     layoutManager.enumerateLineFragmentsForGlyphRange(glyphsToShow,
       usingBlock: lineFragmentClosure)
     if  boundingRect == nil {
-      println(lineNumber)
-      println(numberOfExtraLines)
       let LineHeight = font.lineHeight + lineSpacing
       let LineNumberRect = CGRect(
         x: 0,
-        y: LineHeight * CGFloat(lineNumber - numberOfExtraLines),
+        y: LineHeight * CGFloat(lineNumber - 1 + numberOfExtraLines),
         width: frame.width,
         height: LineHeight)
       boundingRect = LineNumberRect
+    }
+    //This is to correct for a weird extra line that TextKit puts at the end
+    if stoppedOnEnumeration == totalEnumerations {
+      boundingRect!.size.height -= font.lineHeight
     }
     
     return boundingRect!
@@ -682,7 +685,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   
   func adjustLineViewsForDragLocation(loc:CGPoint) {
     //calculate which line the drag is currently on
-    var lineNumber = lineNumberOfLocationInTextView(loc)
+    var lineNumber = lineNumberUnderPoint(loc)
     
     var maxLine = 1
     for key in dragOverlayLabels.keys {
@@ -782,15 +785,5 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     }
     dragOverlayLabels.removeAll(keepCapacity: true)
   }
-  
-  //Note, this won't take doubled lines into account
-  private func lineNumberOfLocationInTextView(loc:CGPoint) -> Int {
-    return lineNumberUnderPoint(loc)
-  }
-
-  func getLineNumberRect(lineNumber:Int) -> CGRect{
-    return boundingRectForLineNumber(lineNumber)
-  }
-
 
 }
