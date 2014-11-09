@@ -180,14 +180,8 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     currentDragHintView = nil
   }
   
-  
-  
-  func dimLineUnderLocation(location:CGPoint) {
-    let currentLine = lineNumberUnderPoint(location)
-    slightlyDimLineWhileDraggingOver(lineNumber: currentLine)
-  }
-  
-  func slightlyDimLineWhileDraggingOver(#lineNumber:Int) {
+  func slightlyHighlightLineUnderLocation(location:CGPoint) {
+    let lineNumber = lineNumberUnderPoint(location)
     let FirstLineNumberRect = boundingRectForLineNumber(lineNumber)
     let LineHeight = font.lineHeight + lineSpacing
     let HighlightingRect = CGRect(
@@ -198,10 +192,10 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     if lineDimmingOverlay == nil {
       lineDimmingOverlay = UIView(frame: HighlightingRect)
       lineDimmingOverlay?.backgroundColor = UIColor(
-        red: 0,
-        green: 0,
-        blue: 0,
-        alpha: 0.2)
+        red: 1,
+        green: 1,
+        blue: 1,
+        alpha: 0.3)
       addSubview(lineDimmingOverlay!)
     }
     lineDimmingOverlay?.frame = HighlightingRect

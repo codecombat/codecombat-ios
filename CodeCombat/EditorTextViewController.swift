@@ -193,7 +193,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   }
   
   func handleItemPropertyDragChangedAtLocation(location:CGPoint) {
-    textView.dimLineUnderLocation(location)
+    textView.slightlyHighlightLineUnderLocation(location)
   }
   
   func handleItemPropertyDragEndedAtLocation(location:CGPoint, code:String) {
