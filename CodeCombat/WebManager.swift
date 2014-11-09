@@ -15,6 +15,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   //let rootURL = NSURL(scheme: "http", host: "localhost:3000", path: "/")
   //let rootURL = NSURL(scheme: "http", host: "10.0.1.2:3000", path: "/")
   let rootURL = NSURL(scheme: "http", host: "codecombat.com:80", path: "/")
+  let allowedRoutePrefixes:[String] = ["http://localhost:3000","http://10.0.1.2:3000","http://codecombat.com/play"]
   var operationQueue: NSOperationQueue?
   var webView: WKWebView?  // Assign this if we create one, so that we can evaluate JS in its context.
   var lastJSEvaluated: String?
@@ -77,12 +78,28 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   }
   
   func webView(webView: WKWebView, didCommitNavigation navigation: WKNavigation!) {
-    //Inject the no-zoom javascript
-    let noZoomJS = "var meta = document.createElement('meta');meta.setAttribute('name', 'viewport');meta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');document.getElementsByTagName('head')[0].appendChild(meta);"
-    webView.evaluateJavaScript(noZoomJS, completionHandler: nil)
-    println("webView didCommitNavigation")
+    println("Comitted navigation to \(webView.URL)")
+    if !routeURLHasAllowedPrefix(webView.URL!.absoluteString!) {
+      webView.stopLoading()
+      webView.loadRequest(NSURLRequest(URL: NSURL(string: "/play", relativeToURL: rootURL)!))
+    } else {
+      //Inject the no-zoom javascript
+      let noZoomJS = "var meta = document.createElement('meta');meta.setAttribute('name', 'viewport');meta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');document.getElementsByTagName('head')[0].appendChild(meta);"
+      webView.evaluateJavaScript(noZoomJS, completionHandler: nil)
+      println("webView didCommitNavigation")
+    }
   }
   
+  func routeURLHasAllowedPrefix(route:String) -> Bool {
+    var hasAllowedRoute = false
+    for allowedPrefix in allowedRoutePrefixes {
+      if route.hasPrefix(allowedPrefix) {
+        return true
+      }
+    }
+    return false
+  }
+
   func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
     NSNotificationCenter.defaultCenter().postNotificationName("webViewDidFinishNavigation", object: nil)
     println("webView didFinishNavigation")
