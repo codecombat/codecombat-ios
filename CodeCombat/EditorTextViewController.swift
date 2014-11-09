@@ -161,9 +161,10 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
         textView.createDeletionOverlayView()
         break
       case .Changed:
-        draggedLabel.center = locationInParentView
+        let yDelta = locationInParentView.y - draggedLabel.center.y
         textView.adjustLineViewsForDragLocation(locationInTextView)
-        scrollWhileDraggingIfNecessary(locationInParentView)
+        scrollWhileDraggingIfNecessary(locationInParentView, yDelta: yDelta)
+        draggedLabel.center = locationInParentView
         hideOrShowDeleteOverlay()
         break
       case .Ended:
@@ -192,8 +193,9 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     textView.drawDragHintViewOnLastLine()
   }
   
-  func handleItemPropertyDragChangedAtLocation(location:CGPoint) {
-    textView.slightlyHighlightLineUnderLocation(location)
+  func handleItemPropertyDragChangedAtLocation(locTextView:CGPoint, locParentView:CGPoint, yDelta:CGFloat) {
+    scrollWhileDraggingIfNecessary(locParentView, yDelta: yDelta)
+    textView.slightlyHighlightLineUnderLocation(locTextView)
   }
   
   func handleItemPropertyDragEndedAtLocation(location:CGPoint, code:String) {
@@ -333,7 +335,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
       return indentationLevel
     }
   }
-
+  
   func getPlaceholderWidthString(code:String) -> String {
     switch LevelSettingsManager.sharedInstance.level {
     case .KithgardGates:
@@ -461,9 +463,12 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
       var replacedLineIndentation = indentationLevelOfLine(lineNumberForDraggedCharacterRange(characterRange))
       let draggedLineIndentation = indentationLevelOfLine(lineNumberForDraggedCharacterRange(draggedCharacterRange))
       let trimmedString = replacedString.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-      if countElements(trimmedString) > 0 && trimmedString.substringFromIndex(trimmedString.endIndex.predecessor()) == ":" {
-        replacedLineIndentation++
+      if countElements(trimmedString) > 0 && trimmedString.substringFromIndex(trimmedString.endIndex.predecessor()) == ":"
+        && !trimmedString.hasPrefix("loop:") {
+          replacedLineIndentation++
       }
+      //Make it so that if string wasn't indented before and was dragged into indentation zone,
+      //it gets indented.
       replacingString = reindentString(replacingString, indentationLevel: replacedLineIndentation)
       textStorage.beginEditing()
       //edit the latter range first
@@ -495,7 +500,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
       return str
     }
   }
-
+  
   private func lineNumberForDraggedCharacterRange(range:NSRange) -> Int {
     let sourceString = textStorage.string()!.substringWithRange(NSRange(location: 0, length: range.location))
     let errorPointer = NSErrorPointer()
@@ -504,13 +509,29 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     return matches + 1
   }
   
-  func scrollWhileDraggingIfNecessary(locationInParentView:CGPoint) {
+  func scrollWhileDraggingIfNecessary(locationInParentView:CGPoint, yDelta:CGFloat) {
     let pvc = parentViewController as PlayViewController
-    if locationInParentView.y > 760 {
-      var newScrollLocation = pvc.scrollView.contentOffset
-      newScrollLocation.y = pvc.scrollView.contentSize.height - pvc.scrollView.bounds.size.height
-      pvc.scrollView.setContentOffset(newScrollLocation, animated: true)
+    let bounds = pvc.view.bounds
+    var scrollOffset = pvc.scrollView.contentOffset
+    var yOffset:CGFloat = 0
+    let speed:CGFloat = 10
+    //yDelta greater than zero means user is moving drag downwards
+    if (locationInParentView.y > bounds.size.height * 0.8) && (yDelta > 0) {
+      yOffset = speed * locationInParentView.y / bounds.size.height
+    } else if (locationInParentView.y < bounds.size.height * 0.3) && (yDelta < 0) {
+      yOffset = -1 * speed * (1.0 - locationInParentView.y / bounds.size.height)
     }
+    if (yOffset < 0) {
+      if scrollOffset.y == 0 || scrollOffset.y == pvc.scrollView.contentSize.height {
+        return
+      }
+      if yOffset < -1 * scrollOffset.y {
+        yOffset = -1 * scrollOffset.y
+      }
+    }
+    scrollOffset.y += yOffset
+    let rect = CGRect(x: 0, y: scrollOffset.y, width: pvc.scrollView.bounds.size.width, height: pvc.scrollView.bounds.size.height)
+    pvc.scrollView.scrollRectToVisible(rect, animated: false)
   }
   
   func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {

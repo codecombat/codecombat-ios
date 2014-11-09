@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="14B17" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="akZ-k3-TF7">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+    </dependencies>
+    <scenes>
+        <!--Login View Controller-->
+        <scene sceneID="47c-jN-OdT">
+            <objects>
+                <viewController id="akZ-k3-TF7" customClass="LoginViewController" customModule="CodeCombat" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="8al-NB-mF3"/>
+                        <viewControllerLayoutGuide type="bottom" id="iHD-XD-Wjd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="vVG-9u-rMz">
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="loginArtBackground" translatesAutoresizingMaskIntoConstraints="NO" id="Hmy-oh-tGR">
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="437"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="loginModalBackground" translatesAutoresizingMaskIntoConstraints="NO" id="JpX-fa-MYg">
+                                <rect key="frame" x="249" y="70" width="527" height="627"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Logo" translatesAutoresizingMaskIntoConstraints="NO" id="Ekg-tE-t9I">
+                                <rect key="frame" x="403" y="70" width="240" height="128"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="loginInfoBackground" translatesAutoresizingMaskIntoConstraints="NO" id="pui-CK-cNW">
+                                <rect key="frame" x="321" y="206" width="382" height="128"/>
+                            </imageView>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="BUZ-kd-XcH">
+                                <rect key="frame" x="343" y="271" width="360" height="37"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" secureTextEntry="YES"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d32-rG-bSD">
+                                <rect key="frame" x="321" y="331" width="382" height="30"/>
+                                <color key="backgroundColor" red="0.31372549020000001" green="0.25098039220000001" blue="0.1960784314" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" title="Login">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="4"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="login:" destination="akZ-k3-TF7" eventType="touchUpInside" id="eYC-O0-fBc"/>
+                                </connections>
+                            </button>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="7Qn-3w-c9w">
+                                <rect key="frame" x="672" y="336" width="20" height="20"/>
+                            </activityIndicatorView>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="k9E-0c-SkR">
+                                <rect key="frame" x="343" y="228" width="360" height="43"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HiN-3d-9es">
+                                <rect key="frame" x="426" y="407" width="172" height="30"/>
+                                <state key="normal" title="Sign up for CodeCombat">
+                                    <color key="titleColor" red="0.31372549020000001" green="0.25098039220000001" blue="0.1960784314" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="signup:" destination="akZ-k3-TF7" eventType="touchUpInside" id="8Yv-Mj-73h"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.31372549019607843" green="0.25098039215686274" blue="0.19607843137254902" alpha="1" colorSpace="calibratedRGB"/>
+                    </view>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="backgroundArtImageView" destination="Hmy-oh-tGR" id="509-U3-uaq"/>
+                        <outlet property="loginActivityIndicatorView" destination="7Qn-3w-c9w" id="SVu-X1-AcL"/>
+                        <outlet property="loginButton" destination="d32-rG-bSD" id="4es-OS-hDw"/>
+                        <outlet property="passwordTextField" destination="BUZ-kd-XcH" id="KVA-jm-PfT"/>
+                        <outlet property="usernameTextField" destination="k9E-0c-SkR" id="VHr-zW-NVH"/>
+                        <segue destination="qHW-gw-pyh" kind="modal" identifier="successfulLoginSegue" id="4OP-Gm-0qA"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lqI-DM-Cd8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="908.15999999999997" y="42.666666666666671"/>
+        </scene>
+        <!--Play View Controller-->
+        <scene sceneID="U59-z1-lGZ">
+            <objects>
+                <viewController storyboardIdentifier="PlayViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="mL5-Kq-7bx" customClass="PlayViewController" customModule="CodeCombat" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="xB9-Hc-fWF"/>
+                        <viewControllerLayoutGuide type="bottom" id="r7h-op-gb1"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="GQf-52-blM">
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView hidden="YES" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" image="play_background" translatesAutoresizingMaskIntoConstraints="NO" id="XTe-fX-TVu">
+                                <rect key="frame" x="0.0" y="109" width="1024" height="659"/>
+                            </imageView>
+                            <imageView hidden="YES" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" image="play_background_bottom" translatesAutoresizingMaskIntoConstraints="NO" id="o1a-7D-j7k">
+                                <rect key="frame" x="0.0" y="695" width="1011" height="73"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uGs-wC-Lym">
+                                <rect key="frame" x="885" y="715" width="113" height="45"/>
+                                <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="18"/>
+                                <state key="normal" title="SUBMIT" backgroundImage="large_green_active">
+                                    <color key="titleColor" red="1" green="0.74104259174095843" blue="0.48882501297454573" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <state key="disabled" backgroundImage="large_green_inactive"/>
+                                <state key="selected" backgroundImage="large_green_pressed"/>
+                                <state key="highlighted" backgroundImage="large_green_pressed"/>
+                                <connections>
+                                    <action selector="onCodeSubmitted:" destination="mL5-Kq-7bx" eventType="touchUpInside" id="uYl-wp-v6A"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SkL-FP-pol">
+                                <rect key="frame" x="774" y="715" width="113" height="45"/>
+                                <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="18"/>
+                                <state key="normal" title="RUN" backgroundImage="large_button_inactive">
+                                    <color key="titleColor" red="0.74142278439153442" green="0.5512918464294071" blue="0.35825157513350053" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="disabled" backgroundImage="large_button_inactive"/>
+                                <state key="selected" backgroundImage="large_button_pressed">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="highlighted" backgroundImage="large_button_pressed"/>
+                                <connections>
+                                    <action selector="onCodeRun:" destination="mL5-Kq-7bx" eventType="touchUpInside" id="Jcn-Vq-Gen"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yWl-nf-cCN">
+                                <rect key="frame" x="550" y="728" width="98" height="34"/>
+                                <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="14"/>
+                                <inset key="imageEdgeInsets" minX="-12" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <state key="normal" title="UNDO" image="undo_icon" backgroundImage="small_button_active">
+                                    <color key="titleColor" red="0.74142278439999998" green="0.55129184639999995" blue="0.3582515751" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="disabled" backgroundImage="small_button_inactive">
+                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="selected" backgroundImage="small_button_pressed"/>
+                                <state key="highlighted" backgroundImage="small_button_pressed"/>
+                                <connections>
+                                    <action selector="onUndo:" destination="mL5-Kq-7bx" eventType="touchUpInside" id="a0Z-kk-CeT"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZvF-zO-AH3">
+                                <rect key="frame" x="650" y="728" width="98" height="34"/>
+                                <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="14"/>
+                                <inset key="imageEdgeInsets" minX="-12" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <state key="normal" title="REDO" image="redo_icon" backgroundImage="small_button_active">
+                                    <color key="titleColor" red="0.74142278439999998" green="0.55129184639999995" blue="0.3582515751" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="disabled" backgroundImage="small_button_inactive">
+                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="selected" backgroundImage="small_button_pressed"/>
+                                <state key="highlighted" backgroundImage="small_button_pressed"/>
+                                <connections>
+                                    <action selector="onRedo:" destination="mL5-Kq-7bx" eventType="touchUpInside" id="utY-xp-0Hh"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lwx-zM-L4H">
+                                <rect key="frame" x="350" y="728" width="100" height="34"/>
+                                <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="14"/>
+                                <state key="normal" title="RESET CODE" backgroundImage="small_button_active">
+                                    <color key="titleColor" red="0.74142278439999998" green="0.55129184639999995" blue="0.3582515751" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="disabled" backgroundImage="small_button_inactive">
+                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="selected" backgroundImage="small_button_pressed"/>
+                                <state key="highlighted" backgroundImage="small_button_pressed"/>
+                                <connections>
+                                    <action selector="onClickResetCode:" destination="mL5-Kq-7bx" eventType="touchUpInside" id="pa9-tt-rwP"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OTR-hY-aNL">
+                                <rect key="frame" x="450" y="728" width="100" height="34"/>
+                                <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="14"/>
+                                <state key="normal" title="KEYBOARD" backgroundImage="small_button_active">
+                                    <color key="titleColor" red="0.74142278439999998" green="0.55129184639999995" blue="0.3582515751" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="disabled" backgroundImage="small_button_inactive">
+                                    <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="selected" backgroundImage="small_button_pressed"/>
+                                <state key="highlighted" backgroundImage="small_button_pressed"/>
+                                <connections>
+                                    <action selector="toggleKeyboard:" destination="mL5-Kq-7bx" eventType="touchUpInside" id="JLm-Rf-UlQ"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="keyboardButton" destination="OTR-hY-aNL" id="q7t-UD-oMh"/>
+                        <outlet property="redoButton" destination="ZvF-zO-AH3" id="2ce-4D-OLd"/>
+                        <outlet property="resetCodeButton" destination="lwx-zM-L4H" id="U5x-o6-fbP"/>
+                        <outlet property="runButton" destination="SkL-FP-pol" id="8YI-8Q-LsS"/>
+                        <outlet property="submitButton" destination="uGs-wC-Lym" id="WSK-x3-iUn"/>
+                        <outlet property="undoButton" destination="yWl-nf-cCN" id="v8B-ig-TYF"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tKE-jg-OcU" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3372" y="42"/>
+        </scene>
+        <!--Game View Controller-->
+        <scene sceneID="pvA-hl-ONN">
+            <objects>
+                <viewController id="qHW-gw-pyh" customClass="GameViewController" customModule="CodeCombat" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="hxg-j4-x7G"/>
+                        <viewControllerLayoutGuide type="bottom" id="naZ-57-dqW"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="hP6-YF-pgF">
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LGw-Ok-FoP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2144" y="42"/>
+        </scene>
+        <!--Language Selection View Controller-->
+        <scene sceneID="IST-ZV-CcS">
+            <objects>
+                <viewController id="Wi4-rd-ltW" customClass="LanguageSelectionViewController" customModule="CodeCombat" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="EvS-iA-kUh"/>
+                        <viewControllerLayoutGuide type="bottom" id="Jfr-hc-tAB"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="jLE-nr-nWh">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DeL-Bl-XN1">
+                                <rect key="frame" x="0.0" y="186" width="540" height="216"/>
+                            </pickerView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ypi-Hr-IUg">
+                                <rect key="frame" x="255" y="432" width="37" height="30"/>
+                                <state key="normal" title="Done">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="clickDone" destination="Wi4-rd-ltW" eventType="touchUpInside" id="bg7-VF-oul"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Language Selection" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uAc-Ym-tjz">
+                                <rect key="frame" x="100" y="86" width="340" height="47"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="39"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <outlet property="doneButton" destination="Ypi-Hr-IUg" id="8mO-dh-uci"/>
+                        <outlet property="languagePickerView" destination="DeL-Bl-XN1" id="Cpf-Ro-QZn"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="y2g-yF-KEN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2144" y="1113"/>
+        </scene>
+        <!--Store View Controller-->
+        <scene sceneID="xxm-hx-PYa">
+            <objects>
+                <viewController id="umH-CG-aN0" customClass="StoreViewController" customModule="CodeCombat" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="e28-jt-43U"/>
+                        <viewControllerLayoutGuide type="bottom" id="zqX-lM-dbI"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="aEo-Dm-TsN">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hz8-ZA-9wa">
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="44"/>
+                                <items>
+                                    <barButtonItem title="Main Menu" id="Keb-sZ-zxM">
+                                        <connections>
+                                            <action selector="goBackToMainMenu:" destination="umH-CG-aN0" id="6wq-pF-nCH"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Store" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TCc-OE-cxn">
+                                <rect key="frame" x="457" y="44" width="110" height="56"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="1sk-uq-tWu">
+                                <rect key="frame" x="0.0" y="108" width="1024" height="660"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="8Rq-tX-IJm">
+                                    <size key="itemSize" width="100" height="100"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="InventoryCell" id="XRC-Zg-qul" customClass="InventoryCell" customModule="CodeCombat" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8Pv-ti-eRq">
+                                                    <rect key="frame" x="0.0" y="0.0" width="101" height="101"/>
+                                                </imageView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <connections>
+                                            <outlet property="imageView" destination="8Pv-ti-eRq" id="Kg6-oS-yLh"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="umH-CG-aN0" id="WRW-P0-HkN"/>
+                                    <outlet property="delegate" destination="umH-CG-aN0" id="aQs-Dv-r4X"/>
+                                </connections>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <outlet property="collectionView" destination="1sk-uq-tWu" id="aYQ-lN-Ttb"/>
+                        <segue destination="dJG-X7-JRB" kind="modal" identifier="ShowStoreItemDetails" id="MsV-hJ-OEu"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="37U-oT-5zi" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1104" y="1113"/>
+        </scene>
+        <!--Store Item Detail View Controller-->
+        <scene sceneID="3WW-3q-oUd">
+            <objects>
+                <viewController modalTransitionStyle="crossDissolve" id="dJG-X7-JRB" customClass="StoreItemDetailViewController" customModule="CodeCombat" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="rRQ-cK-2Pz"/>
+                        <viewControllerLayoutGuide type="bottom" id="3Sx-55-A9K"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="B0H-v5-zfW">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Supposed to be a modal but iOS 8 has bugs" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ObZ-mx-XSO">
+                                <rect key="frame" x="345" y="386" width="342" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="amuletOfConditional" translatesAutoresizingMaskIntoConstraints="NO" id="eKL-ya-MNA">
+                                <rect key="frame" x="229" y="113" width="128" height="128"/>
+                            </imageView>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Item title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nTw-EH-Dbo">
+                                <rect key="frame" x="395" y="113" width="436" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Item description" lineBreakMode="wordWrap" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="42" translatesAutoresizingMaskIntoConstraints="NO" id="UQY-hd-MUq">
+                                <rect key="frame" x="395" y="142" width="436" height="93"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WQT-C0-9YM">
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="44"/>
+                                <items>
+                                    <barButtonItem title="Done" id="Bsi-Q8-Oc8">
+                                        <connections>
+                                            <action selector="done:" destination="dJG-X7-JRB" id="9Ct-eV-2xF"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d4y-mE-I9G">
+                                <rect key="frame" x="395" y="297" width="30" height="30"/>
+                                <state key="normal" title="Buy">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rjM-Y1-gd1">
+                                <rect key="frame" x="229" y="301" width="128" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <value key="contentSizeForViewInPopover" type="size" width="300" height="300"/>
+                    <connections>
+                        <outlet property="buyButton" destination="d4y-mE-I9G" id="qBr-86-dEC"/>
+                        <outlet property="itemDescriptionLabel" destination="UQY-hd-MUq" id="mKu-i4-zWg"/>
+                        <outlet property="itemImageView" destination="eKL-ya-MNA" id="Phg-Mh-elO"/>
+                        <outlet property="itemTitleLabel" destination="nTw-EH-Dbo" id="ayh-W1-QBZ"/>
+                        <outlet property="priceLabel" destination="rjM-Y1-gd1" id="ILb-YP-Fre"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Nwx-ik-waF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1104" y="2347"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Logo" width="86" height="20"/>
+        <image name="amuletOfConditional" width="32" height="32"/>
+        <image name="large_button_inactive" width="113" height="49"/>
+        <image name="large_button_pressed" width="113" height="49"/>
+        <image name="large_green_active" width="113" height="49"/>
+        <image name="large_green_inactive" width="113" height="49"/>
+        <image name="large_green_pressed" width="113" height="49"/>
+        <image name="loginArtBackground" width="1024" height="435"/>
+        <image name="loginInfoBackground" width="411" height="88"/>
+        <image name="loginModalBackground" width="533" height="639"/>
+        <image name="play_background" width="1024" height="659"/>
+        <image name="play_background_bottom" width="1011" height="73"/>
+        <image name="redo_icon" width="19" height="15"/>
+        <image name="small_button_active" width="98" height="38"/>
+        <image name="small_button_inactive" width="98" height="38"/>
+        <image name="small_button_pressed" width="98" height="38"/>
+        <image name="undo_icon" width="19" height="15"/>
+    </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination"/>
+    </simulatedMetricsContainer>
+</document>

@@ -141,13 +141,16 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
       Parent.textViewController.handleItemPropertyDragBegan()
       break
     case .Changed:
+      let yDelta = LocationInParentView.y - draggedView.center.y
       draggedView.center = LocationInParentView
+      Parent.textViewController.handleItemPropertyDragChangedAtLocation(locationInEditorTextView,
+        locParentView: LocationInParentView,
+        yDelta: yDelta)
       if EditorView.frame.contains(LocationInEditorContainerView) {
         var Snippet = draggedProperty.codeSnippetForLanguage("python")
         if Snippet != nil {
           Snippet = draggedProperty.name
         }
-        Parent.textViewController.handleItemPropertyDragChangedAtLocation(locationInEditorTextView)
       } else {
         EditorView.removeLineDimmingOverlay()
       }
