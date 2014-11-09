@@ -535,17 +535,25 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   }
   
   func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
-    if draggedLabel != nil {
-      return false
+    if gestureRecognizer == tapGestureRecognizer {
+      if textView.pointIsInLineNumberGutter(gestureRecognizer.locationInView(textView)) {
+        println("Recieved tap!")
+        return false
+      }
+      return true
+    } else {
+      if draggedLabel != nil {
+        return false
+      }
+      //find if the nearest glyph is a newline (aka not dragging on a thing)
+      let nearestGlyphIndexToDrag = textView.layoutManager.glyphIndexForPoint(gestureRecognizer.locationInView(textView), inTextContainer: textContainer)
+      let characterIndex = textView.layoutManager.characterIndexForGlyphAtIndex(nearestGlyphIndexToDrag)
+      let character = textStorage.string()!.characterAtIndex(characterIndex)
+      if character == 10 {
+        return false
+      }
+      return true
     }
-    //find if the nearest glyph is a newline (aka not dragging on a thing)
-    let nearestGlyphIndexToDrag = textView.layoutManager.glyphIndexForPoint(gestureRecognizer.locationInView(textView), inTextContainer: textContainer)
-    let characterIndex = textView.layoutManager.characterIndexForGlyphAtIndex(nearestGlyphIndexToDrag)
-    let character = textStorage.string()!.characterAtIndex(characterIndex)
-    if character == 10 {
-      return false
-    }
-    return true
   }
   
   func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {

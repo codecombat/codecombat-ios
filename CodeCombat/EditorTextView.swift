@@ -32,6 +32,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   var draggedLineNumber = -1
   var defaultFont = UIFont(name: "Menlo", size: 20)
   let gutterPadding = CGFloat(5.0)
+  var gutterWidth:CGFloat = 0
   let lineSpacing:CGFloat = 5
   var accessoryView:UIView?
   var keyboardModeEnabled:Bool {
@@ -64,6 +65,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     editable = false
     //Not sure if this will get reset, if it does it will cause bugs
     font = defaultFont
+    gutterWidth = lineNumberWidth + 4
     showLineNumbers()
     backgroundColor = UIColor.clearColor()
     layoutManager.delegate = self
@@ -117,7 +119,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   func characterIndexAtPoint(point:CGPoint) -> Int{
     return layoutManager.characterIndexForPoint(point, inTextContainer: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
   }
-
+  
   func toggleKeyboardMode() {
     if keyboardModeEnabled {
       editable = false
@@ -163,7 +165,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
       overlayLocationToViewMap.removeValueForKey(key)
     }
   }
-
+  
   func drawDragHintViewOnLastLine() {
     let glyphRange = layoutManager.glyphRangeForTextContainer(textContainer)
     var lastLineFragmentRect = layoutManager.lineFragmentRectForGlyphAtIndex(NSMaxRange(glyphRange) - 1, effectiveRange: nil)
@@ -208,7 +210,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   
   func highlightLineNumber(lineNumber:Int) {
     removeCurrentLineNumberHighlight()
-    var lineFragmentFrame = lineFragmentRectForLineNumber(lineNumber)
+    var lineFragmentFrame = boundingRectForLineNumber(lineNumber)
     lineFragmentFrame.origin.y += lineSpacing
     currentLineHighlightingView = UIView(frame:lineFragmentFrame )
     currentLineHighlightingView!.backgroundColor = UIColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 0.3)
@@ -216,20 +218,21 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   }
   
   func removeCurrentLineNumberHighlight() {
-      currentLineHighlightingView?.removeFromSuperview()
-      currentLineHighlightingView = nil
+    currentLineHighlightingView?.removeFromSuperview()
+    currentLineHighlightingView = nil
   }
   
   func highlightUserCodeProblemLine(lineNumber:Int) {
     if let problemLineHighlight = currentProblemLineHighlights[lineNumber] {
       
     } else {
-      var frame = lineFragmentRectForLineNumber(lineNumber)
+      var frame = boundingRectForLineNumber(lineNumber)
       frame.origin.y += lineSpacing
       let highlightView = UIView(frame: frame)
       highlightView.backgroundColor = UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 0.3)
       currentProblemLineHighlights[lineNumber] = highlightView
       addSubview(highlightView)
+      sendSubviewToBack(highlightView)
     }
   }
   
@@ -239,14 +242,14 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     }
     currentProblemLineHighlights.removeAll(keepCapacity: true)
   }
-
+  
   
   func addUserCodeProblemGutterAnnotationOnLine(lineNumber:Int, message:String) {
     if let problemView = currentProblemGutterLineAnnotations[lineNumber] {
       //Just leave it
     } else {
       //place the image here
-      var frame = lineFragmentRectForLineNumber(lineNumber)
+      var frame = boundingRectForLineNumber(lineNumber)
       frame.origin.x = 0
       frame.size.width = lineNumberWidth
       frame.size.width = lineSpacing + font.lineHeight
@@ -261,12 +264,16 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
       gutterAnnotation.frame = frame
       gutterAnnotation.imageView!.frame = frame
       gutterAnnotation.addTarget(self, action: Selector("displayProblemErrorMessageFromView:"), forControlEvents: UIControlEvents.TouchUpInside)
+      gutterAnnotation.userInteractionEnabled = true
       currentProblemGutterLineAnnotations[lineNumber] = gutterAnnotation
       addSubview(gutterAnnotation)
+      gutterAnnotation.setNeedsLayout()
+      gutterAnnotation.setNeedsDisplay()
     }
   }
   
   func displayProblemErrorMessageFromView(sender:GutterProblemLineAnnotationButton) {
+    println("DISPLAYING!!")
     if errorMessageView == nil {
       let backgroundImage = UIImage(named: "editorErrorBackground")!
       let mainScreenView = superview!.superview!
@@ -547,11 +554,15 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     let LineNumberBackgroundColor = ColorManager.sharedInstance.gutterBorder
     CGContextSetFillColorWithColor(context, LineNumberBackgroundColor.CGColor)
     let LineNumberBackgroundRect = CGRect(
-      x: bounds.origin.x + lineNumberWidth + 4,
+      x: bounds.origin.x + gutterWidth,
       y: bounds.origin.y + 5,
       width: 1,
       height: bounds.size.height - 50)
     CGContextFillRect(context, LineNumberBackgroundRect)
+  }
+  
+  func pointIsInLineNumberGutter(point:CGPoint) -> Bool {
+    return point.x < gutterWidth
   }
   
   private func showLineNumbers() {
@@ -779,5 +790,5 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     }
     dragOverlayLabels.removeAll(keepCapacity: true)
   }
-
+  
 }
