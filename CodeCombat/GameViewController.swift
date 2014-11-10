@@ -30,6 +30,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
       self.webManager.subscribe(self, channel: "level:loading-view-unveiled", selector: Selector("onLevelStarted:"))
       self.webManager.subscribe(self, channel: "auth:logging-out", selector: Selector("onLogout"))
       //webManager.subscribe(self, channel: "supermodel:load-progress-changed", selector: Selector("onProgressUpdate:"))
+      NSNotificationCenter.defaultCenter().removeObserver(self, name: "webViewDidFinishNavigation", object: nil)
     })
     
   }
@@ -120,5 +121,10 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
     }
   }
   
+  override func didReceiveMemoryWarning() {
+    super.didReceiveMemoryWarning()
+    println("----------------- Received Memory Warning --------------")
+    NSURLCache.sharedURLCache().removeAllCachedResponses()
+  }
 }
 
