@@ -23,9 +23,26 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   var activeSubscriptions: [String: Int] = [:]
   var activeObservers: [NSObject : [String]] = [:]
   var loginProtectionSpace:NSURLProtectionSpace?
+  var hostReachibility:Reachability!
   
   class var sharedInstance:WebManager {
     return WebManagerSharedInstance
+  }
+  
+  func checkReachibility() {
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("reachibilityChanged:"), name: kReachabilityChangedNotification, object: nil)
+    hostReachibility = Reachability(hostName: "codecombat.com")
+    hostReachibility.startNotifier()
+  }
+  
+  func reachibilityChanged(note:NSNotification) {
+    if hostReachibility.currentReachabilityStatus().value == NotReachable.value {
+      println("Host unreachable")
+      NSNotificationCenter.defaultCenter().postNotificationName("websiteNotReachable", object: nil)
+    } else {
+      println("Host reachable!")
+      NSNotificationCenter.defaultCenter().postNotificationName("websiteReachable", object: nil)
+    }
   }
 
   override init() {

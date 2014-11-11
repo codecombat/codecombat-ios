@@ -72,6 +72,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   }
   
   override func drawRect(rect: CGRect) {
+    println("Draw rect is being called!")
     if shouldShowLineNumbers {
       drawLineNumberBackground()
       drawLineNumbers(rect)
@@ -524,6 +525,8 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     let glyphsToShow = layoutManager.glyphRangeForCharacterRange(textRange,
       actualCharacterRange: nil)
     var numberOfLinesBeforeVisible = 0
+    //calculate bounds
+    println("Calculating bounds... \(bounds.origin.y)")
     for var index = 0; index < textRange.location; numberOfLinesBeforeVisible++ {
       index = NSMaxRange(storage.string()!.lineRangeForRange(NSRange(location: index, length: 0)))
     }

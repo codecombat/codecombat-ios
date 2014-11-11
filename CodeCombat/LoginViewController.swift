@@ -20,13 +20,14 @@ class LoginViewController: UIViewController {
     super.viewDidLoad()
     drawBackgroundGradient()
     WebManager.sharedInstance.createLoginProtectionSpace()
+    WebManager.sharedInstance.checkReachibility()
   }
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     rememberUser()
   }
-
+  
   func rememberUser() {
     let credentialsValues = WebManager.sharedInstance.getCredentials()
     if !credentialsValues.isEmpty {

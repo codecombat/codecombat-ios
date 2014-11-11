@@ -8,7 +8,7 @@
 
 import UIKit
 
-class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureRecognizerDelegate, StringPickerPopoverDelegate, NumberPickerPopoverDelegate {
+class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureRecognizerDelegate, StringPickerPopoverDelegate, NumberPickerPopoverDelegate{
   let textStorage = EditorTextStorage()
   let textContainer = NSTextContainer()
   
@@ -142,6 +142,9 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
         recognizer.enabled = true
         return
       }
+      if textView.keyboardModeEnabled {
+        println("Dragging when in text view!")
+      }
       var locationInParentView = recognizer.locationInView(parentViewController!.view)
       locationInParentView.y += (textView.lineSpacing + textView.font.lineHeight) / 2
       var locationInTextView = recognizer.locationInView(textView)
@@ -266,7 +269,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
       }
       storage.replaceCharactersInRange(NSRange(location: startOfDraggedLineCharacterIndex, length: 0), withString: stringToInsert)
     }
-    textView.setNeedsDisplay()
+    //textView.setNeedsDisplay()
   }
   
   func codeContainsPlaceholder(code:String) -> Bool {
@@ -534,6 +537,18 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     pvc.scrollView.scrollRectToVisible(rect, animated: false)
   }
   
+  func scrollViewDidScroll(scrollView: UIScrollView) {
+    println("Scroll view did scroll!")
+    textView.setNeedsDisplay()
+  }
+  
+  
+  func textViewDidChange(textView: UITextView) {
+    textView.setNeedsDisplay()
+  }
+  
+  
+  
   func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
     if gestureRecognizer == tapGestureRecognizer {
       if textView.pointIsInLineNumberGutter(gestureRecognizer.locationInView(textView)) {
@@ -593,8 +608,6 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     return true
   }
   
-  func textViewDidChange(textView: UITextView!) {
-    self.textView.resizeLineNumberGutter()
-  }
+  
   
 }

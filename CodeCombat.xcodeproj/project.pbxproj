@@ -32,6 +32,9 @@
 		285A5433199C34BD00932DDE /* regversion.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5422199C34BD00932DDE /* regversion.c */; };
 		285A5434199C34BD00932DDE /* st.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5423199C34BD00932DDE /* st.c */; };
 		285A5435199C34BD00932DDE /* OnigRegexpUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 285A5425199C34BD00932DDE /* OnigRegexpUtility.m */; };
+		2873D9861A11883E006358BA /* MemoryWarningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2873D9841A11883E006358BA /* MemoryWarningViewController.swift */; };
+		2873D9871A11883E006358BA /* MemoryWarningViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2873D9851A11883E006358BA /* MemoryWarningViewController.xib */; };
+		2873D98A1A129FA7006358BA /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 2873D9891A129FA7006358BA /* Reachability.m */; };
 		2879938419FFF741005F6369 /* ArgumentOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2879938319FFF741005F6369 /* ArgumentOverlayView.swift */; };
 		287993861A007281005F6369 /* ArgumentStringPickerPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287993851A007281005F6369 /* ArgumentStringPickerPopoverViewController.swift */; };
 		287AE0A4199290DF00EEE4F0 /* CodeCombatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0A3199290DF00EEE4F0 /* CodeCombatTests.swift */; };
@@ -195,6 +198,10 @@
 		285A5423199C34BD00932DDE /* st.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = st.c; sourceTree = "<group>"; };
 		285A5424199C34BD00932DDE /* st.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = st.h; sourceTree = "<group>"; };
 		285A5425199C34BD00932DDE /* OnigRegexpUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OnigRegexpUtility.m; path = CocoaOniguruma/OnigRegexpUtility.m; sourceTree = "<group>"; };
+		2873D9841A11883E006358BA /* MemoryWarningViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemoryWarningViewController.swift; sourceTree = "<group>"; };
+		2873D9851A11883E006358BA /* MemoryWarningViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MemoryWarningViewController.xib; sourceTree = "<group>"; };
+		2873D9881A129F8F006358BA /* Reachability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		2873D9891A129FA7006358BA /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		2879938319FFF741005F6369 /* ArgumentOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentOverlayView.swift; sourceTree = "<group>"; };
 		287993851A007281005F6369 /* ArgumentStringPickerPopoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentStringPickerPopoverViewController.swift; sourceTree = "<group>"; };
 		287AE08B199290DF00EEE4F0 /* CodeCombat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodeCombat.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -476,6 +483,8 @@
 				287AE1121992956800EEE4F0 /* Loading */,
 				287AE1111992956300EEE4F0 /* Main Menu */,
 				287AE1101992956000EEE4F0 /* Store */,
+				2873D9841A11883E006358BA /* MemoryWarningViewController.swift */,
+				2873D9851A11883E006358BA /* MemoryWarningViewController.xib */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -488,6 +497,8 @@
 				287AE0F0199293B600EEE4F0 /* CodeCombat-Bridging-Header.h */,
 				287AE10E1992952500EEE4F0 /* NimbusKitMarkdown */,
 				C827D1D01994726600B5724C /* json.swift */,
+				2873D9881A129F8F006358BA /* Reachability.h */,
+				2873D9891A129FA7006358BA /* Reachability.m */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -793,6 +804,7 @@
 				C827D1CD199443AE00B5724C /* properties.json in Resources */,
 				287AE10B199294CC00EEE4F0 /* TestParticle.sks in Resources */,
 				28975EC019C4D9330033BA7C /* javascript.tmLanguageJSON in Resources */,
+				2873D9871A11883E006358BA /* MemoryWarningViewController.xib in Resources */,
 				C824BF0B19FC43DE0097AE14 /* HockeySDK.xcconfig in Resources */,
 				C824BF0C19FC43DE0097AE14 /* HockeySDKResources.bundle in Resources */,
 				C827D1CB19943FF700B5724C /* items_tharin.json in Resources */,
@@ -873,6 +885,7 @@
 				285A542B199C34BD00932DDE /* regcomp.c in Sources */,
 				285A5430199C34BD00932DDE /* regparse.c in Sources */,
 				285A5432199C34BD00932DDE /* regtrav.c in Sources */,
+				2873D98A1A129FA7006358BA /* Reachability.m in Sources */,
 				287E931619C8C4D100E68F03 /* ActionSheetStringPicker.m in Sources */,
 				285A5431199C34BD00932DDE /* regsyntax.c in Sources */,
 				287AE0B81992926400EEE4F0 /* EditorTextStorage.swift in Sources */,
@@ -899,6 +912,7 @@
 				287AE0FA199293B600EEE4F0 /* fmemopen.c in Sources */,
 				2879938419FFF741005F6369 /* ArgumentOverlayView.swift in Sources */,
 				287AE0FD199293B600EEE4F0 /* NSAttributedStringMarkdownParser.m in Sources */,
+				2873D9861A11883E006358BA /* MemoryWarningViewController.swift in Sources */,
 				287AE109199294CC00EEE4F0 /* ParticleView.swift in Sources */,
 				280D7E5C19AE2807004F95D4 /* DocumentNode.swift in Sources */,
 			);

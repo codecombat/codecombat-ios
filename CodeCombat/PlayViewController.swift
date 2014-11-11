@@ -109,6 +109,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     
     textViewController.createTextViewWithFrame(editorTextViewFrame)
     scrollView.panGestureRecognizer.requireGestureRecognizerToFail(textViewController.dragGestureRecognizer)
+    scrollView.panGestureRecognizer.requireGestureRecognizerToFail(textViewController.textView.panGestureRecognizer)
     addChildViewController(textViewController)
     editorContainerView.addSubview(textViewController.textView)
     let undoManager = textViewController.textStorage.undoManager

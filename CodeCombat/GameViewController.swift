@@ -16,12 +16,18 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   var webView: WKWebView = WebManager.sharedInstance.webView!
   var playViewController: PlayViewController?
   var playLevelRoutePrefix = "/play/level/"
-
+  var memoryWarningView:MemoryWarningViewController!
+  var memoryWarningCountdownTimer:NSTimer!
+  var memoryWarningCountdownCounts = 0
+  let memoryWarningCountdownDuration = 5
+  var memoryWarningsReceived = 0
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     webView = WebManager.sharedInstance.webView!
     view.addSubview(webView)
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("listenToNotifications"), name: "webViewDidFinishNavigation", object: nil)
+    
   }
   
   func listenToNotifications() {
@@ -32,7 +38,50 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
       //webManager.subscribe(self, channel: "supermodel:load-progress-changed", selector: Selector("onProgressUpdate:"))
       NSNotificationCenter.defaultCenter().removeObserver(self, name: "webViewDidFinishNavigation", object: nil)
     })
-    
+  }
+  
+  override func didReceiveMemoryWarning() {
+    memoryWarningsReceived++
+    if memoryWarningsReceived % 3 == 0 {
+      showMemoryWarningDialogue()
+    }
+    super.didReceiveMemoryWarning()
+  }
+  
+  private func showMemoryWarningDialogue() {
+    if memoryWarningView != nil {
+      memoryWarningCountdownCounts = memoryWarningCountdownDuration
+      return
+    }
+    memoryWarningView = MemoryWarningViewController(nibName: "MemoryWarningViewController", bundle:nil)
+    addChildViewController(memoryWarningView)
+    var warningViewFrame = memoryWarningView.view.frame
+    warningViewFrame.origin.y = 50
+    warningViewFrame.origin.x = (view.bounds.width - warningViewFrame.width)/2
+    memoryWarningView.view.frame = warningViewFrame
+    memoryWarningView.view.layer.cornerRadius = 5
+    memoryWarningView.view.layer.masksToBounds = true
+    memoryWarningView.view.layer.borderColor = UIColor.blackColor().CGColor
+    memoryWarningView.view.layer.borderWidth = 2
+    view.addSubview(memoryWarningView.view)
+    memoryWarningCountdownCounts = memoryWarningCountdownDuration
+    memoryWarningCountdownTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("countDownMemoryWarning"), userInfo: nil, repeats: true)
+  }
+  
+  func countDownMemoryWarning() {
+    memoryWarningCountdownCounts--
+    println("Counting down!")
+    if memoryWarningCountdownCounts == 0 {
+      memoryWarningCountdownTimer.invalidate()
+      UIView.animateWithDuration(2, animations: {
+        self.memoryWarningView.view.alpha = 0
+        }, completion: { success in
+          self.memoryWarningView.view.removeFromSuperview()
+          self.memoryWarningView.removeFromParentViewController()
+          self.memoryWarningCountdownCounts = self.memoryWarningCountdownDuration
+          self.memoryWarningView = nil
+      })
+    }
   }
   
   deinit {
