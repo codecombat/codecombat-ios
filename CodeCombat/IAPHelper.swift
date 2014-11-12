@@ -50,7 +50,7 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
     println("Failed to load list of products")
     println(error)
     productsRequest = nil
-    self.completionHandler!(false, NSArray())
+    self.completionHandler?(false, NSArray())
     self.completionHandler = nil
   }
   
