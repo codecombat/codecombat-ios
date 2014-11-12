@@ -46,8 +46,6 @@
 		287AE0BB1992926400EEE4F0 /* CodeCombatIAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0B31992926400EEE4F0 /* CodeCombatIAPHelper.swift */; };
 		287AE0CF1992927300EEE4F0 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0C01992927300EEE4F0 /* LoginViewController.swift */; };
 		287AE0D51992927300EEE4F0 /* SpriteDialogue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0C61992927300EEE4F0 /* SpriteDialogue.swift */; };
-		287AE0D71992927300EEE4F0 /* StoreItemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0C81992927300EEE4F0 /* StoreItemDetailViewController.swift */; };
-		287AE0D81992927300EEE4F0 /* StoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0C91992927300EEE4F0 /* StoreViewController.swift */; };
 		287AE0D91992927300EEE4F0 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0CA1992927300EEE4F0 /* User.swift */; };
 		287AE0DA1992927300EEE4F0 /* wasted_work.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0CB1992927300EEE4F0 /* wasted_work.swift */; };
 		287AE0DB1992927300EEE4F0 /* WebManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0CC1992927300EEE4F0 /* WebManager.swift */; };
@@ -218,8 +216,6 @@
 		287AE0B31992926400EEE4F0 /* CodeCombatIAPHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodeCombatIAPHelper.swift; sourceTree = "<group>"; };
 		287AE0C01992927300EEE4F0 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		287AE0C61992927300EEE4F0 /* SpriteDialogue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpriteDialogue.swift; sourceTree = "<group>"; };
-		287AE0C81992927300EEE4F0 /* StoreItemDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreItemDetailViewController.swift; sourceTree = "<group>"; };
-		287AE0C91992927300EEE4F0 /* StoreViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreViewController.swift; sourceTree = "<group>"; };
 		287AE0CA1992927300EEE4F0 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		287AE0CB1992927300EEE4F0 /* wasted_work.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = wasted_work.swift; sourceTree = "<group>"; };
 		287AE0CC1992927300EEE4F0 /* WebManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebManager.swift; sourceTree = "<group>"; };
@@ -485,7 +481,6 @@
 				287AE1131992956D00EEE4F0 /* Login */,
 				287AE1121992956800EEE4F0 /* Loading */,
 				287AE1111992956300EEE4F0 /* Main Menu */,
-				287AE1101992956000EEE4F0 /* Store */,
 				2873D9841A11883E006358BA /* MemoryWarningViewController.swift */,
 				2873D9851A11883E006358BA /* MemoryWarningViewController.xib */,
 			);
@@ -533,15 +528,6 @@
 				2809AF5A19C4800B0054477B /* python.tmLanguageJSON */,
 			);
 			name = Resources;
-			sourceTree = "<group>";
-		};
-		287AE1101992956000EEE4F0 /* Store */ = {
-			isa = PBXGroup;
-			children = (
-				287AE0C81992927300EEE4F0 /* StoreItemDetailViewController.swift */,
-				287AE0C91992927300EEE4F0 /* StoreViewController.swift */,
-			);
-			name = Store;
 			sourceTree = "<group>";
 		};
 		287AE1111992956300EEE4F0 /* Main Menu */ = {
@@ -880,7 +866,6 @@
 				285A542F199C34BD00932DDE /* regext.c in Sources */,
 				C827D1D11994726600B5724C /* json.swift in Sources */,
 				28BA9B561992D5DA006ACB3A /* PlayViewController.swift in Sources */,
-				287AE0D81992927300EEE4F0 /* StoreViewController.swift in Sources */,
 				287E931419C8C4D100E68F03 /* ActionSheetDistancePicker.m in Sources */,
 				C827D1D91994937C00B5724C /* TomeInventoryItemView.swift in Sources */,
 				287AE0BA1992926400EEE4F0 /* BackbonePublisher.swift in Sources */,
@@ -903,7 +888,6 @@
 				280D7E6119AE4E19004F95D4 /* DocumentParser.swift in Sources */,
 				C87236FD19FABD760077BD3B /* GameViewController.swift in Sources */,
 				287E931819C8C4D100E68F03 /* SWActionSheet.m in Sources */,
-				287AE0D71992927300EEE4F0 /* StoreItemDetailViewController.swift in Sources */,
 				285A5434199C34BD00932DDE /* st.c in Sources */,
 				285A542C199C34BD00932DDE /* regenc.c in Sources */,
 				285A5426199C34BD00932DDE /* OnigRegexp.m in Sources */,

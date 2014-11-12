@@ -21,6 +21,7 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
   
   init(productIdentifiers:NSSet)  {
     super.init()
+    self.productIdentifiers = productIdentifiers
     SKPaymentQueue.defaultQueue().addTransactionObserver(self)
   }
   
@@ -70,11 +71,22 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
       case .Restored:
         restoreTransaction(transaction)
         break
+      case .Purchasing:
+        println("Purchasing!")
       default:
         break
       }
       
     }
+  }
+  
+  func localizedPriceForProduct(product:SKProduct) -> String {
+    let priceFormatter = NSNumberFormatter()
+    priceFormatter.formatterBehavior = NSNumberFormatterBehavior.Behavior10_4
+    priceFormatter.numberStyle = NSNumberFormatterStyle.CurrencyStyle
+    
+    priceFormatter.locale = product.priceLocale
+    return priceFormatter.stringFromNumber(product.price)!
   }
   
   func completeTransaction(transaction:SKPaymentTransaction) {
@@ -92,13 +104,8 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
         })
         return
       }
-      let priceFormatter = NSNumberFormatter()
-      priceFormatter.formatterBehavior = NSNumberFormatterBehavior.Behavior10_4
-      priceFormatter.numberStyle = NSNumberFormatterStyle.CurrencyStyle
       
-      priceFormatter.locale = purchasedProduct!.priceLocale
-      
-      innerDict["localPrice"] = priceFormatter.stringFromNumber(purchasedProduct!.price)
+      innerDict["localPrice"] = localizedPriceForProduct(purchasedProduct!)
       innerDict["transactionID"] = transaction.transactionIdentifier
       receiptDict["apple"] = innerDict
       sendGemRequestToCodeCombatServers(receiptDict, transaction: transaction)
@@ -131,7 +138,8 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
           println("There was an error serializing the JSON")
         } else {
           println("Should finish transaction here....")
-          //SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+          NSNotificationCenter.defaultCenter().postNotificationName("productPurchased", object: nil, userInfo: nil)
+          SKPaymentQueue.defaultQueue().finishTransaction(transaction)
         }
       }
     }
@@ -141,7 +149,9 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
   
   func restoreTransaction(transaction:SKPaymentTransaction) {
     println("Restore transaction")
+    NSNotificationCenter.defaultCenter().postNotificationName("productPurchased", object: nil, userInfo: nil)
     SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+    
   }
   
   func failedTransaction(transaction:SKPaymentTransaction) {

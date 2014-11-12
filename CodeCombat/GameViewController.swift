@@ -8,6 +8,7 @@
 
 import Foundation
 import WebKit
+import StoreKit
 
 var autoLoggedIn: Bool = false  // Wish class variables were supported.
 
@@ -22,6 +23,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   let memoryWarningCountdownDuration = 5
   var memoryWarningsReceived = 0
   var memoryAlertController:UIAlertController!
+  var productBeingPurchased:SKProduct!
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -39,9 +41,56 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
       self.webManager.subscribe(self, channel: "router:navigated", selector: Selector("onNavigated:"))
       self.webManager.subscribe(self, channel: "level:loading-view-unveiled", selector: Selector("onLevelStarted:"))
       self.webManager.subscribe(self, channel: "auth:logging-out", selector: Selector("onLogout"))
+      self.webManager.subscribe(self, channel: "buy-gems-modal:update-products", selector: Selector("onBuyGemsModalUpdateProducts"))
+      self.webManager.subscribe(self, channel: "buy-gems-modal:purchase-initiated", selector: Selector("onBuyGemsModalPurchaseInitiated:"))
       //webManager.subscribe(self, channel: "supermodel:load-progress-changed", selector: Selector("onProgressUpdate:"))
       NSNotificationCenter.defaultCenter().removeObserver(self, name: "webViewDidFinishNavigation", object: nil)
     })
+  }
+  
+  func onBuyGemsModalUpdateProducts() {
+    if CodeCombatIAPHelper.sharedInstance.productsDict.count != 0 {
+      sendIPadProductsToWebView()
+    } else {
+      CodeCombatIAPHelper.sharedInstance.requestProductsWithCompletionHandler({ (success, products) -> Void in
+        if success {
+          self.onBuyGemsModalUpdateProducts()
+        } else {
+          println("Failed to get list of products")
+        }
+      })
+    }
+    
+  }
+  
+  func onBuyGemsModalPurchaseInitiated(note:NSNotification) {
+    let productID = note.userInfo!["productID"] as String
+    let desiredProduct = CodeCombatIAPHelper.sharedInstance.productsDict[productID]
+    println("WANTS TO BUY PRODUCT \(productID)")
+    if desiredProduct != nil {
+      productBeingPurchased = desiredProduct!
+      CodeCombatIAPHelper.sharedInstance.buyProduct(desiredProduct!)
+      NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onProductPurchased"), name: "productPurchased", object: nil)
+    }
+  }
+  
+  func onProductPurchased() {
+    NSNotificationCenter.defaultCenter().removeObserver(self, name: "productPurchased", object: nil)
+    productBeingPurchased = nil
+    webManager.publish("ipad:iap-complete", event: [:])
+    webManager.webView!.reload()
+  }
+  
+  func sendIPadProductsToWebView() {
+    var productsToSend:[[String:AnyObject]] = []
+    for (productID, product) in CodeCombatIAPHelper.sharedInstance.productsDict {
+      var productDict:[String:AnyObject] = [:]
+      productDict["price"] = CodeCombatIAPHelper.sharedInstance.localizedPriceForProduct(product)
+      productDict["id"] = product.productIdentifier
+      productsToSend.append(productDict)
+    }
+    let productsObject = ["products":productsToSend]
+    webManager.publish("ipad:products", event: productsObject)
   }
   
   //This listens for when the NSURLConnection login fails (aka password has changed, etc.)
