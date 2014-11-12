@@ -24,6 +24,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   var activeObservers: [NSObject : [String]] = [:]
   var loginProtectionSpace:NSURLProtectionSpace?
   var hostReachibility:Reachability!
+  var authCookieIsFresh:Bool = false
   
   class var sharedInstance:WebManager {
     return WebManagerSharedInstance
@@ -77,6 +78,32 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
       return []
     }
     return credentialsDictionary!.values.array as [NSURLCredential]
+  }
+  
+  func loginToGetAuthCookie(#username:String, password:String) {
+    let loginURL = NSURL(string: "/auth/login", relativeToURL: rootURL)!
+    
+    let loginRequest = NSMutableURLRequest(URL: loginURL)
+    loginRequest.HTTPMethod = "POST"
+    loginRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+  
+    let loginCredentials:[String:String] = ["username":username, "password":password]
+    let postData = NSJSONSerialization.dataWithJSONObject(loginCredentials, options: NSJSONWritingOptions.allZeros, error: nil)
+    loginRequest.HTTPBody = postData
+    NSURLConnection.sendAsynchronousRequest(loginRequest, queue: NSOperationQueue.mainQueue()) { (response, data, error) -> Void in
+      if error != nil {
+        dispatch_async(dispatch_get_main_queue(), {
+          println("Web manager failed to log in")
+          NSNotificationCenter.defaultCenter().postNotificationName("loginFailure", object: nil)
+        })
+      } else {
+        self.authCookieIsFresh = true
+        dispatch_async(dispatch_get_main_queue(), {
+          println("Web manager successfully logged in")
+          NSNotificationCenter.defaultCenter().postNotificationName("loginSuccess", object: nil)
+        })
+      }
+    }
   }
   
   private func instantiateWebView() {

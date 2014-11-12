@@ -25,15 +25,14 @@ class StoreItemDetailViewController: UIViewController {
     
   }
   
-  
   override func viewDidLoad() {
     itemDescriptionLabel.text = product.localizedDescription
     itemTitleLabel.text = product.localizedTitle
-    if product.productIdentifier == "com.michaelschmatz.CodeCombatiPadTest.amuletOfConditionalAwesomeness" {
+    if product.productIdentifier == IAP.Gems5.rawValue {
       itemImageView.image = UIImage(named: "amuletOfConditional")
-    } else if product.productIdentifier == "com.michaelschmatz.CodeCombatiPadTest.gemOfNope"{
+    } else if product.productIdentifier == IAP.Gems10.rawValue{
       itemImageView.image = UIImage(named: "gemOfNope")
-    } else if product.productIdentifier == "com.michaelschmatz.CodeCombatiPadTest.wineoutofnowhere" {
+    } else if product.productIdentifier == IAP.Gems20.rawValue {
       itemImageView.image = UIImage(named:"wine")
     }
     priceFormatter = NSNumberFormatter()
@@ -42,12 +41,7 @@ class StoreItemDetailViewController: UIViewController {
     
     priceFormatter!.locale = product.priceLocale
     priceLabel.text = priceFormatter?.stringFromNumber(product.price)
-    if CodeCombatIAPHelper.sharedInstance.productPurchased(product.productIdentifier) {
-      buyButton.enabled = false
-      buyButton.setTitle("Purchased", forState: UIControlState.Normal)
-    } else {
-      buyButton.addTarget(self, action: Selector("buy:"), forControlEvents: UIControlEvents.TouchUpInside)
-    }
+    buyButton.addTarget(self, action: Selector("buy:"), forControlEvents: UIControlEvents.TouchUpInside)
   }
   @IBAction func buy(sender:AnyObject?) {
     let buyButton = sender as UIButton

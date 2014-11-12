@@ -446,14 +446,58 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   
   private func deleteDraggedLine() {
     textStorage.beginEditing()
+    let draggedLineString:NSString = textStorage.string()!.substringWithRange(draggedCharacterRange).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
     if draggedCharacterRange.location != 0 {
       textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
     } else {
       textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "\n")
     }
     textStorage.endEditing()
+    /*if draggedLineString == "loop:" {
+      println("Reindenting lines below")
+      textStorage.beginEditing()
+      removeOneIndentFromCharactersStartingFromLocation(draggedCharacterRange.location)
+      textStorage.endEditing()
+    }*/
+    
     textView.setNeedsDisplay()
   }
+  
+  private func removeOneIndentFromCharactersStartingFromLocation(loc:Int) {
+    var currentLocation = loc
+    if currentLocation == 0 {
+      currentLocation-- //to correct for this script
+    }
+    var stringLength = textStorage.length
+    var currentIndentationLevel = -1
+    while (currentLocation < stringLength && currentLocation != NSNotFound ) {
+      //probably an off by one error
+      stringLength = textStorage.length
+      currentLocation++
+      let lineEndLocation = textStorage.string()!.rangeOfCharacterFromSet(NSCharacterSet.newlineCharacterSet(), options: NSStringCompareOptions.allZeros, range: NSRange(location: currentLocation, length: stringLength - (currentLocation))).location
+      if lineEndLocation == NSNotFound {
+        break
+      }
+      let line = lineNumberForDraggedCharacterRange(NSRange(location: lineEndLocation, length: 1))
+      println("String is on line \(line)")
+      let indentationLevel = indentationLevelOfLine(line)
+      if currentIndentationLevel == -1 {
+        currentIndentationLevel = indentationLevel
+      }
+      let lineRange = NSRange(location: currentLocation, length: lineEndLocation - currentLocation)
+      var lineString = textStorage.string()!.substringWithRange(lineRange)
+      if currentIndentationLevel >= indentationLevel {
+        currentIndentationLevel = indentationLevel
+        println("Reindenting to level \(indentationLevel - 1)")
+        lineString = reindentString(lineString, indentationLevel: indentationLevel - 1)
+      }
+      //reindent line
+      textStorage.replaceCharactersInRange(lineRange, withString: lineString)
+      currentLocation = lineRange.location + lineRange.length + (countElements(lineString) - lineRange.length)
+    }
+  }
+  
+  
   
   private func shiftAroundLines(dragEndLocation:CGPoint) {
     //get the text underneath the drag end

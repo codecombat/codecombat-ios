@@ -35,6 +35,7 @@
 		2873D9861A11883E006358BA /* MemoryWarningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2873D9841A11883E006358BA /* MemoryWarningViewController.swift */; };
 		2873D9871A11883E006358BA /* MemoryWarningViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2873D9851A11883E006358BA /* MemoryWarningViewController.xib */; };
 		2873D98A1A129FA7006358BA /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 2873D9891A129FA7006358BA /* Reachability.m */; };
+		2873D98C1A12AD5B006358BA /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2873D98B1A12AD5B006358BA /* StoreKit.framework */; };
 		2879938419FFF741005F6369 /* ArgumentOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2879938319FFF741005F6369 /* ArgumentOverlayView.swift */; };
 		287993861A007281005F6369 /* ArgumentStringPickerPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287993851A007281005F6369 /* ArgumentStringPickerPopoverViewController.swift */; };
 		287AE0A4199290DF00EEE4F0 /* CodeCombatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0A3199290DF00EEE4F0 /* CodeCombatTests.swift */; };
@@ -202,6 +203,7 @@
 		2873D9851A11883E006358BA /* MemoryWarningViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MemoryWarningViewController.xib; sourceTree = "<group>"; };
 		2873D9881A129F8F006358BA /* Reachability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		2873D9891A129FA7006358BA /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		2873D98B1A12AD5B006358BA /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		2879938319FFF741005F6369 /* ArgumentOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentOverlayView.swift; sourceTree = "<group>"; };
 		287993851A007281005F6369 /* ArgumentStringPickerPopoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArgumentStringPickerPopoverViewController.swift; sourceTree = "<group>"; };
 		287AE08B199290DF00EEE4F0 /* CodeCombat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodeCombat.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -298,6 +300,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C824BEFF19FC120D0097AE14 /* SystemConfiguration.framework in Frameworks */,
+				2873D98C1A12AD5B006358BA /* StoreKit.framework in Frameworks */,
 				C824BEFD19FC12070097AE14 /* Security.framework in Frameworks */,
 				C824BF0A19FC43DE0097AE14 /* HockeySDK.framework in Frameworks */,
 				C824BEFB19FC12030097AE14 /* QuickLook.framework in Frameworks */,
@@ -646,6 +649,7 @@
 		C824BF0019FC12180097AE14 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2873D98B1A12AD5B006358BA /* StoreKit.framework */,
 				C824BF0519FC43DE0097AE14 /* HockeySDK.embeddedframework */,
 				C824BEFE19FC120D0097AE14 /* SystemConfiguration.framework */,
 				C824BEFC19FC12070097AE14 /* Security.framework */,
@@ -766,6 +770,11 @@
 					287AE08A199290DF00EEE4F0 = {
 						CreatedOnToolsVersion = 6.0;
 						DevelopmentTeam = XLZVNEVFFF;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+						};
 					};
 					287AE09C199290DF00EEE4F0 = {
 						CreatedOnToolsVersion = 6.0;

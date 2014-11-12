@@ -15,17 +15,40 @@ class LoginViewController: UIViewController {
   @IBOutlet weak var passwordTextField: UITextField!
   @IBOutlet weak var usernameTextField: UITextField!
   @IBOutlet weak var loginActivityIndicatorView: UIActivityIndicatorView!
+  var memoryAlertController:UIAlertController!
   
   override func viewDidLoad() {
     super.viewDidLoad()
     drawBackgroundGradient()
     WebManager.sharedInstance.createLoginProtectionSpace()
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onWebsiteNotReachable"), name: "websiteNotReachable", object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onWebsiteReachable"), name: "websiteReachable", object: nil)
     WebManager.sharedInstance.checkReachibility()
   }
   
   override func viewDidAppear(animated: Bool) {
     super.viewDidAppear(animated)
     rememberUser()
+  }
+  
+  func onWebsiteNotReachable() {
+    println("onWebsiteNotReachable in login view controller")
+    if memoryAlertController == nil {
+      memoryAlertController = UIAlertController(title: "Internet connection problem", message: "We can't reach the CodeCombat server. Please check your connection and try again.", preferredStyle: UIAlertControllerStyle.Alert)
+      memoryAlertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { success in
+        self.memoryAlertController.dismissViewControllerAnimated(true, completion: nil)
+        self.memoryAlertController = nil
+      }))
+      presentViewController(memoryAlertController, animated: true, completion: nil)
+    }
+  }
+  
+  func onWebsiteReachable() {
+    if memoryAlertController != nil {
+      memoryAlertController.dismissViewControllerAnimated(true, completion: {
+        self.memoryAlertController = nil
+      })
+    }
   }
   
   func rememberUser() {
@@ -37,6 +60,7 @@ class LoginViewController: UIViewController {
       User.sharedInstance.email = credential.user!
       User.sharedInstance.password = credential.password!
       segueToMainMenu()
+      WebManager.sharedInstance.loginToGetAuthCookie(username: credential.user!, password: credential.password!)
     }
   }
   

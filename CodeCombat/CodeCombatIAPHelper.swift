@@ -8,18 +8,19 @@
 
 import UIKit
 
+enum IAP:String {
+  case Gems5 = "gems_5"
+  case Gems10 = "gems_10"
+  case Gems20 = "gems_20"
+}
+
 class CodeCombatIAPHelper: IAPHelper {
   init() {
-    let array = [
-      NSString(string:"com.michaelschmatz.CodeCombatiPadTest.amuletOfConditionalAwesomeness"),
-      NSString(string:"com.michaelschmatz.CodeCombatiPadTest.gemOfNope"),
-      NSString(string:"com.michaelschmatz.CodeCombatiPadTest.wineoutofnowhere")
+    let products:[String] = [
+      IAP.Gems5.rawValue,
+      IAP.Gems10.rawValue,
+      IAP.Gems20.rawValue
     ]
-    let products = NSMutableArray()
-    
-    for product in array {
-      products.addObject(product)
-    }
     let productIdentifiers = NSSet(array: products)
     super.init(productIdentifiers: productIdentifiers)
   }

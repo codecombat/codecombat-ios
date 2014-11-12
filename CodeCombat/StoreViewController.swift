@@ -8,6 +8,7 @@ class StoreViewController: UIViewController, UICollectionViewDataSource, UIColle
   
   @IBAction func goBackToMainMenu(sender:AnyObject?) {
     dismissViewControllerAnimated(true, completion: nil)
+    collectionView.reloadData()
   }
   
   required init(coder aDecoder: NSCoder) {
@@ -27,8 +28,9 @@ class StoreViewController: UIViewController, UICollectionViewDataSource, UIColle
     CodeCombatIAPHelper.sharedInstance.requestProductsWithCompletionHandler({ [weak self] success, products -> Void in
       if success {
         self!.products = products as [SKProduct]
-        println(products)
         self?.collectionView.reloadData()
+      } else {
+        println("Something went wrong in the store view controller")
       }
       })
     //self.collectionView.registerClass(NSClassFromString("UICollectionViewCell"), forCellWithReuseIdentifier: "InventoryCell")
@@ -51,11 +53,12 @@ class StoreViewController: UIViewController, UICollectionViewDataSource, UIColle
     let cell = collectionView.dequeueReusableCellWithReuseIdentifier("InventoryCell", forIndexPath: indexPath) as InventoryCell
     cell.backgroundColor = UIColor.whiteColor()
     let product = products[indexPath.row]
-    if product.productIdentifier == "com.michaelschmatz.CodeCombatiPadTest.amuletOfConditionalAwesomeness" {
+    println("Getting product \(product.productIdentifier)")
+    if product.productIdentifier == IAP.Gems5.rawValue {
       cell.imageView.image = UIImage(named: "amuletOfConditional")
-    } else if product.productIdentifier == "com.michaelschmatz.CodeCombatiPadTest.gemOfNope"{
+    } else if product.productIdentifier == IAP.Gems10.rawValue {
       cell.imageView.image = UIImage(named: "gemOfNope")
-    } else if product.productIdentifier == "com.michaelschmatz.CodeCombatiPadTest.wineoutofnowhere" {
+    } else if product.productIdentifier == IAP.Gems20.rawValue {
       cell.imageView.image = UIImage(named:"wine")
     }
     return cell

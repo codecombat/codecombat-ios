@@ -21,13 +21,17 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   var memoryWarningCountdownCounts = 0
   let memoryWarningCountdownDuration = 5
   var memoryWarningsReceived = 0
+  var memoryAlertController:UIAlertController!
   
   override func viewDidLoad() {
     super.viewDidLoad()
     webView = WebManager.sharedInstance.webView!
     view.addSubview(webView)
+    view.sendSubviewToBack(webView)
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("listenToNotifications"), name: "webViewDidFinishNavigation", object: nil)
-    
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onWebsiteNotReachable"), name: "websiteNotReachable", object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onWebsiteReachable"), name: "websiteReachable", object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onLoginFailure"), name: "loginFailure", object: nil)
   }
   
   func listenToNotifications() {
@@ -40,11 +44,39 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
     })
   }
   
+  //This listens for when the NSURLConnection login fails (aka password has changed, etc.)
+  func onLoginFailure() {
+    WebManager.sharedInstance.clearCredentials()
+    dismissViewControllerAnimated(true, completion:nil)
+  }
+  
+  func onWebsiteNotReachable() {
+    println("Game view controller showing not reachable alert")
+    if memoryAlertController == nil {
+      memoryAlertController = UIAlertController(title: "Internet connection problem", message: "We can't reach the CodeCombat server. Please check your connection and try again.", preferredStyle: UIAlertControllerStyle.Alert)
+      memoryAlertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { success in
+        self.memoryAlertController.dismissViewControllerAnimated(true, completion: nil)
+        self.memoryAlertController = nil
+      }))
+      presentViewController(memoryAlertController, animated: true, completion: nil)
+    }
+  }
+  
+  func onWebsiteReachable() {
+    if memoryAlertController != nil {
+      memoryAlertController.dismissViewControllerAnimated(true, completion: {
+        self.memoryAlertController = nil
+      })
+    }
+  }
+  
   override func didReceiveMemoryWarning() {
     memoryWarningsReceived++
     if memoryWarningsReceived % 3 == 0 {
       showMemoryWarningDialogue()
     }
+    println("----------------- Received Memory Warning --------------")
+    NSURLCache.sharedURLCache().removeAllCachedResponses()
     super.didReceiveMemoryWarning()
   }
   
@@ -168,12 +200,6 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
       presentViewController(playViewController!, animated: false, completion: nil)
       println("Now we are presenting \(presentedViewController)")
     }
-  }
-  
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    println("----------------- Received Memory Warning --------------")
-    NSURLCache.sharedURLCache().removeAllCachedResponses()
   }
 }
 
