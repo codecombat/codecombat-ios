@@ -25,6 +25,10 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   var loginProtectionSpace:NSURLProtectionSpace?
   var hostReachibility:Reachability!
   var authCookieIsFresh:Bool = false
+  var webKitCheckupTimer: NSTimer?
+  var webKitCheckupsMissed: Int = -1
+  var currentFragment: String?
+  var afterLoginFragment: String?
   
   class var sharedInstance:WebManager {
     return WebManagerSharedInstance
@@ -52,6 +56,8 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     scriptMessageNotificationCenter = NSNotificationCenter()
     instantiateWebView()
     subscribe(self, channel: "application:error", selector: "onJSError:")
+    subscribe(self, channel: "router:navigated", selector: Selector("onNavigated:"))
+    webKitCheckupTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("checkWebKit"), userInfo: nil, repeats: true)
   }
   
   func createLoginProtectionSpace() {
@@ -132,6 +138,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
       webView.evaluateJavaScript(noZoomJS, completionHandler: nil)
       println("webView didCommitNavigation")
     }
+    currentFragment = self.webView!.URL!.path!
   }
   
   func routeURLHasAllowedPrefix(route:String) -> Bool {
@@ -152,6 +159,11 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
         println("Reregistering \(channel)")
         registerSubscription(channel)
       }
+    }
+    if afterLoginFragment != nil {
+      println("Now that we have logged in, we are navigating to \(afterLoginFragment!)")
+      publish("router:navigate", event: ["route": afterLoginFragment!])
+      afterLoginFragment = nil
     }
   }
   
@@ -237,7 +249,14 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
       println("💔💔💔 Unhandled JS error in application: \(message)")
     }
   }
-  
+
+  func onNavigated(note: NSNotification) {
+    if let event = note.userInfo {
+      let route = event["route"]! as String
+      currentFragment = route
+    }
+  }
+
   private func serializeData(data:NSDictionary?) -> String {
     var serialized:NSData?
     var error:NSError?
@@ -276,6 +295,44 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     contentController.addScriptMessageHandler(self, name: "backboneEventHandler")
     contentController.addScriptMessageHandler(self, name: "consoleLogHandler")
   }
+  
+  func onWebKitCheckupAnswered(response: AnyObject!, error: NSError?) {
+    if response != nil {
+      webKitCheckupsMissed = -1
+      //println("WebView just checked in with response \(response), error \(error?)")
+    }
+    else {
+      println("WebKit missed a checkup. It's either slow to respond, or has crashed. (Probably just slow to respond.)")
+      webKitCheckupsMissed = 100
+    }
+  }
+  
+  func checkWebKit() {
+    //println("webView is \(webView?); asking it to check in")
+    if webKitCheckupsMissed > 20 {
+      println("-----------------Oh snap, it crashed!---------------------")
+      webKitCheckupsMissed = -1
+      reloadWebView()
+    }
+    ++webKitCheckupsMissed;
+    evaluateJavaScript("2 + 2;", completionHandler: onWebKitCheckupAnswered)
+  }
+  
+  func reloadWebView() {
+    var oldSuperView = webView!.superview
+    if oldSuperView != nil {
+      webView!.removeFromSuperview()
+    }
+    afterLoginFragment = currentFragment
+    webView = nil
+    instantiateWebView()
+    if oldSuperView != nil {
+      oldSuperView?.addSubview(webView!)
+    }
+    println("WebManager reloaded webview: \(webView!)")
+    NSNotificationCenter.defaultCenter().postNotificationName("webViewReloadedFromCrash", object: self)
+  }
+
 }
 
 private let WebManagerSharedInstance = WebManager()

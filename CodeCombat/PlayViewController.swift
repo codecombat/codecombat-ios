@@ -40,6 +40,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     super.viewDidLoad()
     listenToNotifications()
     setupViews()
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onWebViewReloadedFromCrash"), name: "webViewReloadedFromCrash", object: nil)
   }
   
   private func listenToNotifications() {
@@ -53,6 +54,7 @@ class PlayViewController: UIViewController, UITextViewDelegate {
   }
   
   deinit {
+    NSNotificationCenter.defaultCenter().removeObserver(self)
     WebManager.sharedInstance.unsubscribe(self)
   }
   
@@ -124,6 +126,10 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     if webView != nil {
       scrollView.addSubview(webView!)
     }
+  }
+  
+  func onWebViewReloadedFromCrash() {
+    webView = WebManager.sharedInstance.webView!
   }
   
   func setupBackgrounds() {

@@ -34,6 +34,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onWebsiteNotReachable"), name: "websiteNotReachable", object: nil)
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onWebsiteReachable"), name: "websiteReachable", object: nil)
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onLoginFailure"), name: "loginFailure", object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onWebViewReloadedFromCrash"), name: "webViewReloadedFromCrash", object: nil)
   }
   
   func listenToNotifications() {
@@ -162,6 +163,14 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
           self.memoryWarningCountdownCounts = self.memoryWarningCountdownDuration
           self.memoryWarningView = nil
       })
+    }
+  }
+  
+  func onWebViewReloadedFromCrash() {
+    println("GameViewController going to reload its webview \(webManager.webView?)")
+    webView = webManager.webView!
+    if webView.superview == view {
+      view.sendSubviewToBack(webView)
     }
   }
   
