@@ -22,9 +22,6 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="loginModalBackground" translatesAutoresizingMaskIntoConstraints="NO" id="JpX-fa-MYg">
                                 <rect key="frame" x="249" y="70" width="527" height="627"/>
                             </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Logo" translatesAutoresizingMaskIntoConstraints="NO" id="Ekg-tE-t9I">
-                                <rect key="frame" x="403" y="70" width="240" height="128"/>
-                            </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="loginInfoBackground" translatesAutoresizingMaskIntoConstraints="NO" id="pui-CK-cNW">
                                 <rect key="frame" x="321" y="206" width="382" height="128"/>
                             </imageView>
@@ -67,6 +64,9 @@
                                     <action selector="signup:" destination="akZ-k3-TF7" eventType="touchUpInside" id="8Yv-Mj-73h"/>
                                 </connections>
                             </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Logo" translatesAutoresizingMaskIntoConstraints="NO" id="Ekg-tE-t9I">
+                                <rect key="frame" x="312" y="96" width="400" height="124"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.31372549019607843" green="0.25098039215686274" blue="0.19607843137254902" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
@@ -238,7 +238,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Logo" width="86" height="20"/>
+        <image name="Logo" width="600" height="186"/>
         <image name="large_button_inactive" width="113" height="49"/>
         <image name="large_button_pressed" width="113" height="49"/>
         <image name="large_green_active" width="113" height="49"/>

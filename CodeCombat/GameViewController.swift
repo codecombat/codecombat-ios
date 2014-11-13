@@ -228,6 +228,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
       } else {
         LevelSettingsManager.sharedInstance.level = .Unknown
       }
+      playViewController!.updateForLevel()
       println("Created a playViewController for \(route)")
     }
     else {

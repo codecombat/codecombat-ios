@@ -309,7 +309,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   
   func checkWebKit() {
     //println("webView is \(webView?); asking it to check in")
-    if webKitCheckupsMissed > 20 {
+    if webKitCheckupsMissed > 60 {
       println("-----------------Oh snap, it crashed!---------------------")
       webKitCheckupsMissed = -1
       reloadWebView()

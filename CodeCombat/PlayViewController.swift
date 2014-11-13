@@ -145,6 +145,16 @@ class PlayViewController: UIViewController, UITextViewDelegate {
       view.insertSubview(button, aboveSubview: bottomBackground)
     }
   }
+  
+  func updateForLevel() {
+    var levelID = LevelSettingsManager.sharedInstance.level
+    if contains([.DungeonsOfKithgard, .GemsInTheDeep, .ShadowGuard, .KounterKithwise, .CrawlwaysOfKithgard, .ForgetfulGemsmith, .TrueNames, .FavorableOdds, .TheRaisedSword, .TheFirstKithmaze, .HauntedKithmaze, .DescendingFurther, .TheSecondKithmaze, .DreadDoor, .KnownEnemy, .MasterOfNames, .LowlyKithmen, .ClosingTheDistance, .TacticalStrike, .TheFinalKithmaze, .TheGauntlet, .KithgardGates, .CavernSurvival, .DefenseOfPlainswood, .WindingTrail], levelID) {
+      submitButton.setTitle("DONE", forState: .Normal)
+      submitButton.setTitle("DONE", forState: .Highlighted)
+      submitButton.setTitle("DONE", forState: .Selected)
+      submitButton.setTitle("DONE", forState: .Disabled)
+    }
+  }
 
   func setupToolbar() {
 

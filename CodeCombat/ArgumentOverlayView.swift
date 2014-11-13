@@ -56,7 +56,7 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
       makeStringChoicePopoverWithChoices(["\"Krug\"","\"Grump\""])
     case .TheRaisedSword:
       makeStringChoicePopoverWithChoices(["\"Gurt\"","\"Rig\"","\"Ack\""])
-    case .NewSight:
+    case .DreadDoor:
       makeStringChoicePopoverWithChoices(["\"Door\""])
     case .KithgardGates:
       makeStringChoicePopoverWithChoices(["\"fence\""])
@@ -100,7 +100,7 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
       addSubview(makeDefaultLabelWithText("\"Krug\""))
     case .TheRaisedSword:
       addSubview(makeDefaultLabelWithText("\"Gurt\""))
-    case .NewSight:
+    case .DreadDoor:
       addSubview(makeDefaultLabelWithText("\"Door\""))
     case .KithgardGates:
       addSubview(makeDefaultLabelWithText("\"fence\""))
