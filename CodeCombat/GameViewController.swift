@@ -127,6 +127,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
     }
     println("----------------- Received Memory Warning --------------")
     NSURLCache.sharedURLCache().removeAllCachedResponses()
+    webManager.publish("ipad:memory-warning", event: [:])
     super.didReceiveMemoryWarning()
   }
   

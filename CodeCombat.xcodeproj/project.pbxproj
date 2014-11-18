@@ -106,7 +106,6 @@
 		C824BEFD19FC12070097AE14 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C824BEFC19FC12070097AE14 /* Security.framework */; };
 		C824BEFF19FC120D0097AE14 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C824BEFE19FC120D0097AE14 /* SystemConfiguration.framework */; };
 		C824BF0A19FC43DE0097AE14 /* HockeySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C824BF0619FC43DE0097AE14 /* HockeySDK.framework */; };
-		C824BF0B19FC43DE0097AE14 /* HockeySDK.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C824BF0819FC43DE0097AE14 /* HockeySDK.xcconfig */; };
 		C824BF0C19FC43DE0097AE14 /* HockeySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C824BF0919FC43DE0097AE14 /* HockeySDKResources.bundle */; };
 		C824BF1119FD854E0097AE14 /* TomeInventoryItemPropertyDocumentationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C824BF1019FD854E0097AE14 /* TomeInventoryItemPropertyDocumentationView.swift */; };
 		C827D1C919943EA500B5724C /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C827D1C819943EA500B5724C /* Utilities.swift */; };
@@ -750,7 +749,7 @@
 		287AE083199290DF00EEE4F0 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = CodeCombat;
 				TargetAttributes = {
 					287AE08A199290DF00EEE4F0 = {
@@ -800,7 +799,6 @@
 				287AE10B199294CC00EEE4F0 /* TestParticle.sks in Resources */,
 				28975EC019C4D9330033BA7C /* javascript.tmLanguageJSON in Resources */,
 				2873D9871A11883E006358BA /* MemoryWarningViewController.xib in Resources */,
-				C824BF0B19FC43DE0097AE14 /* HockeySDK.xcconfig in Resources */,
 				C824BF0C19FC43DE0097AE14 /* HockeySDKResources.bundle in Resources */,
 				C827D1CB19943FF700B5724C /* items_tharin.json in Resources */,
 				287AE10A199294CC00EEE4F0 /* spark.png in Resources */,
