@@ -9,7 +9,7 @@
 import UIKit
 import QuartzCore
 
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController, UITextFieldDelegate {
   @IBOutlet weak var backgroundArtImageView: UIImageView!
   @IBOutlet weak var loginButton: UIButton!
   @IBOutlet weak var passwordTextField: UITextField!
@@ -24,6 +24,24 @@ class LoginViewController: UIViewController {
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onWebsiteNotReachable"), name: "websiteNotReachable", object: nil)
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onWebsiteReachable"), name: "websiteReachable", object: nil)
     WebManager.sharedInstance.checkReachibility()
+    usernameTextField.delegate = self
+    passwordTextField.delegate = self
+  }
+  
+  func textFieldShouldReturn(textField: UITextField) -> Bool {
+    if textField == usernameTextField {
+      if passwordTextField.text != nil && countElements(passwordTextField.text) > 0 {
+        login(loginButton)
+      } else {
+        usernameTextField.resignFirstResponder()
+        passwordTextField.becomeFirstResponder()
+      }
+      return false
+    } else if textField == passwordTextField {
+      login(loginButton)
+      return false
+    }
+    return true
   }
   
   override func viewDidAppear(animated: Bool) {
