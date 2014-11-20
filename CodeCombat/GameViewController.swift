@@ -237,6 +237,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
       LevelSettingsManager.sharedInstance.level = .Unknown
       if presentedViewController != nil {
         dismissViewControllerAnimated(false, completion: nil)
+        playViewController?.unsubscribeFromEverything()
         playViewController = nil
         view.addSubview(webView)
       }

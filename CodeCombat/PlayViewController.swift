@@ -15,7 +15,7 @@ class PlayViewScrollView:UIScrollView, UIGestureRecognizerDelegate {
     return true
   }
 }
-class PlayViewController: UIViewController, UITextViewDelegate {
+class PlayViewController: UIViewController {
 
   @IBOutlet weak var runButton: UIButton!
   @IBOutlet weak var submitButton: UIButton!
@@ -53,9 +53,16 @@ class PlayViewController: UIViewController, UITextViewDelegate {
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onTextStorageFinishedTopLevelEditing"), name: "textStorageFinishedTopLevelEditing", object: nil)
   }
   
-  deinit {
+  func unsubscribeFromEverything() {
     NSNotificationCenter.defaultCenter().removeObserver(self)
     WebManager.sharedInstance.unsubscribe(self)
+  }
+  
+  deinit {
+    println("PLAY VIEW CONTROLLER DE-INITED")
+    textViewController.textView.parentTextViewController = nil
+    webManager.unsubscribe(textViewController)
+    webManager.unsubscribe(inventoryViewController)
   }
   
   func onTextStorageFinishedTopLevelEditing() {

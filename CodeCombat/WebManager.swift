@@ -218,6 +218,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
           evaluateJavaScript("if(window.removeIPadSubscription) window.removeIPadSubscription('\(channel)');", completionHandler: nil)
         }
       }
+      activeObservers.removeValueForKey(observer as NSObject)
       //println("Unsubscribed \(observer) from \(channels) so now have activeSubscriptions \(activeSubscriptions) activeObservers \(activeObservers)")
     }
   }

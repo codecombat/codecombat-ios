@@ -49,6 +49,10 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onKeyboardHide"), name: UIKeyboardDidHideNotification, object: nil)
   }
   
+  deinit {
+    NSNotificationCenter.defaultCenter().removeObserver(self)
+  }
+  
   func onKeyboardHide() {
     textView.selectable = false
     textView.editable = false
