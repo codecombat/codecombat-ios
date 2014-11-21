@@ -71,14 +71,6 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     NSURLCredentialStorage.sharedCredentialStorage().setCredential(credential, forProtectionSpace: loginProtectionSpace!)
   }
   
-  func saveDeviceAnonymousUserPassword(pass:String) {
-    
-  }
-  
-  func getDeviceAnonymousUserPassword() -> String {
-    return "test"
-  }
-  
   func clearCredentials() {
     let credentialsValues = getCredentials()
     for credential in credentialsValues {
@@ -176,13 +168,25 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   }
   
   func logIn(#email: String, password: String) {
-    let loginScript = "function foobarbaz() { require('/lib/auth').loginUser({'email':'\(email)','password':'\(password)'}); } if(me.get('anonymous')) setTimeout(foobarbaz, 1);"
+    let loginScript = "function foobarbaz() { require('/lib/auth').loginUser({'email':'\(email)','password':'\(password)'}); } if(me.get('anonymous') && !me.get('iosIdentifierForVendor')) setTimeout(foobarbaz, 1);"
     let userScript = WKUserScript(source: loginScript, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
     webViewConfiguration!.userContentController.addUserScript(userScript)
     let requestURL = NSURL(string: "/play", relativeToURL: rootURL)
     let request = NSMutableURLRequest(URL: requestURL!)
     webView!.loadRequest(request)
     //println("going to log in to \(requestURL) when web view loads! \(loginScript)")
+  }
+  
+  //requires that User.email and User.password are set
+  func createAnonymousUser() {
+    //should include something
+    let creationScript = "function makeAnonymousUser() { me.set('iosIdentifierForVendor','\(User.sharedInstance.email!)'); me.set('password','\(User.sharedInstance.password!)'); me.save();} if (!me.get('iosIdentifierForVendor') && me.get('anonymous')) setTimeout(makeAnonymousUser,1);"
+    println("Injecting script \(creationScript)")
+    let userScript = WKUserScript(source: creationScript, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
+    webViewConfiguration!.userContentController.addUserScript(userScript)
+    let requestURL = NSURL(string: "/play", relativeToURL: rootURL)
+    let request = NSMutableURLRequest(URL: requestURL!)
+    webView!.loadRequest(request)
   }
   
   func subscribe(observer: AnyObject, channel: String, selector: Selector) {

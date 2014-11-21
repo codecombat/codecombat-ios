@@ -44,9 +44,15 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
       self.webManager.subscribe(self, channel: "auth:logging-out", selector: Selector("onLogout"))
       self.webManager.subscribe(self, channel: "buy-gems-modal:update-products", selector: Selector("onBuyGemsModalUpdateProducts"))
       self.webManager.subscribe(self, channel: "buy-gems-modal:purchase-initiated", selector: Selector("onBuyGemsModalPurchaseInitiated:"))
+      self.webManager.subscribe(self, channel: "auth:signed-up", selector: Selector("onSignedUp"))
       //webManager.subscribe(self, channel: "supermodel:load-progress-changed", selector: Selector("onProgressUpdate:"))
       NSNotificationCenter.defaultCenter().removeObserver(self, name: "webViewDidFinishNavigation", object: nil)
     })
+  }
+  
+  func onSignedUp() {
+    println("Signed up!")
+    webManager.clearCredentials()
   }
   
   func onBuyGemsModalUpdateProducts() {
@@ -96,8 +102,21 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   
   //This listens for when the NSURLConnection login fails (aka password has changed, etc.)
   func onLoginFailure() {
-    WebManager.sharedInstance.clearCredentials()
+    println("Login failed!")
+    if !currentCredentialIsPseudoanonymous() {
+      WebManager.sharedInstance.clearCredentials()
+    }
+    
     dismissViewControllerAnimated(true, completion:nil)
+  }
+  
+  func currentCredentialIsPseudoanonymous() -> Bool {
+    let credentials = webManager.getCredentials()
+    if !credentials.isEmpty && credentials.first!.user != nil && countElements(credentials.first!.user!) == 36 && NSUserDefaults.standardUserDefaults().boolForKey("pseudoanonymousUserCreated") {
+      let uuid = NSUUID(UUIDString: credentials.first!.user!)
+      return uuid != nil
+    }
+    return false
   }
   
   func onWebsiteNotReachable() {

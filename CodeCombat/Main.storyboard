@@ -87,6 +87,7 @@
                         <outlet property="loginActivityIndicatorView" destination="7Qn-3w-c9w" id="SVu-X1-AcL"/>
                         <outlet property="loginButton" destination="d32-rG-bSD" id="4es-OS-hDw"/>
                         <outlet property="passwordTextField" destination="BUZ-kd-XcH" id="KVA-jm-PfT"/>
+                        <outlet property="signupLaterButton" destination="gxc-LV-9Hu" id="FfA-Xj-oet"/>
                         <outlet property="usernameTextField" destination="k9E-0c-SkR" id="VHr-zW-NVH"/>
                         <segue destination="qHW-gw-pyh" kind="modal" identifier="successfulLoginSegue" id="4OP-Gm-0qA"/>
                     </connections>

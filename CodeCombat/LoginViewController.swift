@@ -13,6 +13,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   @IBOutlet weak var backgroundArtImageView: UIImageView!
   @IBOutlet weak var loginButton: UIButton!
   @IBOutlet weak var passwordTextField: UITextField!
+  @IBOutlet weak var signupLaterButton: UIButton!
   @IBOutlet weak var usernameTextField: UITextField!
   @IBOutlet weak var loginActivityIndicatorView: UIActivityIndicatorView!
   var memoryAlertController:UIAlertController!
@@ -26,7 +27,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     WebManager.sharedInstance.checkReachibility()
     usernameTextField.delegate = self
     passwordTextField.delegate = self
-    
+    //hide button if user created pseudoanonymous user
+    if NSUserDefaults.standardUserDefaults().boolForKey("pseudoanonymousUserCreated") {
+      signupLaterButton.enabled = false
+      signupLaterButton.hidden = true
+    }
   }
   
   func textFieldShouldReturn(textField: UITextField) -> Bool {
@@ -106,29 +111,17 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   }
   
   @IBAction func signupLater(button:UIButton) {
-    println("Signing up later...")
-    //check if the user has a device ID generated...
+    let deviceIdentifier = UIDevice.currentDevice().identifierForVendor.UUIDString
+    let randomPassword = generateRandomPassword()
+    User.sharedInstance.email = deviceIdentifier
+    User.sharedInstance.password = randomPassword
+    WebManager.sharedInstance.saveUser()
+    WebManager.sharedInstance.createAnonymousUser()
     let defaults = NSUserDefaults.standardUserDefaults()
-    let deviceIdentifierKey = "vendorIdentifier"
-    let deviceString = defaults.stringForKey(deviceIdentifierKey)
-    if deviceString  == nil {
-      let deviceIdentifier = UIDevice.currentDevice().identifierForVendor.UUIDString
-      println("The device identifier is \(deviceIdentifier)")
-      let randomPassword = generateRandomPassword()
-      println("The random password is \(randomPassword)")
-      defaults.setValue(deviceIdentifier, forKey: deviceIdentifierKey)
-      defaults.synchronize()
-      //save the password
-      WebManager.sharedInstance.saveDeviceAnonymousUserPassword(randomPassword)
-    } else {
-      let password = WebManager.sharedInstance.getDeviceAnonymousUserPassword()
-      println("Got the device identifier \(deviceString!) and the password \(password)")
-    }
-    let requestURL = NSURL(string: "/play", relativeToURL: WebManager.sharedInstance.rootURL)
-    let request = NSMutableURLRequest(URL: requestURL!)
-    WebManager.sharedInstance.webView!.loadRequest(request)
+    defaults.setBool(true, forKey: "pseudoanonymousUserCreated")
+    defaults.synchronize()
     self.performSegueWithIdentifier("successfulLoginSegue", sender:self)
-    //Inject the user credentials into the page here
+  
   }
   
   private func generateRandomPassword() -> String {
@@ -233,15 +226,15 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   }
   private func validateLoginCredentials(#username:String,
     password:String) -> (isValid:Bool, errorMessage:String) {
-    if username.isEmpty && password.isEmpty {
-      return (false, "Please input a username and password.")
-    }
-    else if username.isEmpty {
-      return (false,"Please input a username.")
-    } else if password.isEmpty {
-      return (false, "Please input a password.")
-    }
-    return (true, "Credentials are valid.")
+      if username.isEmpty && password.isEmpty {
+        return (false, "Please input a username and password.")
+      }
+      else if username.isEmpty {
+        return (false,"Please input a username.")
+      } else if password.isEmpty {
+        return (false, "Please input a password.")
+      }
+      return (true, "Credentials are valid.")
   }
   
   func drawBackgroundGradient() {
