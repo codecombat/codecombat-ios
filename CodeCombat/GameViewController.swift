@@ -196,7 +196,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   }
   
   func displayWebViewCrashedAlert() {
-    let alertController = UIAlertController(title: "The web view ran out of memory!", message: "The web view ran out of memory and crashed! Don't worry, just hang on and wait for the level to reload.", preferredStyle: .Alert)
+    let alertController = UIAlertController(title: "The graphics layer ran out of memory!", message: "The graphics layer ran out of memory and crashed! Don't worry, just hang on and wait for the level to reload.", preferredStyle: .Alert)
     let OKAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
     alertController.addAction(OKAction)
     self.presentViewController(alertController, animated: true, completion: nil)
