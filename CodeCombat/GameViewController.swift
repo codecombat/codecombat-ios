@@ -103,21 +103,14 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   //This listens for when the NSURLConnection login fails (aka password has changed, etc.)
   func onLoginFailure() {
     println("Login failed!")
-    if !currentCredentialIsPseudoanonymous() {
+    if !WebManager.sharedInstance.currentCredentialIsPseudoanonymous() {
       WebManager.sharedInstance.clearCredentials()
     }
     
     dismissViewControllerAnimated(true, completion:nil)
   }
   
-  func currentCredentialIsPseudoanonymous() -> Bool {
-    let credentials = webManager.getCredentials()
-    if !credentials.isEmpty && credentials.first!.user != nil && countElements(credentials.first!.user!) == 36 && NSUserDefaults.standardUserDefaults().boolForKey("pseudoanonymousUserCreated") {
-      let uuid = NSUUID(UUIDString: credentials.first!.user!)
-      return uuid != nil
-    }
-    return false
-  }
+  
   
   func onWebsiteNotReachable() {
     println("Game view controller showing not reachable alert")

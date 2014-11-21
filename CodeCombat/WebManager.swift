@@ -78,6 +78,15 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     }
   }
   
+  func currentCredentialIsPseudoanonymous() -> Bool {
+    let credentials = getCredentials()
+    if !credentials.isEmpty && credentials.first!.user != nil && countElements(credentials.first!.user!) == 36 && NSUserDefaults.standardUserDefaults().boolForKey("pseudoanonymousUserCreated") {
+      let uuid = NSUUID(UUIDString: credentials.first!.user!)
+      return uuid != nil
+    }
+    return false
+  }
+  
   func getCredentials() -> [NSURLCredential] {
     let credentialsDictionary = NSURLCredentialStorage.sharedCredentialStorage().credentialsForProtectionSpace(loginProtectionSpace!)
     if credentialsDictionary == nil {

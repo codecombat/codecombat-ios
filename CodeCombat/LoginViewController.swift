@@ -28,7 +28,13 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     usernameTextField.delegate = self
     passwordTextField.delegate = self
     //hide button if user created pseudoanonymous user
-    if NSUserDefaults.standardUserDefaults().boolForKey("pseudoanonymousUserCreated") {
+    if WebManager.sharedInstance.currentCredentialIsPseudoanonymous() {
+      if WebManager.sharedInstance.getCredentials().first!.user! != UIDevice.currentDevice().identifierForVendor.UUIDString {
+        WebManager.sharedInstance.clearCredentials()
+        NSUserDefaults.standardUserDefaults().setBool(false, forKey: "pseudoanonymousUserCreated")
+      }
+    }
+    if NSUserDefaults.standardUserDefaults().boolForKey("pseudoanonymousUserCreated") || WebManager.sharedInstance.currentCredentialIsPseudoanonymous() {
       signupLaterButton.enabled = false
       signupLaterButton.hidden = true
     }
@@ -79,6 +85,12 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     let credentialsValues = WebManager.sharedInstance.getCredentials()
     if !credentialsValues.isEmpty {
       let credential = credentialsValues.first! as NSURLCredential
+      if WebManager.sharedInstance.currentCredentialIsPseudoanonymous() {
+        if credential.user! != UIDevice.currentDevice().identifierForVendor.UUIDString {
+          WebManager.sharedInstance.clearCredentials()
+          return
+        }
+      }
       println("User \(credential.user) already connected with saved password; logging in.")
       //User.sharedInstance.name = userJSON["name"] as? String
       User.sharedInstance.email = credential.user!
