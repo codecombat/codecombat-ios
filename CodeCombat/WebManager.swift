@@ -71,6 +71,14 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     NSURLCredentialStorage.sharedCredentialStorage().setCredential(credential, forProtectionSpace: loginProtectionSpace!)
   }
   
+  func saveDeviceAnonymousUserPassword(pass:String) {
+    
+  }
+  
+  func getDeviceAnonymousUserPassword() -> String {
+    return "test"
+  }
+  
   func clearCredentials() {
     let credentialsValues = getCredentials()
     for credential in credentialsValues {

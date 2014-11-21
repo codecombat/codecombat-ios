@@ -26,6 +26,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     WebManager.sharedInstance.checkReachibility()
     usernameTextField.delegate = self
     passwordTextField.delegate = self
+    
   }
   
   func textFieldShouldReturn(textField: UITextField) -> Bool {
@@ -99,8 +100,46 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   @IBAction func signup(button: UIButton) {
     let requestURL = NSURL(string: "/play?signup=true", relativeToURL: WebManager.sharedInstance.rootURL)
     let request = NSMutableURLRequest(URL: requestURL!)
+    
     WebManager.sharedInstance.webView!.loadRequest(request)
     self.performSegueWithIdentifier("successfulLoginSegue", sender:self)
+  }
+  
+  @IBAction func signupLater(button:UIButton) {
+    println("Signing up later...")
+    //check if the user has a device ID generated...
+    let defaults = NSUserDefaults.standardUserDefaults()
+    let deviceIdentifierKey = "vendorIdentifier"
+    let deviceString = defaults.stringForKey(deviceIdentifierKey)
+    if deviceString  == nil {
+      let deviceIdentifier = UIDevice.currentDevice().identifierForVendor.UUIDString
+      println("The device identifier is \(deviceIdentifier)")
+      let randomPassword = generateRandomPassword()
+      println("The random password is \(randomPassword)")
+      defaults.setValue(deviceIdentifier, forKey: deviceIdentifierKey)
+      defaults.synchronize()
+      //save the password
+      WebManager.sharedInstance.saveDeviceAnonymousUserPassword(randomPassword)
+    } else {
+      let password = WebManager.sharedInstance.getDeviceAnonymousUserPassword()
+      println("Got the device identifier \(deviceString!) and the password \(password)")
+    }
+    let requestURL = NSURL(string: "/play", relativeToURL: WebManager.sharedInstance.rootURL)
+    let request = NSMutableURLRequest(URL: requestURL!)
+    WebManager.sharedInstance.webView!.loadRequest(request)
+    self.performSegueWithIdentifier("successfulLoginSegue", sender:self)
+    //Inject the user credentials into the page here
+  }
+  
+  private func generateRandomPassword() -> String {
+    let passChars:NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXZY0123456789!@#$%^&*()90"
+    var pass = NSMutableString(capacity: 30)
+    for (var i = 0; i < 25; i++) {
+      let random = Int(arc4random_uniform(UInt32(passChars.length)))
+      let char = passChars.characterAtIndex(random)
+      pass.appendFormat("%C", char)
+    }
+    return pass
   }
   
   func performLoginRequest(#username:String, password:String) {
