@@ -192,6 +192,14 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
     if webView.superview == view {
       view.sendSubviewToBack(webView)
     }
+    displayWebViewCrashedAlert()
+  }
+  
+  func displayWebViewCrashedAlert() {
+    let alertController = UIAlertController(title: "The web view ran out of memory!", message: "The web view ran out of memory and crashed! Don't worry, just hang on and wait for the level to reload.", preferredStyle: .Alert)
+    let OKAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+    alertController.addAction(OKAction)
+    self.presentViewController(alertController, animated: true, completion: nil)
   }
   
   deinit {
