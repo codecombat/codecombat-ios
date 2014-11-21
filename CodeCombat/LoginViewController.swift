@@ -32,6 +32,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
       if WebManager.sharedInstance.getCredentials().first!.user! != UIDevice.currentDevice().identifierForVendor.UUIDString {
         WebManager.sharedInstance.clearCredentials()
         NSUserDefaults.standardUserDefaults().setBool(false, forKey: "pseudoanonymousUserCreated")
+        NSUserDefaults.standardUserDefaults().synchronize()
       }
     }
     if NSUserDefaults.standardUserDefaults().boolForKey("pseudoanonymousUserCreated") || WebManager.sharedInstance.currentCredentialIsPseudoanonymous() {
@@ -88,6 +89,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
       if WebManager.sharedInstance.currentCredentialIsPseudoanonymous() {
         if credential.user! != UIDevice.currentDevice().identifierForVendor.UUIDString {
           WebManager.sharedInstance.clearCredentials()
+          let defaults = NSUserDefaults.standardUserDefaults()
+          defaults.setBool(false, forKey: "pseudoanonymousUserCreated")
+          defaults.synchronize()
           return
         }
       }
