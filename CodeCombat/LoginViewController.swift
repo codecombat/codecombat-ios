@@ -211,6 +211,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
           User.sharedInstance.name = userJSON["name"] as? String
           User.sharedInstance.email = userJSON["email"] as? String
           User.sharedInstance.password = password
+          WebManager.sharedInstance.authCookieIsFresh = true
           dispatch_async(dispatch_get_main_queue(), {
             self!.loginActivityIndicatorView.stopAnimating()
             WebManager.sharedInstance.saveUser()
