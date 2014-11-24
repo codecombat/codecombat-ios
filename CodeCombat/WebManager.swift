@@ -95,7 +95,13 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     return credentialsDictionary!.values.array as [NSURLCredential]
   }
   
-  func loginToGetAuthCookie(#username:String, password:String) {
+  func loginToGetAuthCookie() {
+    let credentials = getCredentials()
+    if credentials.isEmpty {
+      return
+    }
+    let username = credentials.first!.user!
+    let password = credentials.first!.password!
     let loginURL = NSURL(string: "/auth/login", relativeToURL: rootURL)!
     
     let loginRequest = NSMutableURLRequest(URL: loginURL)

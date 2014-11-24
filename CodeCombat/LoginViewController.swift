@@ -100,7 +100,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
       User.sharedInstance.email = credential.user!
       User.sharedInstance.password = credential.password!
       segueToMainMenu()
-      WebManager.sharedInstance.loginToGetAuthCookie(username: credential.user!, password: credential.password!)
+      WebManager.sharedInstance.loginToGetAuthCookie()
     }
   }
   

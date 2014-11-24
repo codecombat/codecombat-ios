@@ -56,6 +56,8 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   }
   
   func onBuyGemsModalUpdateProducts() {
+    //login to get auth cookie
+    WebManager.sharedInstance.loginToGetAuthCookie()
     if CodeCombatIAPHelper.sharedInstance.productsDict.count != 0 {
       sendIPadProductsToWebView()
     } else {

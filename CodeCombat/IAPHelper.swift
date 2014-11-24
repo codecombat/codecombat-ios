@@ -29,8 +29,8 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
     self.completionHandler = handler
     println("Requesting products \(productIdentifiers)")
     productsRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
-    productsRequest!.delegate = self
-    productsRequest!.start()
+    productsRequest?.delegate = self
+    productsRequest?.start()
   }
   
   func productsRequest(request: SKProductsRequest!, didReceiveResponse response: SKProductsResponse!)  {
@@ -40,15 +40,12 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
     let skproducts = response.products
     for product in skproducts {
       productsDict[product.productIdentifier] = product as? SKProduct
-      println("Found product \(product)")
     }
     self.completionHandler?(true, skproducts)
     completionHandler = nil
   }
   
   func request(request: SKRequest!, didFailWithError error: NSError!)  {
-    println("Failed to load list of products")
-    println(error)
     productsRequest = nil
     self.completionHandler?(false, NSArray())
     self.completionHandler = nil
@@ -91,8 +88,16 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
   
   func completeTransaction(transaction:SKPaymentTransaction) {
     if WebManager.sharedInstance.authCookieIsFresh {
+      if NSBundle.mainBundle().appStoreReceiptURL == nil {
+        println("No app store receipt URL exists!")
+        return
+      }
       let receiptData = NSData(contentsOfURL: NSBundle.mainBundle().appStoreReceiptURL!)
       //let receiptDict
+      if receiptData == nil {
+        println("There was an error encoding the receipt data!")
+        return
+      }
       let receiptString = receiptData!.base64EncodedStringWithOptions(NSDataBase64EncodingOptions.allZeros)
       var receiptDict:[String:[String:String]] = [:]
       var innerDict:[String:String] = [:]
@@ -118,10 +123,15 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
   func sendGemRequestToCodeCombatServers(receiptDict:[String:[String:String]], transaction:SKPaymentTransaction) {
     let error:NSErrorPointer = nil
     let postData = NSJSONSerialization.dataWithJSONObject(receiptDict, options: NSJSONWritingOptions.allZeros, error: error)
-    
+    if error != nil {
+      println("Error serializing gem request!")
+      return
+    }
     let request = NSMutableURLRequest(URL: NSURL(string: "/db/payment", relativeToURL: WebManager.sharedInstance.rootURL)!)
     request.HTTPMethod = "POST"
     request.HTTPBody = postData!
+    println("Sending request \(postData)")
+    println(receiptDict)
     let cookies = NSHTTPCookieStorage.sharedHTTPCookieStorage().cookiesForURL(WebManager.sharedInstance.rootURL!)
     let headers = NSHTTPCookie.requestHeaderFieldsWithCookies(cookies!)
     request.allHTTPHeaderFields = headers
@@ -130,12 +140,13 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
       if error != nil {
         println("There was an error \(error.localizedDescription)")
         let errorString = NSString(data: data, encoding: NSUTF8StringEncoding)
-        println("Error data: \(errorString!)")
+        println("Error data: \(errorString)")
       } else {
         var jsonError:NSErrorPointer = nil
         var paymentJSON = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.allZeros, error: jsonError) as? NSDictionary
         if jsonError != nil || paymentJSON == nil {
           println("There was an error serializing the JSON")
+          println(jsonError)
         } else {
           println("Should finish transaction here....")
           NSNotificationCenter.defaultCenter().postNotificationName("productPurchased", object: nil, userInfo: nil)
