@@ -149,7 +149,12 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
           println(jsonError)
         } else {
           println("Should finish transaction here....")
-          NSNotificationCenter.defaultCenter().postNotificationName("productPurchased", object: nil, userInfo: nil)
+          var userInfo:[String:String!] = [:]
+          if transaction.payment != nil && transaction.payment.productIdentifier != nil {
+            let productID = transaction.payment.productIdentifier
+            userInfo = ["productID":productID!]
+          }
+          NSNotificationCenter.defaultCenter().postNotificationName("productPurchased", object: nil, userInfo: userInfo)
           SKPaymentQueue.defaultQueue().finishTransaction(transaction)
         }
       }
@@ -160,7 +165,12 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
   
   func restoreTransaction(transaction:SKPaymentTransaction) {
     println("Restore transaction")
-    NSNotificationCenter.defaultCenter().postNotificationName("productPurchased", object: nil, userInfo: nil)
+    var userInfo:[String:String] = [:]
+    if transaction.payment != nil && transaction.payment.productIdentifier != nil {
+      let productID = transaction.payment.productIdentifier
+      userInfo = ["productID":productID!]
+    }
+    NSNotificationCenter.defaultCenter().postNotificationName("productPurchased", object: nil, userInfo: userInfo)
     SKPaymentQueue.defaultQueue().finishTransaction(transaction)
     
   }

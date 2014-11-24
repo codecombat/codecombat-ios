@@ -79,14 +79,20 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
     if desiredProduct != nil {
       productBeingPurchased = desiredProduct!
       CodeCombatIAPHelper.sharedInstance.buyProduct(desiredProduct!)
-      NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onProductPurchased"), name: "productPurchased", object: nil)
+      NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onProductPurchased:"), name: "productPurchased", object: nil)
     }
   }
   
-  func onProductPurchased() {
+  func onProductPurchased(note:NSNotification) {
     NSNotificationCenter.defaultCenter().removeObserver(self, name: "productPurchased", object: nil)
     productBeingPurchased = nil
-    webManager.publish("ipad:iap-complete", event: [:])
+    var eventDict:[String:String] = [:]
+    if note.userInfo != nil {
+      if note.userInfo!["productID"] != nil {
+        eventDict["productID"] = note.userInfo!["productID"] as String
+      }
+    }
+    webManager.publish("ipad:iap-complete", event: eventDict)
     webManager.webView!.reload()
   }
   
