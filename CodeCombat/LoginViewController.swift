@@ -65,7 +65,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   func onWebsiteNotReachable() {
     println("onWebsiteNotReachable in login view controller")
     if memoryAlertController == nil {
-      memoryAlertController = UIAlertController(title: "Internet connection problem", message: "We can't reach the CodeCombat server. Please check your connection and try again.", preferredStyle: UIAlertControllerStyle.Alert)
+      let titleString = NSLocalizedString("Internet connection problem", comment:"")
+      let messageString = NSLocalizedString("We can't reach the CodeCombat server. Please check your connection and try again.", comment:"")
+      memoryAlertController = UIAlertController(title: titleString, message: messageString, preferredStyle: UIAlertControllerStyle.Alert)
       memoryAlertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { success in
         self.memoryAlertController.dismissViewControllerAnimated(true, completion: nil)
         self.memoryAlertController = nil
@@ -176,21 +178,21 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         //This will trigger on unauthorized.
         var errorMessage:String
         if data == nil {
-          errorMessage = "There was a request error: \(requestError)."
+          errorMessage = NSLocalizedString("There was a request error: \(requestError).", comment:"")
         }
         else {
           var jsonError:NSError?
           var errorObject:AnyObject = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &jsonError)!
           if jsonError != nil {
-            errorMessage = "There was an unknown error logging in."
+            errorMessage = NSLocalizedString("There was an unknown error logging in.", comment:"")
           } else {
             let ErrorDictionaries = errorObject as? [[String:String]]
             if ErrorDictionaries![0]["property"] == "password" {
-              errorMessage = "The password for your account is incorrect."
+              errorMessage = NSLocalizedString("The password for your account is incorrect.", comment:"")
             } else if ErrorDictionaries![0]["property"] == "email" {
-              errorMessage = "We couldn't find an account for that email."
+              errorMessage = NSLocalizedString("We couldn't find an account for that email.", comment:"")
             } else {
-              errorMessage = "Your credentials are incorrect."
+              errorMessage = NSLocalizedString("Your credentials are incorrect.", comment:"")
             }
           }
         }
@@ -230,28 +232,28 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   func handleLoginFailure(errorMessage:String) {
     self.loginActivityIndicatorView.stopAnimating()
     let message:UIAlertView = UIAlertView(
-      title: "Login failure",
+      title: NSLocalizedString("Login failure", comment:""),
       message: errorMessage, delegate: nil, cancelButtonTitle: "OK")
     message.show()
   }
   
   private func showInvalidCredentialsAlert(errorMessage:String) {
     let message:UIAlertView = UIAlertView(
-      title: "Invalid credentials",
+      title: NSLocalizedString("Invalid credentials", comment:""),
       message: errorMessage, delegate: nil, cancelButtonTitle: "OK")
     message.show()
   }
   private func validateLoginCredentials(#username:String,
     password:String) -> (isValid:Bool, errorMessage:String) {
       if username.isEmpty && password.isEmpty {
-        return (false, "Please input a username and password.")
+        return (false, NSLocalizedString("Please input a username and password.", comment:""))
       }
       else if username.isEmpty {
-        return (false,"Please input a username.")
+        return (false,NSLocalizedString("Please input a username.", comment:""))
       } else if password.isEmpty {
-        return (false, "Please input a password.")
+        return (false, NSLocalizedString("Please input a password.", comment:""))
       }
-      return (true, "Credentials are valid.")
+      return (true, NSLocalizedString("Credentials are valid.", comment:""))
   }
   
   func drawBackgroundGradient() {

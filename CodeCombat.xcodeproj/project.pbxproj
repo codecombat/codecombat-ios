@@ -16,6 +16,7 @@
 		280D7E6119AE4E19004F95D4 /* DocumentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280D7E6019AE4E19004F95D4 /* DocumentParser.swift */; };
 		280D7E6219AE4E19004F95D4 /* DocumentParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 280D7E6019AE4E19004F95D4 /* DocumentParser.swift */; };
 		282FC3BE19986F8700EB78A1 /* TomeInventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 282FC3BD19986F8700EB78A1 /* TomeInventory.swift */; };
+		283E00F51A279B9E00FF3873 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 283E00F71A279B9E00FF3873 /* Main.storyboard */; };
 		285A5426199C34BD00932DDE /* OnigRegexp.m in Sources */ = {isa = PBXBuildFile; fileRef = 285A540E199C34BD00932DDE /* OnigRegexp.m */; };
 		285A5427199C34BD00932DDE /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = 285A5411199C34BD00932DDE /* COPYING */; };
 		285A5428199C34BD00932DDE /* ascii.c in Sources */ = {isa = PBXBuildFile; fileRef = 285A5413199C34BD00932DDE /* ascii.c */; };
@@ -39,7 +40,6 @@
 		2879938419FFF741005F6369 /* ArgumentOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2879938319FFF741005F6369 /* ArgumentOverlayView.swift */; };
 		287993861A007281005F6369 /* ArgumentStringPickerPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287993851A007281005F6369 /* ArgumentStringPickerPopoverViewController.swift */; };
 		287AE0A4199290DF00EEE4F0 /* CodeCombatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0A3199290DF00EEE4F0 /* CodeCombatTests.swift */; };
-		287AE0B71992926400EEE4F0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 287AE0AF1992926400EEE4F0 /* Main.storyboard */; };
 		287AE0B81992926400EEE4F0 /* EditorTextStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0B01992926400EEE4F0 /* EditorTextStorage.swift */; };
 		287AE0B91992926400EEE4F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0B11992926400EEE4F0 /* AppDelegate.swift */; };
 		287AE0BA1992926400EEE4F0 /* BackbonePublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0B21992926400EEE4F0 /* BackbonePublisher.swift */; };
@@ -172,6 +172,7 @@
 		280D7E5E19AE283B004F95D4 /* DocumentNodeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentNodeTests.swift; sourceTree = "<group>"; };
 		280D7E6019AE4E19004F95D4 /* DocumentParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentParser.swift; sourceTree = "<group>"; };
 		282FC3BD19986F8700EB78A1 /* TomeInventory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TomeInventory.swift; sourceTree = "<group>"; };
+		283E00F61A279B9E00FF3873 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		285A540C199C34BD00932DDE /* OnigRegexp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OnigRegexp.h; path = CocoaOniguruma/OnigRegexp.h; sourceTree = "<group>"; };
 		285A540D199C34BD00932DDE /* OnigRegexpUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OnigRegexpUtility.h; path = CocoaOniguruma/OnigRegexpUtility.h; sourceTree = "<group>"; };
 		285A540E199C34BD00932DDE /* OnigRegexp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OnigRegexp.m; path = CocoaOniguruma/OnigRegexp.m; sourceTree = "<group>"; };
@@ -208,7 +209,6 @@
 		287AE09D199290DF00EEE4F0 /* CodeCombatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CodeCombatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		287AE0A2199290DF00EEE4F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		287AE0A3199290DF00EEE4F0 /* CodeCombatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeCombatTests.swift; sourceTree = "<group>"; };
-		287AE0AF1992926400EEE4F0 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		287AE0B01992926400EEE4F0 /* EditorTextStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditorTextStorage.swift; sourceTree = "<group>"; };
 		287AE0B11992926400EEE4F0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		287AE0B21992926400EEE4F0 /* BackbonePublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackbonePublisher.swift; sourceTree = "<group>"; };
@@ -454,7 +454,7 @@
 			isa = PBXGroup;
 			children = (
 				C827D1D71994934D00B5724C /* Play */,
-				287AE0AF1992926400EEE4F0 /* Main.storyboard */,
+				283E00F71A279B9E00FF3873 /* Main.storyboard */,
 				287AE0DF199292E400EEE4F0 /* InventoryCell.swift */,
 				287AE1031992948500EEE4F0 /* Effects */,
 			);
@@ -803,7 +803,7 @@
 				C827D1CB19943FF700B5724C /* items_tharin.json in Resources */,
 				287AE10A199294CC00EEE4F0 /* spark.png in Resources */,
 				28DE0CFF199AE1D600C6699D /* javascriptSyntax.json in Resources */,
-				287AE0B71992926400EEE4F0 /* Main.storyboard in Resources */,
+				283E00F51A279B9E00FF3873 /* Main.storyboard in Resources */,
 				285A5427199C34BD00932DDE /* COPYING in Resources */,
 				28C650CD1A0534AC006220EA /* NumberPickerPopoverViewController.xib in Resources */,
 			);
@@ -973,6 +973,17 @@
 			targetProxy = 288F11D8199C6BD100CA8A71 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		283E00F71A279B9E00FF3873 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				283E00F61A279B9E00FF3873 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		287AE0A5199290DF00EEE4F0 /* Debug */ = {

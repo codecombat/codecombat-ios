@@ -225,8 +225,9 @@ class PlayViewController: UIViewController {
   }
   
   @IBAction func onClickResetCode(sender:UIButton) {
-    
-    let alertController = UIAlertController(title: "Are you sure?", message: "Reloading the original code will erase all of the code you've written. Are you sure?", preferredStyle: .Alert)
+    let titleMessage = NSLocalizedString("Are you sure?", comment:"")
+    let messageString = NSLocalizedString("Reloading the original code will erase all of the code you've written. Are you sure?", comment:"")
+    let alertController = UIAlertController(title: titleMessage, message: messageString, preferredStyle: .Alert)
     let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
     alertController.addAction(cancelAction)
     

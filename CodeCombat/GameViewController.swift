@@ -123,7 +123,9 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   func onWebsiteNotReachable() {
     println("Game view controller showing not reachable alert")
     if memoryAlertController == nil {
-      memoryAlertController = UIAlertController(title: "Internet connection problem", message: "We can't reach the CodeCombat server. Please check your connection and try again.", preferredStyle: UIAlertControllerStyle.Alert)
+      let titleString = NSLocalizedString("Internet connection problem", comment:"")
+      let messageString = NSLocalizedString("We can't reach the CodeCombat server. Please check your connection and try again.", comment:"")
+      memoryAlertController = UIAlertController(title: "Internet connection problem", message: messageString, preferredStyle: UIAlertControllerStyle.Alert)
       memoryAlertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { success in
         self.memoryAlertController.dismissViewControllerAnimated(true, completion: nil)
         self.memoryAlertController = nil
@@ -197,7 +199,9 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   }
   
   func displayWebViewCrashedAlert() {
-    let alertController = UIAlertController(title: "The graphics layer ran out of memory!", message: "The graphics layer ran out of memory and crashed! Don't worry, just hang on and wait for the level to reload.", preferredStyle: .Alert)
+    let titleString = NSLocalizedString("The graphics layer ran out of memory!", comment:"")
+    let messageString = NSLocalizedString("The graphics layer ran out of memory and crashed! Don't worry, just hang on and wait for the level to reload.", comment:"")
+    let alertController = UIAlertController(title: titleString, message: messageString, preferredStyle: .Alert)
     let OKAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
     alertController.addAction(OKAction)
     self.presentViewController(alertController, animated: true, completion: nil)
