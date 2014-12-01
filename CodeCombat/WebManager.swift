@@ -183,7 +183,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   }
   
   func logIn(#email: String, password: String) {
-    let loginScript = "function foobarbaz() { require('/lib/auth').loginUser({'email':'\(email)','password':'\(password)'}); } if(me.get('anonymous') && !me.get('iosIdentifierForVendor')) setTimeout(foobarbaz, 1);"
+    let loginScript = "function foobarbaz() { require('/core/auth').loginUser({'email':'\(email)','password':'\(password)'}); } if(me.get('anonymous') && !me.get('iosIdentifierForVendor')) setTimeout(foobarbaz, 1);"
     let userScript = WKUserScript(source: loginScript, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
     webViewConfiguration!.userContentController.addUserScript(userScript)
     let requestURL = NSURL(string: "/play", relativeToURL: rootURL)
