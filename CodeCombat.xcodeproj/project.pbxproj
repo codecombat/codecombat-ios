@@ -370,7 +370,9 @@
 				287AE0A0199290DF00EEE4F0 /* CodeCombatTests */,
 				287AE08C199290DF00EEE4F0 /* Products */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
 		};
 		287AE08C199290DF00EEE4F0 /* Products */ = {
 			isa = PBXGroup;

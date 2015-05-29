@@ -73,7 +73,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   }
   
   func onBuyGemsModalPurchaseInitiated(note:NSNotification) {
-    let productID = note.userInfo!["productID"] as String
+    let productID = note.userInfo!["productID"] as! String
     let desiredProduct = CodeCombatIAPHelper.sharedInstance.productsDict[productID]
     println("WANTS TO BUY PRODUCT \(productID)")
     if desiredProduct != nil {
@@ -87,10 +87,8 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
     NSNotificationCenter.defaultCenter().removeObserver(self, name: "productPurchased", object: nil)
     productBeingPurchased = nil
     var eventDict:[String:String] = [:]
-    if note.userInfo != nil {
-      if note.userInfo!["productID"] != nil {
-        eventDict["productID"] = note.userInfo!["productID"] as String
-      }
+    if let userInfo = note.userInfo {
+      eventDict["productID"] = userInfo["productID"] as? String
     }
     webManager.publish("ipad:iap-complete", event: eventDict)
     webManager.webView!.reload()
@@ -190,7 +188,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   }
   
   func onWebViewReloadedFromCrash() {
-    println("GameViewController going to reload its webview \(webManager.webView?)")
+    println("GameViewController going to reload its webview \(webManager.webView)")
     webView = webManager.webView!
     if webView.superview == view {
       view.sendSubviewToBack(webView)
@@ -235,7 +233,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
     if !isRouteLevel(route) {
       return ""
     } else {
-      let substringIndex = advance(route.startIndex, countElements(playLevelRoutePrefix))
+      let substringIndex = advance(route.startIndex, count(playLevelRoutePrefix))
       return route.substringFromIndex(substringIndex)
     }
   }
@@ -279,7 +277,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   func onNavigated(note: NSNotification) {
     println("onNavigated:", note)
     if let event = note.userInfo {
-      let route = event["route"]! as String
+      let route = event["route"]! as! String
       updateFrame(route)
       adjustPlayView(route)
     }

@@ -11,7 +11,7 @@ import UIKit
 //Thank you http://www.objc.io/issue-5/getting-to-know-textkit.html
 
 class EditorTextStorage: NSTextStorage {
-  var attributedString:NSMutableAttributedString?
+  var attributedStringStore:NSMutableAttributedString
   var languageProvider = LanguageProvider()
   var highlighter:NodeHighlighter!
   let language = "python"
@@ -20,18 +20,21 @@ class EditorTextStorage: NSTextStorage {
   var makingTextClear = false
   
   override init() {
+    attributedStringStore = NSMutableAttributedString()
     super.init()
-    attributedString = NSMutableAttributedString()
-    let parser = LanguageParser(scope: language, data: attributedString!.string, provider: languageProvider)
+    let parser = LanguageParser(scope: language, data: attributedStringStore.string, provider: languageProvider)
     highlighter = NodeHighlighter(parser: parser)
   }
   
   required init(coder aDecoder: NSCoder) {
+    attributedStringStore = NSMutableAttributedString()
     super.init(coder: aDecoder)
+    let parser = LanguageParser(scope: language, data: attributedStringStore.string, provider: languageProvider)
+    highlighter = NodeHighlighter(parser: parser)
   }
   
-  func string() -> NSString? {
-    return attributedString!.string
+  override var string: String {
+    return attributedStringStore.string
   }
   
   override func beginEditing() {
@@ -77,7 +80,7 @@ class EditorTextStorage: NSTextStorage {
   
   func findArgumentOverlays() -> [(String,NSRange)] {
     var argumentOverlays:[(String,NSRange)] = []
-    let documentRange = NSRange(location: 0, length: string()!.length)
+    let documentRange = NSRange(location: 0, length: count(string))
     for var charIndex = documentRange.location; charIndex < NSMaxRange(documentRange); charIndex++ {
       let scopeName = highlighter.scopeName(charIndex)
       let scopes = scopeName.componentsSeparatedByString(" ")
@@ -176,15 +179,15 @@ class EditorTextStorage: NSTextStorage {
   
   func makeTextClear() {
     makingTextClear = true
-    addAttribute(NSForegroundColorAttributeName, value: UIColor.clearColor(), range: NSRange(location: 0, length: string()!.length))
+    addAttribute(NSForegroundColorAttributeName, value: UIColor.clearColor(), range: NSRange(location: 0, length: count(string)))
     makingTextClear = false
   }
   
   func highlightSyntax() {
-    let parser = LanguageParser(scope: language, data: attributedString!.string, provider: languageProvider)
+    let parser = LanguageParser(scope: language, data: attributedStringStore.string, provider: languageProvider)
     highlighter = NodeHighlighter(parser: parser)
     //the most inefficient way of doing this, optimize later
-    let documentRange = NSRange(location: 0, length: string()!.length)
+    let documentRange = NSRange(location: 0, length: count(string))
     
     self.removeAttribute(NSForegroundColorAttributeName, range: documentRange)
     for var charIndex = documentRange.location; charIndex < NSMaxRange(documentRange); charIndex++ {
@@ -211,17 +214,17 @@ class EditorTextStorage: NSTextStorage {
   }
   
   override func attributesAtIndex(location: Int, effectiveRange range: NSRangePointer) -> [NSObject : AnyObject] {
-    var attributes = attributedString!.attributesAtIndex(location, effectiveRange: range)
+    var attributes = attributedStringStore.attributesAtIndex(location, effectiveRange: range)
     return attributes
   }
   
   override func replaceCharactersInRange(range: NSRange, withString str: String) {
-    let previousContents = attributedString?.attributedSubstringFromRange(range)
+    let previousContents = attributedStringStore.attributedSubstringFromRange(range)
     var newRange = range
     newRange.length = NSString(string: str).length
-    undoManager.prepareWithInvocationTarget(self).replaceCharactersInRange(newRange, withAttributedString: previousContents!)
+    undoManager.prepareWithInvocationTarget(self).replaceCharactersInRange(newRange, withAttributedString: previousContents)
     beginEditing()
-    attributedString!.replaceCharactersInRange(range, withString: str)
+    attributedStringStore.replaceCharactersInRange(range, withString: str)
     let changeInLength:NSInteger = (NSString(string: str).length - range.length)
     self.edited(NSTextStorageEditActions.EditedCharacters,
       range: range,
@@ -230,12 +233,12 @@ class EditorTextStorage: NSTextStorage {
   }
   
   override func replaceCharactersInRange(range: NSRange, withAttributedString attrString: NSAttributedString) {
-    let previousContents = attributedString?.attributedSubstringFromRange(range)
+    let previousContents = attributedStringStore.attributedSubstringFromRange(range)
     var newRange = range
     newRange.length = NSString(string: attrString.string).length
-    undoManager.prepareWithInvocationTarget(self).replaceCharactersInRange(newRange, withAttributedString: previousContents!)
+    undoManager.prepareWithInvocationTarget(self).replaceCharactersInRange(newRange, withAttributedString: previousContents)
     beginEditing()
-    attributedString!.replaceCharactersInRange(range, withAttributedString: attrString)
+    attributedStringStore.replaceCharactersInRange(range, withAttributedString: attrString)
     let changeInLength:NSInteger = (NSString(string: attrString.string).length - range.length)
     self.edited(NSTextStorageEditActions.EditedCharacters,
       range: range,
@@ -250,7 +253,7 @@ class EditorTextStorage: NSTextStorage {
   
   
   override func setAttributes(attrs: [NSObject : AnyObject]!, range: NSRange) {
-    attributedString!.setAttributes(attrs, range: range)
+    attributedStringStore.setAttributes(attrs, range: range)
     self.edited(NSTextStorageEditActions.EditedAttributes,
       range: range,
       changeInLength: 0)

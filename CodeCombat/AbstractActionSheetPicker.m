@@ -309,7 +309,7 @@ CG_INLINE BOOL isIPhone4()
     for (NSDictionary *buttonDetails in self.customButtons)
     {
         NSString *buttonTitle = buttonDetails[kButtonTitle];
-        UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithTitle:buttonTitle style:UIBarButtonItemStyleBordered
+        UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithTitle:buttonTitle style:UIBarButtonItemStylePlain
                                                                   target:self action:@selector(customButtonPressed:)];
         button.tag = index;
         [barItems addObject:button];

@@ -46,7 +46,7 @@ class NumberPickerPopoverViewController: UIViewController {
   }
   
   @IBAction func deleteWasTapped(sender:UIButton) {
-    if countElements(entryNumberLabel.text!) == 1{
+    if count(entryNumberLabel.text!) == 1{
       entryNumberLabel.text! = "0"
     } else {
       entryNumberLabel.text!.removeAtIndex(entryNumberLabel.text!.endIndex.predecessor())

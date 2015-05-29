@@ -81,7 +81,7 @@ class NodeHighlighter {
         let no = findScope(search, node: lastScopeNode)
         if no != nil && no !== lastScopeNode {
           lastScopeNode = no
-          lastScopeName = lastScopeBuf
+          lastScopeName = lastScopeBuf as String
         }
       }
       return
@@ -89,7 +89,7 @@ class NodeHighlighter {
     lastScopeNode = nil
     lastScopeBuf = ""
     lastScopeNode = findScope(search, node: rootNode)
-    lastScopeName = lastScopeBuf
+    lastScopeName = lastScopeBuf as String
   }
   
   func scopeExtent(point:Int) -> NSRange? {
@@ -133,7 +133,7 @@ class Regex {
       lastFound = 0
     }
     lastIndex = pos
-    let result = regex.search(data, start: Int32(pos))
+    let result = regex.search(data as String, start: Int32(pos))
     return result
   }
 }
@@ -180,7 +180,7 @@ class LanguageProvider {
       return nil
     }
     
-    let languageFileJSON = JSON.parse(languageFileContents!)
+    let languageFileJSON = JSON.parse(languageFileContents! as String)
     let parsedLanguage = parseLanguageFileJSON(languageFileJSON)
     if parsedLanguage != nil {
       scope[parsedLanguage!.scopeName] = languageFileName

@@ -62,8 +62,8 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
       makeStringChoicePopoverWithChoices(["\"fence\""])
     default:
       var variables = editorTextViewController.textStorage.getDefinedVariableNames()
-      
-      let substringBeforeOverlay = editorTextViewController.textStorage.string()!.substringToIndex(characterRange.location)
+      let theIndex = advance(editorTextViewController.textStorage.string.startIndex, characterRange.location)
+      let substringBeforeOverlay = editorTextViewController.textStorage.string.substringToIndex(theIndex)
       variables = variables.filter({
         return substringBeforeOverlay.rangeOfString($0) != nil
       })

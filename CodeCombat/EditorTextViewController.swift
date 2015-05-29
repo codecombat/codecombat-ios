@@ -60,7 +60,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   
   func onSpellStatementIndexUpdated(note:NSNotification) {
     if let event = note.userInfo {
-      var lineIndex = event["line"]! as Int
+      var lineIndex = event["line"]! as! Int
       lineIndex++
       if lineIndex != highlightedLineNumber {
         highlightedLineNumber = lineIndex
@@ -71,8 +71,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   
   func onProblemCreated(note:NSNotification) {
     if let event = note.userInfo {
-      var lineIndex = event["line"]! as Int
-      var errorText = event["text"]! as String
+      var lineIndex = event["line"]! as! Int
+      var errorText = event["text"]! as! String
       lineIndex++
       textView.addUserCodeProblemGutterAnnotationOnLine(lineIndex, message: errorText)
       textView.highlightUserCodeProblemLine(lineIndex)
@@ -103,7 +103,8 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
         switch LevelSettingsManager.sharedInstance.level {
         case .LowlyKithmen, .ClosingTheDistance, .KnownEnemy,.MasterOfNames, .TacticalStrike, .TheFinalKithmaze, .TheGauntlet:
           var variables = textStorage.getDefinedVariableNames()
-          let substringBeforeOverlay = textStorage.string()!.substringToIndex(variableRange.location + variableRange.length + 1)
+          let theIndex = advance(textStorage.string.startIndex, variableRange.location + variableRange.length + 1)
+          let substringBeforeOverlay = textStorage.string.substringToIndex(theIndex)
           variables = variables.filter({
             return substringBeforeOverlay.rangeOfString($0) != nil
           })
@@ -156,7 +157,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
       case .Began:
         var lineFragmentRect = getLineFragmentRectForDrag(locationInTextView)
         var characterRange = getCharacterRangeForLineFragmentRect(lineFragmentRect)
-        let fragmentParagraphRange = textStorage.string()!.paragraphRangeForRange(characterRange)
+        let fragmentParagraphRange = (textStorage.string as NSString).paragraphRangeForRange(characterRange)
         draggedLabel = createDraggedLabel(lineFragmentRect, loc: locationInParentView, fragmentCharacterRange: characterRange)
         draggedCharacterRange = fragmentParagraphRange
         parentViewController!.view.addSubview(draggedLabel)
@@ -221,16 +222,16 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     
     var numberOfNewlinesBeforeGlyphIndex = 1
     for var index = 0; index < nearestGlyphIndex; numberOfNewlinesBeforeGlyphIndex++ {
-      index = NSMaxRange(storage.string()!.lineRangeForRange(NSRange(location: index, length: 0)))
+      index = NSMaxRange((storage.string as NSString).lineRangeForRange(NSRange(location: index, length: 0)))
     }
     
     var totalLinesInDoc = 1
-    for var index = 0; index < storage.string()!.length; totalLinesInDoc++ {
-      index = NSMaxRange(storage.string()!.lineRangeForRange(NSRange(location: index, length: 0)))
+    for var index = 0; index < count(storage.string); totalLinesInDoc++ {
+      index = NSMaxRange((storage.string as NSString).lineRangeForRange(NSRange(location: index, length: 0)))
     }
     
-    let characterAtGlyphIndex = storage.string()!.characterAtIndex(nearestGlyphIndex)
-    let characterBeforeGlyphIndex = storage.string()!.characterAtIndex(nearestGlyphIndex - 1)
+    let characterAtGlyphIndex = (storage.string as NSString).characterAtIndex(nearestGlyphIndex)
+    let characterBeforeGlyphIndex = (storage.string as NSString).characterAtIndex(nearestGlyphIndex - 1)
     var stringToInsert = code
     var newlinesToInsert = draggedOntoLine - numberOfNewlinesBeforeGlyphIndex
     //DO SPECIAL EDITS FOR CODE RIGHT HERE
@@ -268,7 +269,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
       }
       storage.replaceCharactersInRange(NSRange(location: startOfDraggedLineCharacterIndex - 1, length: 0), withString: stringToInsert)
     } else {
-      if storage.string()!.characterAtIndex(startOfDraggedLineCharacterIndex) != 10 {
+      if (storage.string as NSString).characterAtIndex(startOfDraggedLineCharacterIndex) != 10 {
         stringToInsert = stringToInsert + "\n"
       }
       storage.replaceCharactersInRange(NSRange(location: startOfDraggedLineCharacterIndex, length: 0), withString: stringToInsert)
@@ -279,7 +280,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   func codeContainsPlaceholder(code:String) -> Bool {
     var error:NSErrorPointer = nil
     let regex = NSRegularExpression(pattern: "\\$\\{.*\\}", options: nil, error: error)
-    let matches = regex!.matchesInString(code, options: nil, range: NSRange(location: 0, length: countElements(code)))
+    let matches = regex!.matchesInString(code, options: nil, range: NSRange(location: 0, length: count(code)))
     return matches.count > 0
   }
   
@@ -301,7 +302,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     
     var firstNonWhitespaceCharacter = unichar(10)
     for var charIndex = index; charIndex > 0; charIndex-- {
-      let character = storage.string()!.characterAtIndex(charIndex)
+      let character = (storage.string as NSString).characterAtIndex(charIndex)
       if !NSCharacterSet.whitespaceAndNewlineCharacterSet().characterIsMember(character) {
         firstNonWhitespaceCharacter = character
         break
@@ -313,11 +314,11 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   func replacePlaceholderInString(code:String, replacement:String) -> String {
     var error:NSErrorPointer = nil
     let regex = NSRegularExpression(pattern: "\\$\\{.*\\}", options: nil, error: error)
-    let matches = regex!.matchesInString(code, options: nil, range: NSRange(location: 0, length: countElements(code)))
+    let matches = regex!.matchesInString(code, options: nil, range: NSRange(location: 0, length: count(code)))
     if matches.count == 0 {
       return code
     }
-    let firstMatch = matches[0] as NSTextCheckingResult
+    let firstMatch = matches[0] as! NSTextCheckingResult
     let newString = NSString(string: code).stringByReplacingCharactersInRange(firstMatch.range, withString: replacement)
     return newString
   }
@@ -327,7 +328,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
     if lineNumber <= 0 {
       return 0
     } else {
-      let lines = storage.string()!.componentsSeparatedByCharactersInSet(NSCharacterSet.newlineCharacterSet())
+      let lines = storage.string.componentsSeparatedByCharactersInSet(NSCharacterSet.newlineCharacterSet())
       let line = lines[min(lineNumber - 1, lines.count - 1)] as NSString
       var spacesCount = 0
       for var charIndex = 0; charIndex < line.length; charIndex++ {
@@ -401,7 +402,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   }
   
   func ensureNewlineAtEndOfCode() {
-    if !textStorage.string()!.hasSuffix("\n") {
+    if !textStorage.string.hasSuffix("\n") {
       textStorage.beginEditing()
       textStorage.appendAttributedString(NSAttributedString(string: "\n"))
       textStorage.endEditing()
@@ -427,7 +428,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   }
   
   func getAttributedStringForCharacterRange(range:NSRange) -> NSAttributedString {
-    return textStorage.attributedString!.attributedSubstringFromRange(range)
+    return textStorage.attributedStringStore.attributedSubstringFromRange(range)
   }
   
   private func createDraggedLabel(lineFragmentRect:CGRect, loc:CGPoint, fragmentCharacterRange:NSRange) -> UILabel {
@@ -450,7 +451,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   
   private func deleteDraggedLine() {
     textStorage.beginEditing()
-    let draggedLineString:NSString = textStorage.string()!.substringWithRange(draggedCharacterRange).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+    let draggedLineString:NSString = (textStorage.string as NSString).substringWithRange(draggedCharacterRange).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
     if draggedCharacterRange.location != 0 {
       textStorage.replaceCharactersInRange(draggedCharacterRange, withString: "")
     } else {
@@ -478,7 +479,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
       //probably an off by one error
       stringLength = textStorage.length
       currentLocation++
-      let lineEndLocation = textStorage.string()!.rangeOfCharacterFromSet(NSCharacterSet.newlineCharacterSet(), options: NSStringCompareOptions.allZeros, range: NSRange(location: currentLocation, length: stringLength - (currentLocation))).location
+      let lineEndLocation = (textStorage.string as NSString).rangeOfCharacterFromSet(NSCharacterSet.newlineCharacterSet(), options: NSStringCompareOptions.allZeros, range: NSRange(location: currentLocation, length: stringLength - (currentLocation))).location
       if lineEndLocation == NSNotFound {
         break
       }
@@ -489,7 +490,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
         currentIndentationLevel = indentationLevel
       }
       let lineRange = NSRange(location: currentLocation, length: lineEndLocation - currentLocation)
-      var lineString = textStorage.string()!.substringWithRange(lineRange)
+      var lineString = (textStorage.string as NSString).substringWithRange(lineRange)
       if currentIndentationLevel >= indentationLevel {
         currentIndentationLevel = indentationLevel
         println("Reindenting to level \(indentationLevel - 1)")
@@ -497,7 +498,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
       }
       //reindent line
       textStorage.replaceCharactersInRange(lineRange, withString: lineString)
-      currentLocation = lineRange.location + lineRange.length + (countElements(lineString) - lineRange.length)
+      currentLocation = lineRange.location + lineRange.length + (count(lineString) - lineRange.length)
     }
   }
   
@@ -506,15 +507,15 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   private func shiftAroundLines(dragEndLocation:CGPoint) {
     //get the text underneath the drag end
     let characterIndexUnderDrag = textView.layoutManager.characterIndexForPoint(dragEndLocation, inTextContainer: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
-    let replacedCharacterRange = textStorage.string()!.paragraphRangeForRange(NSRange(location: characterIndexUnderDrag, length: 1))
+    let replacedCharacterRange = (textStorage.string as NSString).paragraphRangeForRange(NSRange(location: characterIndexUnderDrag, length: 1))
     let characterRange = replacedCharacterRange
-    var replacedString = textStorage.string()!.substringWithRange(characterRange)
-    var replacingString = textStorage.string()!.substringWithRange(draggedCharacterRange)
+    var replacedString = (textStorage.string as NSString).substringWithRange(characterRange)
+    var replacingString = (textStorage.string as NSString).substringWithRange(draggedCharacterRange)
     if !(draggedCharacterRange.location == characterRange.location) {
       var replacedLineIndentation = indentationLevelOfLine(lineNumberForDraggedCharacterRange(characterRange))
       let draggedLineIndentation = indentationLevelOfLine(lineNumberForDraggedCharacterRange(draggedCharacterRange))
       let trimmedString = replacedString.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-      if countElements(trimmedString) > 0 && trimmedString.substringFromIndex(trimmedString.endIndex.predecessor()) == ":"
+      if count(trimmedString) > 0 && trimmedString.substringFromIndex(trimmedString.endIndex.predecessor()) == ":"
         && !trimmedString.hasPrefix("loop:") {
           replacedLineIndentation++
       }
@@ -553,15 +554,15 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   }
   
   private func lineNumberForDraggedCharacterRange(range:NSRange) -> Int {
-    let sourceString = textStorage.string()!.substringWithRange(NSRange(location: 0, length: range.location))
+    let sourceString = (textStorage.string as NSString).substringWithRange(NSRange(location: 0, length: range.location))
     let errorPointer = NSErrorPointer()
     let regex = NSRegularExpression(pattern: "\\n", options:nil, error: errorPointer)
-    let matches = regex!.numberOfMatchesInString(sourceString, options: nil, range: NSRange(location: 0, length: countElements(sourceString)))
+    let matches = regex!.numberOfMatchesInString(sourceString, options: nil, range: NSRange(location: 0, length: count(sourceString)))
     return matches + 1
   }
   
   func scrollWhileDraggingIfNecessary(locationInParentView:CGPoint, yDelta:CGFloat) {
-    let pvc = parentViewController as PlayViewController
+    let pvc = parentViewController as! PlayViewController
     let bounds = pvc.view.bounds
     var scrollOffset = pvc.scrollView.contentOffset
     var yOffset:CGFloat = 0
@@ -611,7 +612,7 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
       //find if the nearest glyph is a newline (aka not dragging on a thing)
       let nearestGlyphIndexToDrag = textView.layoutManager.glyphIndexForPoint(gestureRecognizer.locationInView(textView), inTextContainer: textContainer)
       let characterIndex = textView.layoutManager.characterIndexForGlyphAtIndex(nearestGlyphIndexToDrag)
-      let character = textStorage.string()!.characterAtIndex(characterIndex)
+      let character = (textStorage.string as NSString).characterAtIndex(characterIndex)
       if character == 10 {
         return false
       }
@@ -645,11 +646,11 @@ class EditorTextViewController: UIViewController, UITextViewDelegate, UIGestureR
   }
   
   func replaceTextViewContentsWithString(text:String) {
-    textStorage.replaceCharactersInRange(NSRange(location: 0, length: textStorage.string()!.length), withString: text)
+    textStorage.replaceCharactersInRange(NSRange(location: 0, length: count(textStorage.string)), withString: text)
     textView.setNeedsDisplay()
   }
   
-  func textView(textView: UITextView!, shouldChangeTextInRange range: NSRange, replacementText text: String!) -> Bool {
+  func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
     if text == "\n" {
       textView.setNeedsDisplay()
     }

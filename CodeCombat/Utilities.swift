@@ -12,7 +12,7 @@ func readResourceFile(filename: String, type: String="json") -> String {
   let bundle = NSBundle.mainBundle()
   let path = bundle.pathForResource(filename, ofType: type)
   let content = NSString(contentsOfFile: path!, encoding: NSUTF8StringEncoding, error: nil)
-  return content!
+  return content! as String
 }
 
 func parseJSONFile(filename: String) -> JSON {

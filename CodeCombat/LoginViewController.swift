@@ -43,7 +43,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   
   func textFieldShouldReturn(textField: UITextField) -> Bool {
     if textField == usernameTextField {
-      if passwordTextField.text != nil && countElements(passwordTextField.text) > 0 {
+      if passwordTextField.text != nil && count(passwordTextField.text) > 0 {
         login(loginButton)
       } else {
         usernameTextField.resignFirstResponder()
@@ -150,7 +150,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
       let char = passChars.characterAtIndex(random)
       pass.appendFormat("%C", char)
     }
-    return pass
+    return pass as String
   }
   
   func performLoginRequest(#username:String, password:String) {
@@ -203,7 +203,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         var jsonError:NSError?
         var userJSON = NSJSONSerialization.JSONObjectWithData(data,
           options: NSJSONReadingOptions.MutableContainers,
-          error: &jsonError) as NSDictionary
+          error: &jsonError) as! NSDictionary
         
         if jsonError != nil {
           println("JSON serialization error: \(jsonError!)")

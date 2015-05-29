@@ -15,7 +15,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
   private var draggedView: UIView!
   private var draggedProperty: TomeInventoryItemProperty!
   
-  override init() {
+  init() {
     inventory = TomeInventory()
     super.init(nibName: "", bundle: nil)
   }
@@ -44,7 +44,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
   }
   
   func setUpInventory() {
-    let subviewsToRemove = inventoryView.subviews as [UIView]
+    let subviewsToRemove = inventoryView.subviews as! [UIView]
     for var index = subviewsToRemove.count - 1; index >= 0; --index {
       subviewsToRemove[index].removeFromSuperview()
     }
@@ -77,8 +77,8 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
     if inventoryLoaded { return }
     inventoryLoaded = true
     inventory = TomeInventory()
-    let userInfo = note.userInfo as [String: AnyObject]
-    let entryGroupsJSON = userInfo["entryGroups"] as NSString
+    let userInfo = note.userInfo as! [String: AnyObject]
+    let entryGroupsJSON = userInfo["entryGroups"] as! String
     let entryGroups = JSON.parse(entryGroupsJSON)
     var items: [TomeInventoryItem] = []
     for (entryGroupName, entryGroup) in entryGroups.asDictionary! {
@@ -99,7 +99,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
     setUpInventory()
   }
   
-  func gestureRecognizer(gestureRecognizer: UIGestureRecognizer!, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer!) -> Bool {
+  func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
     //Make more specific to simultaneous uipangesturerecognizers if other gesture recognizers fire unintentionally
     return true
   }
@@ -108,7 +108,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
     if recognizer == inventoryView.panGestureRecognizer {
       return
     }
-    let Parent = parentViewController as PlayViewController
+    let Parent = parentViewController as! PlayViewController
     //Change this to reference editor view controller, rather than editor view
     let EditorView = Parent.textViewController.textView
     let LocationInParentView = recognizer.locationInView(Parent.view)
@@ -175,7 +175,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
     }
   }
   
-  func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer!) -> Bool {
+  func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
     if draggedView != nil {
       return false
     }
@@ -191,7 +191,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
     var ItemView:TomeInventoryItemView! = nil
     for subview in inventoryView.subviews {
       if subview is TomeInventoryItemView && subview.frame.contains(location) {
-        ItemView = subview as TomeInventoryItemView
+        ItemView = subview as! TomeInventoryItemView
       }
     }
     return ItemView
