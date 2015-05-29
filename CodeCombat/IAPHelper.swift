@@ -16,10 +16,10 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
   
   var productsRequest:SKProductsRequest?
   var completionHandler:((Bool,NSArray) -> Void)?
-  var productIdentifiers:NSSet!
+  var productIdentifiers:Set<NSObject>!
   var productsDict:[String:SKProduct] = [:]
   
-  init(productIdentifiers:NSSet)  {
+  init(productIdentifiers:Set<NSObject>)  {
     super.init()
     self.productIdentifiers = productIdentifiers
     SKPaymentQueue.defaultQueue().addTransactionObserver(self)
@@ -57,7 +57,7 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
   }
 
   func paymentQueue(queue: SKPaymentQueue!, updatedTransactions transactions: [AnyObject]!) {
-    for transaction in transactions as [SKPaymentTransaction] {
+    for transaction in transactions as! [SKPaymentTransaction] {
       switch transaction.transactionState {
       case .Purchased:
         completeTransaction(transaction)

@@ -48,11 +48,11 @@ class ArgumentStringPickerPopoverViewController: UITableViewController {
   
   override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cellIdentifier = "Cell"
-    var cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as UITableViewCell!
+    var cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as! UITableViewCell!
     if cell == nil {
       cell = UITableViewCell(style: .Default, reuseIdentifier: cellIdentifier)
     }
-    cell.textLabel.text = strings[indexPath.row]
+    cell.textLabel?.text = strings[indexPath.row]
     return cell
   }
   

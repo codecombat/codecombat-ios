@@ -179,7 +179,7 @@ class PlayViewController: UIViewController {
   
   func onTomeSpellLoaded(note:NSNotification) {
     if let event = note.userInfo {
-      let spell = event["spell"] as NSDictionary
+      let spell = event["spell"] as! NSDictionary
       let startingCode = spell["source"] as? String
       if startingCode != nil {
         textViewController.replaceTextViewContentsWithString(startingCode!)
@@ -194,7 +194,7 @@ class PlayViewController: UIViewController {
   func onTomeWinnabilityUpdated(note: NSNotification) {
     println("winnability updated \(note)")
     if let event = note.userInfo {
-      let winnable = event["winnable"] as Bool
+      let winnable = event["winnable"] as! Bool
       runButton.selected = !winnable
       submitButton.selected = winnable
     }

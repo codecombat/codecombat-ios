@@ -317,7 +317,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   }
   
   private func lineFragmentRectForLineNumber(targetLineNumber:Int) -> CGRect {
-    let storage = textStorage as EditorTextStorage
+    let storage = textStorage as! EditorTextStorage
     let Context = UIGraphicsGetCurrentContext()
     let Bounds = bounds
     
@@ -326,7 +326,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
       actualCharacterRange: nil)
     var numberOfLinesBeforeVisible = 0
     for var index = 0; index < textRange.location; numberOfLinesBeforeVisible++ {
-      index = NSMaxRange(storage.string()!.lineRangeForRange(NSRange(location: index, length: 0)))
+      index = NSMaxRange((storage.string as NSString).lineRangeForRange(NSRange(location: index, length: 0)))
     }
     var lineNumber = numberOfLinesBeforeVisible
     let textAttributes = [NSFontAttributeName:font]
@@ -335,7 +335,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
       textContainer:NSTextContainer!, glyphRange:NSRange,
       stop:UnsafeMutablePointer<ObjCBool>) -> Void {
         let charRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
-        let paraRange = storage.string()!.paragraphRangeForRange(charRange)
+        let paraRange = (storage.string as NSString).paragraphRangeForRange(charRange)
         //To avoid drawing numbers on wrapped lines
         if charRange.location == paraRange.location {
           lineNumber++
@@ -354,7 +354,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   }
   
   func numberOfLinesInDocument() -> Int {
-    let storage = textStorage as EditorTextStorage
+    let storage = textStorage as! EditorTextStorage
     let Context = UIGraphicsGetCurrentContext()
     let Bounds = bounds
     
@@ -367,7 +367,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
       textContainer:NSTextContainer!, glyphRange:NSRange,
       stop:UnsafeMutablePointer<ObjCBool>) -> Void {
         let charRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
-        let paraRange = storage.string()!.paragraphRangeForRange(charRange)
+        let paraRange = (storage.string as NSString).paragraphRangeForRange(charRange)
         if charRange.location == paraRange.location {
           currentLineNumber++
         }
@@ -378,7 +378,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   }
   
   func characterIndexForStartOfLine(lineNumber:Int) -> Int {
-    let storage = textStorage as EditorTextStorage
+    let storage = textStorage as! EditorTextStorage
     let Context = UIGraphicsGetCurrentContext()
     let Bounds = bounds
     
@@ -392,7 +392,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
       textContainer:NSTextContainer!, glyphRange:NSRange,
       stop:UnsafeMutablePointer<ObjCBool>) -> Void {
         let charRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
-        let paraRange = storage.string()!.paragraphRangeForRange(charRange)
+        let paraRange = (storage.string as NSString).paragraphRangeForRange(charRange)
         if charRange.location == paraRange.location {
           currentLineNumber++
           if lineNumber == currentLineNumber {
@@ -404,7 +404,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     layoutManager.enumerateLineFragmentsForGlyphRange(glyphsToShow,
       usingBlock: lineFragmentClosure)
     if characterIndex == -1 {
-      return storage.string()!.length
+      return count(storage.string)
     } else {
       return characterIndex
     }
@@ -419,7 +419,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   
   func lineNumberUnderPoint(var point:CGPoint) -> Int {
     //point.y += lineSpacing
-    let storage = textStorage as EditorTextStorage
+    let storage = textStorage as! EditorTextStorage
     let Context = UIGraphicsGetCurrentContext()
     let Bounds = bounds
     
@@ -434,7 +434,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
       textContainer:NSTextContainer!, glyphRange:NSRange,
       stop:UnsafeMutablePointer<ObjCBool>) -> Void {
         let charRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
-        let paraRange = storage.string()!.paragraphRangeForRange(charRange)
+        let paraRange = (storage.string as NSString).paragraphRangeForRange(charRange)
         if charRange.location == paraRange.location {
           currentLineNumber++
         } else {
@@ -456,7 +456,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   
   func boundingRectForLineNumber(lineNumber:Int) -> CGRect {
     //point.y += lineSpacing
-    let storage = textStorage as EditorTextStorage
+    let storage = textStorage as! EditorTextStorage
     let Context = UIGraphicsGetCurrentContext()
     let Bounds = bounds
     
@@ -475,7 +475,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
       stop:UnsafeMutablePointer<ObjCBool>) -> Void {
         totalEnumerations++
         let charRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
-        let paraRange = storage.string()!.paragraphRangeForRange(charRange)
+        let paraRange = (storage.string as NSString).paragraphRangeForRange(charRange)
         if charRange.location == paraRange.location {
           currentLineNumber++
           if currentLineNumber == lineNumber {
@@ -489,8 +489,8 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
           if stoppedOnEnumeration != -1 {
             stoppedOnEnumeration++
           }
-          var characterRangeString = storage.string()!.substringWithRange(charRange).stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet())
-          if countElements(characterRangeString) > 0 {
+          var characterRangeString = (storage.string as NSString).substringWithRange(charRange).stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet())
+          if count(characterRangeString) > 0 {
             numberOfExtraLines++
           }
         }
@@ -516,7 +516,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   }
   
   private func drawLineNumbers(rect:CGRect) {
-    let storage = textStorage as EditorTextStorage
+    let storage = textStorage as! EditorTextStorage
     let Context = UIGraphicsGetCurrentContext()
     let Bounds = bounds
     
@@ -528,7 +528,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     //calculate bounds
     println("Calculating bounds... \(bounds.origin.y)")
     for var index = 0; index < textRange.location; numberOfLinesBeforeVisible++ {
-      index = NSMaxRange(storage.string()!.lineRangeForRange(NSRange(location: index, length: 0)))
+      index = NSMaxRange((storage.string as NSString).lineRangeForRange(NSRange(location: index, length: 0)))
     }
     var lineNumber = numberOfLinesBeforeVisible
     let textAttributes = [NSFontAttributeName:font]
@@ -537,7 +537,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
       textContainer:NSTextContainer!, glyphRange:NSRange,
       stop:UnsafeMutablePointer<ObjCBool>) -> Void {
         let charRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
-        let paraRange = storage.string()!.paragraphRangeForRange(charRange)
+        let paraRange = (storage.string as NSString).paragraphRangeForRange(charRange)
         //To avoid drawing numbers on wrapped lines
         if charRange.location == paraRange.location {
           lineNumber++
@@ -608,11 +608,11 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
     let visibleGlyphs = layoutManager.glyphRangeForCharacterRange(entireCharacterRange, actualCharacterRange: nil)
     //when I refer to line numbers, I am referring to them by height, not in the document
     var currentLineNumber = 1
-    let editorTextStorage = textStorage as EditorTextStorage
+    let editorTextStorage = textStorage as! EditorTextStorage
     func fragmentEnumerator(aRect:CGRect, aUsedRect:CGRect, textContainer:NSTextContainer!, glyphRange:NSRange, stop:UnsafeMutablePointer<ObjCBool>) -> Void {
       let fragmentCharacterRange = layoutManager.characterRangeForGlyphRange(glyphRange, actualGlyphRange: nil)
-      let fragmentParagraphRange = editorTextStorage.string()!.paragraphRangeForRange(fragmentCharacterRange)
-      let draggedParagraphRange = editorTextStorage.string()!.paragraphRangeForRange(draggedCharacterRange)
+      let fragmentParagraphRange = (editorTextStorage.string as NSString).paragraphRangeForRange(fragmentCharacterRange)
+      let draggedParagraphRange = (editorTextStorage.string as NSString).paragraphRangeForRange(draggedCharacterRange)
       if NSEqualRanges(draggedParagraphRange, fragmentParagraphRange) {
         //This means we've found the dragged line
         currentLineNumber++
@@ -640,8 +640,8 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   
   func createLineLabel(lineFragmentRect:CGRect, fragmentCharacterRange:NSRange) -> UILabel {
     let label = UILabel(frame: lineFragmentRect)
-    let editorTextStorage = textStorage as EditorTextStorage
-    let fragmentParagraphRange = editorTextStorage.string()!.paragraphRangeForRange(fragmentCharacterRange)
+    let editorTextStorage = textStorage as! EditorTextStorage
+    let fragmentParagraphRange = (editorTextStorage.string as NSString).paragraphRangeForRange(fragmentCharacterRange)
     if fragmentCharacterRange.length == fragmentParagraphRange.length {
       label.attributedText = parentTextViewController.getAttributedStringForCharacterRange(fragmentParagraphRange)
     } else {

@@ -21,7 +21,7 @@ class CodeCombatIAPHelper: IAPHelper {
       IAP.Gems10.rawValue,
       IAP.Gems20.rawValue
     ]
-    let productIdentifiers = NSSet(array: products)
+    let productIdentifiers = Set<NSObject>(arrayLiteral: products)
     super.init(productIdentifiers: productIdentifiers)
   }
   class var sharedInstance:CodeCombatIAPHelper {

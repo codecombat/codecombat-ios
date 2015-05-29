@@ -100,7 +100,7 @@ class TomeInventoryItemView: UIView {
       if !subview.isKindOfClass(TomeInventoryItemPropertyView) {
         continue
       }
-      let CandidateView = subview as TomeInventoryItemPropertyView
+      let CandidateView = subview as! TomeInventoryItemPropertyView
       if CandidateView.frame.contains(location) {
         return CandidateView.property
       }

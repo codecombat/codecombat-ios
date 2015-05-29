@@ -22,7 +22,7 @@ class ParticleScene: SKScene {
     }
     
     func newExplosion(posX:CGFloat, posY:CGFloat) -> SKEmitterNode {
-        let emitter:SKEmitterNode = NSKeyedUnarchiver.unarchiveObjectWithFile(NSBundle.mainBundle().pathForResource("TestParticle", ofType: "sks")!) as SKEmitterNode
+        let emitter:SKEmitterNode = NSKeyedUnarchiver.unarchiveObjectWithFile(NSBundle.mainBundle().pathForResource("TestParticle", ofType: "sks")!) as! SKEmitterNode
         emitter.position = CGPointMake(posX, posY)
         emitter.name = "explosion"
         emitter.targetNode = self.scene

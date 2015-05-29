@@ -80,7 +80,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   
   func currentCredentialIsPseudoanonymous() -> Bool {
     let credentials = getCredentials()
-    if !credentials.isEmpty && credentials.first!.user != nil && countElements(credentials.first!.user!) == 36 && NSUserDefaults.standardUserDefaults().boolForKey("pseudoanonymousUserCreated") {
+    if !credentials.isEmpty && credentials.first!.user != nil && count(credentials.first!.user!) == 36 && NSUserDefaults.standardUserDefaults().boolForKey("pseudoanonymousUserCreated") {
       let uuid = NSUUID(UUIDString: credentials.first!.user!)
       return uuid != nil
     }
@@ -92,7 +92,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     if credentialsDictionary == nil {
       return []
     }
-    return credentialsDictionary!.values.array as [NSURLCredential]
+    return credentialsDictionary!.values.array as! [NSURLCredential]
   }
   
   func loginToGetAuthCookie() {
@@ -210,10 +210,10 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
       activeSubscriptions[channel] = 0
     }
     activeSubscriptions[channel] = activeSubscriptions[channel]! + 1
-    if activeObservers[observer as NSObject] == nil {
-      activeObservers[observer as NSObject] = []
+    if activeObservers[observer as! NSObject] == nil {
+      activeObservers[observer as! NSObject] = []
     }
-    activeObservers[observer as NSObject]!.append(channel)
+    activeObservers[observer as! NSObject]!.append(channel)
     if activeSubscriptions[channel] == 1 {
       registerSubscription(channel)
     }
@@ -238,21 +238,21 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   
   func unsubscribe(observer: AnyObject) {
     scriptMessageNotificationCenter.removeObserver(observer)
-    if let channels = activeObservers[observer as NSObject] {
+    if let channels = activeObservers[observer as! NSObject] {
       for channel in channels {
         activeSubscriptions[channel] = activeSubscriptions[channel]! - 1
         if activeSubscriptions[channel] == 0 {
           evaluateJavaScript("if(window.removeIPadSubscription) window.removeIPadSubscription('\(channel)');", completionHandler: nil)
         }
       }
-      activeObservers.removeValueForKey(observer as NSObject)
+      activeObservers.removeValueForKey(observer as! NSObject)
       //println("Unsubscribed \(observer) from \(channels) so now have activeSubscriptions \(activeSubscriptions) activeObservers \(activeObservers)")
     }
   }
   
   func publish(channel: String, event: Dictionary<String, AnyObject>) {
     let serializedEvent = serializeData(event)
-    evaluateJavaScript("Backbone.Mediator.publish('\(channel)', \(serializedEvent))", onJSEvaluated)
+    evaluateJavaScript("Backbone.Mediator.publish('\(channel)', \(serializedEvent))", completionHandler: onJSEvaluated)
   }
   
   func evaluateJavaScript(js: String, completionHandler: ((AnyObject!, NSError!) -> Void)!) {
@@ -273,14 +273,14 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   
   func onJSError(note: NSNotification) {
     if let event = note.userInfo {
-      let message = event["message"]! as String
+      let message = event["message"]! as! String
       println("💔💔💔 Unhandled JS error in application: \(message)")
     }
   }
 
   func onNavigated(note: NSNotification) {
     if let event = note.userInfo {
-      let route = event["route"]! as String
+      let route = event["route"]! as! String
       currentFragment = route
     }
   }
@@ -294,27 +294,27 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
       let EmptyObjectString = NSString(string: "{}")
       serialized = EmptyObjectString.dataUsingEncoding(NSUTF8StringEncoding)
     }
-    return NSString(data: serialized!, encoding: NSUTF8StringEncoding)!
+    return NSString(data: serialized!, encoding: NSUTF8StringEncoding)! as String
   }
   
   func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
     if message.name == "backboneEventHandler" {
       // Turn Backbone events into NSNotifications
-      let body = (message.body as NSDictionary) as Dictionary  // You... It... So help me...
-      let channel = body["channel"] as NSString
-      let event = (body["event"] as NSDictionary) as Dictionary
+      let body = (message.body as! NSDictionary) as Dictionary  // You... It... So help me...
+      let channel = body["channel"] as! String
+      let event = (body["event"] as! NSDictionary) as Dictionary
       //println("got backbone event: \(channel)")
       scriptMessageNotificationCenter.postNotificationName(channel, object: self, userInfo: event)
     } else if message.name == "consoleLogHandler" {
-      let body = (message.body as NSDictionary) as Dictionary
-      let level = body["level"] as NSString
-      let arguments = body["arguments"] as NSArray
+      let body = (message.body as! NSDictionary) as Dictionary
+      let level = body["level"] as! String
+      let arguments = body["arguments"] as! NSArray
       let message = arguments.componentsJoinedByString(" ")
       println("\(colorEmoji[level]!) \(level): \(message)")
     }
     else {
       println("got message: \(message.name): \(message.body)")
-      scriptMessageNotificationCenter.postNotificationName(message.name, object: self, userInfo: message.body as? NSDictionary)
+      scriptMessageNotificationCenter.postNotificationName(message.name, object: self, userInfo: message.body as? [NSObject:AnyObject])
     }
   }
   
