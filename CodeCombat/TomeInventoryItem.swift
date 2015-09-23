@@ -10,11 +10,11 @@ class TomeInventoryItem {
   let itemData: JSON
   var properties: [TomeInventoryItemProperty] = []
   var name: String {
-    return itemData["name"].toString(pretty: false)
+    return itemData["name"].toString(false)
   }
   var imageURL: NSURL {
     var b = itemData["imageURL"]
-    var url: String = itemData["imageURL"].toString(pretty: false)
+    var url: String = itemData["imageURL"].toString(false)
     if url.isEmpty {
       url = "/file/db/thang.type/53e4108204c00d4607a89f78/programmicon.png"
     }

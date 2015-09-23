@@ -26,7 +26,7 @@ class ArgumentStringPickerPopoverViewController: UITableViewController {
     clearsSelectionOnViewWillAppear = false
   }
 
-  required init(coder aDecoder: NSCoder) {
+  required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
   
@@ -48,7 +48,7 @@ class ArgumentStringPickerPopoverViewController: UITableViewController {
   
   override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cellIdentifier = "Cell"
-    var cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as! UITableViewCell!
+    var cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier) as UITableViewCell!
     if cell == nil {
       cell = UITableViewCell(style: .Default, reuseIdentifier: cellIdentifier)
     }

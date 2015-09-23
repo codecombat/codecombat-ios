@@ -16,10 +16,10 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
   
   var productsRequest:SKProductsRequest?
   var completionHandler:((Bool,NSArray) -> Void)?
-  var productIdentifiers:Set<NSObject>!
+  var productIdentifiers:Set<String>!
   var productsDict:[String:SKProduct] = [:]
   
-  init(productIdentifiers:Set<NSObject>)  {
+  init(productIdentifiers:Set<String>)  {
     super.init()
     self.productIdentifiers = productIdentifiers
     SKPaymentQueue.defaultQueue().addTransactionObserver(self)
@@ -27,25 +27,25 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
   
   func requestProductsWithCompletionHandler(handler:((Bool,NSArray) -> Void)) {
     self.completionHandler = handler
-    println("Requesting products \(productIdentifiers)")
+    print("Requesting products \(productIdentifiers)")
     productsRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
     productsRequest?.delegate = self
     productsRequest?.start()
   }
   
-  func productsRequest(request: SKProductsRequest!, didReceiveResponse response: SKProductsResponse!)  {
-    println("Loaded list of products")
+  func productsRequest(request: SKProductsRequest, didReceiveResponse response: SKProductsResponse)  {
+    print("Loaded list of products")
     self.productsRequest = nil
     
     let skproducts = response.products
     for product in skproducts {
-      productsDict[product.productIdentifier] = product as? SKProduct
+      productsDict[product.productIdentifier] = product
     }
     self.completionHandler?(true, skproducts)
     completionHandler = nil
   }
   
-  func request(request: SKRequest!, didFailWithError error: NSError!)  {
+  func request(request: SKRequest, didFailWithError error: NSError)  {
     productsRequest = nil
     self.completionHandler?(false, NSArray())
     self.completionHandler = nil
@@ -56,8 +56,8 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
     SKPaymentQueue.defaultQueue().addPayment(payment)
   }
 
-  func paymentQueue(queue: SKPaymentQueue!, updatedTransactions transactions: [AnyObject]!) {
-    for transaction in transactions as! [SKPaymentTransaction] {
+  func paymentQueue(queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+    for transaction in transactions {
       switch transaction.transactionState {
       case .Purchased:
         completeTransaction(transaction)
@@ -69,7 +69,7 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
         restoreTransaction(transaction)
         break
       case .Purchasing:
-        println("Purchasing!")
+        print("Purchasing!")
       default:
         break
       }
@@ -89,16 +89,16 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
   func completeTransaction(transaction:SKPaymentTransaction) {
     if WebManager.sharedInstance.authCookieIsFresh {
       if NSBundle.mainBundle().appStoreReceiptURL == nil {
-        println("No app store receipt URL exists!")
+        print("No app store receipt URL exists!")
         return
       }
       let receiptData = NSData(contentsOfURL: NSBundle.mainBundle().appStoreReceiptURL!)
       //let receiptDict
       if receiptData == nil {
-        println("There was an error encoding the receipt data!")
+        print("There was an error encoding the receipt data!")
         return
       }
-      let receiptString = receiptData!.base64EncodedStringWithOptions(NSDataBase64EncodingOptions.allZeros)
+      let receiptString = receiptData!.base64EncodedStringWithOptions(NSDataBase64EncodingOptions())
       var receiptDict:[String:[String:String]] = [:]
       var innerDict:[String:String] = [:]
       innerDict["rawReceipt"] = receiptString
@@ -115,44 +115,50 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
       receiptDict["apple"] = innerDict
       sendGemRequestToCodeCombatServers(receiptDict, transaction: transaction)
     } else {
-      println("Auth cookie is not fresh, trying transaction again later...")
+      print("Auth cookie is not fresh, trying transaction again later...")
     }
     
   }
   
   func sendGemRequestToCodeCombatServers(receiptDict:[String:[String:String]], transaction:SKPaymentTransaction) {
     let error:NSErrorPointer = nil
-    let postData = NSJSONSerialization.dataWithJSONObject(receiptDict, options: NSJSONWritingOptions.allZeros, error: error)
+    let postData: NSData?
+    do {
+      postData = try NSJSONSerialization.dataWithJSONObject(receiptDict, options: NSJSONWritingOptions())
+    } catch var error1 as NSError {
+      error.memory = error1
+      postData = nil
+    }
     if error != nil {
-      println("Error serializing gem request!")
+      print("Error serializing gem request!")
       return
     }
     let request = NSMutableURLRequest(URL: NSURL(string: "/db/payment", relativeToURL: WebManager.sharedInstance.rootURL)!)
     request.HTTPMethod = "POST"
     request.HTTPBody = postData!
-    println("Sending request \(postData)")
-    println(receiptDict)
+    print("Sending request \(postData)")
+    print(receiptDict)
     let cookies = NSHTTPCookieStorage.sharedHTTPCookieStorage().cookiesForURL(WebManager.sharedInstance.rootURL!)
     let headers = NSHTTPCookie.requestHeaderFieldsWithCookies(cookies!)
     request.allHTTPHeaderFields = headers
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) { (response:NSURLResponse!, data:NSData!, error:NSError!) -> Void in
+    NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) { (response:NSURLResponse?, data:NSData?, error:NSError?) -> Void in
       if error != nil {
-        println("There was an error \(error.localizedDescription)")
+        print("There was an error \(error.localizedDescription)")
         let errorString = NSString(data: data, encoding: NSUTF8StringEncoding)
-        println("Error data: \(errorString)")
+        print("Error data: \(errorString)")
       } else {
         var jsonError:NSErrorPointer = nil
-        var paymentJSON = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.allZeros, error: jsonError) as? NSDictionary
+        var paymentJSON = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions()) as? NSDictionary
         if jsonError != nil || paymentJSON == nil {
-          println("There was an error serializing the JSON")
-          println(jsonError)
+          print("There was an error serializing the JSON")
+          print(jsonError)
         } else {
-          println("Should finish transaction here....")
+          print("Should finish transaction here....")
           var userInfo:[String:String!] = [:]
           if transaction.payment != nil && transaction.payment.productIdentifier != nil {
             let productID = transaction.payment.productIdentifier
-            userInfo = ["productID":productID!]
+            userInfo = ["productID":productID]
           }
           NSNotificationCenter.defaultCenter().postNotificationName("productPurchased", object: nil, userInfo: userInfo)
           SKPaymentQueue.defaultQueue().finishTransaction(transaction)
@@ -164,11 +170,11 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
   }
   
   func restoreTransaction(transaction:SKPaymentTransaction) {
-    println("Restore transaction")
+    print("Restore transaction")
     var userInfo:[String:String] = [:]
     if transaction.payment != nil && transaction.payment.productIdentifier != nil {
       let productID = transaction.payment.productIdentifier
-      userInfo = ["productID":productID!]
+      userInfo = ["productID":productID]
     }
     NSNotificationCenter.defaultCenter().postNotificationName("productPurchased", object: nil, userInfo: userInfo)
     SKPaymentQueue.defaultQueue().finishTransaction(transaction)
@@ -176,9 +182,9 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
   }
   
   func failedTransaction(transaction:SKPaymentTransaction) {
-    println("Failed transaction")
+    print("Failed transaction")
     if transaction.error.code != SKErrorPaymentCancelled {
-      println("Transaction error: \(transaction.error.localizedDescription)")
+      print("Transaction error: \(transaction.error.localizedDescription)")
     }
     SKPaymentQueue.defaultQueue().finishTransaction(transaction)
   }

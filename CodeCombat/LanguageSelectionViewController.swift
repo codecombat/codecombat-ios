@@ -38,6 +38,6 @@ class LanguageSelectionViewController: UIViewController, UIPickerViewDataSource,
   }
   
   func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-    println("Selected language \(languages[row])")
+    print("Selected language \(languages[row])")
   }
 }

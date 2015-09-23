@@ -39,7 +39,7 @@ class NodeHighlighter {
     var idx = 0
     //TODO:Optimize through binary search
     for var i = 0; i < node.children.count; i++ {
-      if node.children[i].range.location >= searchRange.location || rangeCoversRange(node.children[i].range,searchRange) {
+      if node.children[i].range.location >= searchRange.location || rangeCoversRange(node.children[i].range,b: searchRange) {
         idx = i
         break
       }
@@ -49,7 +49,7 @@ class NodeHighlighter {
       if c.range.location > NSMaxRange(searchRange) {
         break
       }
-      if rangeCoversRange(c.range, searchRange) {
+      if rangeCoversRange(c.range, b: searchRange) {
         if node.name != nil && node.name != "" && lastScopeNode != nil && node !== lastScopeNode {
           if lastScopeBuf.length > 0 {
             lastScopeBuf.appendString(" ")
@@ -60,7 +60,7 @@ class NodeHighlighter {
       }
       idx++
     }
-    if node !== lastScopeNode && rangeCoversRange(node.range, searchRange) && node.name != nil && node.name != "" {
+    if node !== lastScopeNode && rangeCoversRange(node.range, b: searchRange) && node.name != nil && node.name != "" {
       if lastScopeBuf.length > 0 {
         lastScopeBuf.appendString(" ")
       }
@@ -76,7 +76,7 @@ class NodeHighlighter {
     }
     
     let search = NSRange(location: point, length: 1)
-    if lastScopeNode != nil && rangeCoversRange(lastScopeNode.range, search) {
+    if lastScopeNode != nil && rangeCoversRange(lastScopeNode.range, b: search) {
       if lastScopeNode.children.count != 0 {
         let no = findScope(search, node: lastScopeNode)
         if no != nil && no !== lastScopeNode {
@@ -175,7 +175,13 @@ class LanguageProvider {
       return nil
     }
     let error:NSErrorPointer = nil
-    let languageFileContents = NSString(contentsOfFile: languageFilePath!, encoding: NSUTF8StringEncoding, error: error)
+    let languageFileContents: NSString?
+    do {
+      languageFileContents = try NSString(contentsOfFile: languageFilePath!, encoding: NSUTF8StringEncoding)
+    } catch let error1 as NSError {
+      error.memory = error1
+      languageFileContents = nil
+    }
     if error != nil || languageFileContents == nil {
       return nil
     }
@@ -229,11 +235,11 @@ class LanguageProvider {
     }
     if let captures = data["captures"].asDictionary {
       for (captureNumber, captureData) in captures {
-        let capture = Capture(key: captureNumber.toInt()!)
+        let capture = Capture(key: Int(captureNumber)!)
         capture.name = captureData["name"].asString
         pattern.captures.append(capture)
       }
-      pattern.captures = sorted(pattern.captures, {$0.key < $1.key })
+      pattern.captures = pattern.captures.sort({$0.key < $1.key })
     }
     if let beginData = data["begin"].asString {
       let begin = Regex()
@@ -242,11 +248,11 @@ class LanguageProvider {
     }
     if let beginCaptures = data["beginCaptures"].asDictionary {
       for (captureNumber, captureData) in beginCaptures {
-        let capture = Capture(key: captureNumber.toInt()!)
+        let capture = Capture(key: Int(captureNumber)!)
         capture.name = captureData["name"].asString
         pattern.beginCaptures.append(capture)
       }
-      pattern.beginCaptures = sorted(pattern.beginCaptures, {$0.key < $1.key })
+      pattern.beginCaptures = pattern.beginCaptures.sort({$0.key < $1.key })
     }
     if let endData = data["end"].asString {
       let end = Regex()
@@ -255,11 +261,11 @@ class LanguageProvider {
     }
     if let endCaptures = data["endCaptures"].asDictionary {
       for (captureNumber, captureData) in endCaptures {
-        let capture = Capture(key: captureNumber.toInt()!)
+        let capture = Capture(key: Int(captureNumber)!)
         capture.name = captureData["name"].asString
         pattern.endCaptures.append(capture)
       }
-      pattern.endCaptures = sorted(pattern.endCaptures, {$0.key < $1.key })
+      pattern.endCaptures = pattern.endCaptures.sort({$0.key < $1.key })
     }
     if let patterns = data["patterns"].asArray {
       for patternData in patterns {
@@ -310,7 +316,7 @@ class LanguageParser {
     var iterations = maxIterations
     for var i = 0; i < sdata.length && iterations > 0; iterations-- {
       var (pat, result) = language.rootPattern.cache(sdata, position: i)
-      var newLineLocation = sdata.rangeOfCharacterFromSet(NSCharacterSet.newlineCharacterSet(), options: nil, range: NSRange(location: i, length: sdata.length - i)).location
+      let newLineLocation = sdata.rangeOfCharacterFromSet(NSCharacterSet.newlineCharacterSet(), options: [], range: NSRange(location: i, length: sdata.length - i)).location
       if result == nil {
         break
       } else if newLineLocation != NSNotFound && newLineLocation <= Int(result!.locationAt(0)) {
@@ -336,7 +342,7 @@ class LanguageParser {
       self.patch(lut, node: rootNode)
     }
     if iterations == 0 {
-      println("REACHED MAXIMUM NUMBER OF ITERATIONS")
+      print("REACHED MAXIMUM NUMBER OF ITERATIONS")
       return nil
     }
     rootNode.simplify()
@@ -393,8 +399,8 @@ class Pattern {
     desc += "<Sub-Patterns>\n"
     for pat in patterns {
       var inner = pat.description()
-      inner = inner.stringByReplacingOccurrencesOfString("\t", withString: "\t\t", options: nil, range: nil)
-      inner = inner.stringByReplacingOccurrencesOfString("\n", withString: "\n\t", options: nil, range: nil)
+      inner = inner.stringByReplacingOccurrencesOfString("\t", withString: "\t\t", options: [], range: nil)
+      inner = inner.stringByReplacingOccurrencesOfString("\n", withString: "\n\t", options: [], range: nil)
       desc +=  "\t\(inner)\n"
     }
     desc += "</Sub-Patterns>\n---------------------------------------"
@@ -441,14 +447,14 @@ class Pattern {
       pat = self
       result = begin.find(data, pos: position)
     } else if include != nil {
-      let includePrefix = Array(include)[0]
+      let includePrefix = Array(include.characters)[0]
       if includePrefix == "#" {
         let key = include.substringFromIndex(include.startIndex.successor())
         let includePattern = owner.repository[key]
         if includePattern != nil {
           (pat, result) = includePattern!.cache(data, position: position)
         } else {
-          println("The pattern \(key) wasn't found!")
+          print("The pattern \(key) wasn't found!")
         }
       } else if includePrefix == "$" {
         if include == "$self" {

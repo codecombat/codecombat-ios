@@ -16,12 +16,11 @@ enum IAP:String {
 
 class CodeCombatIAPHelper: IAPHelper {
   init() {
-    let products:[String] = [
+    let productIdentifiers: Set<String> = [
       IAP.Gems5.rawValue,
       IAP.Gems10.rawValue,
       IAP.Gems20.rawValue
     ]
-    let productIdentifiers = Set<NSObject>(arrayLiteral: products)
     super.init(productIdentifiers: productIdentifiers)
   }
   class var sharedInstance:CodeCombatIAPHelper {

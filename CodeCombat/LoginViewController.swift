@@ -43,7 +43,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   
   func textFieldShouldReturn(textField: UITextField) -> Bool {
     if textField == usernameTextField {
-      if passwordTextField.text != nil && count(passwordTextField.text) > 0 {
+      if passwordTextField.text != nil && passwordTextField.text.characters.count > 0 {
         login(loginButton)
       } else {
         usernameTextField.resignFirstResponder()
@@ -63,7 +63,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   }
   
   func onWebsiteNotReachable() {
-    println("onWebsiteNotReachable in login view controller")
+    print("onWebsiteNotReachable in login view controller")
     if memoryAlertController == nil {
       let titleString = NSLocalizedString("Internet connection problem", comment:"")
       let messageString = NSLocalizedString("We can't reach the CodeCombat server. Please check your connection and try again.", comment:"")
@@ -97,7 +97,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
           return
         }
       }
-      println("User \(credential.user) already connected with saved password; logging in.")
+      print("User \(credential.user) already connected with saved password; logging in.")
       //User.sharedInstance.name = userJSON["name"] as? String
       User.sharedInstance.email = credential.user!
       User.sharedInstance.password = credential.password!
@@ -144,7 +144,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   
   private func generateRandomPassword() -> String {
     let passChars:NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXZY0123456789!@#$%^&*()90"
-    var pass = NSMutableString(capacity: 30)
+    let pass = NSMutableString(capacity: 30)
     for (var i = 0; i < 25; i++) {
       let random = Int(arc4random_uniform(UInt32(passChars.length)))
       let char = passChars.characterAtIndex(random)
@@ -153,7 +153,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     return pass as String
   }
   
-  func performLoginRequest(#username:String, password:String) {
+  func performLoginRequest(username username:String, password:String) {
     let RootURL = WebManager.sharedInstance.rootURL
     let LoginURL:NSURL = NSURL(string: "/auth/login", relativeToURL: RootURL)!
     let LoginRequest:NSMutableURLRequest = NSMutableURLRequest(
@@ -168,10 +168,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
       "username": username,
       "password": password
     ]
-    var postData = NSJSONSerialization.dataWithJSONObject(LoginCredentials, options: NSJSONWritingOptions(0), error: nil)
+    var postData = try? NSJSONSerialization.dataWithJSONObject(LoginCredentials, options: NSJSONWritingOptions(rawValue: 0))
     LoginRequest.HTTPBody = postData
     let OperationQueue:NSOperationQueue = NSOperationQueue()
-    println("Going to send post data \(postData) for \(LoginCredentials)")
+    print("Going to send post data \(postData) for \(LoginCredentials)")
     
     NSURLConnection.sendAsynchronousRequest(LoginRequest, queue: OperationQueue, completionHandler: { [weak self] response, data, requestError -> Void in
       if (requestError != nil) {
@@ -182,7 +182,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
         else {
           var jsonError:NSError?
-          var errorObject:AnyObject = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &jsonError)!
+          var errorObject:AnyObject = try! NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers)
           if jsonError != nil {
             errorMessage = NSLocalizedString("There was an unknown error logging in.", comment:"")
           } else {
@@ -201,14 +201,13 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         })
       } else {
         var jsonError:NSError?
-        var userJSON = NSJSONSerialization.JSONObjectWithData(data,
-          options: NSJSONReadingOptions.MutableContainers,
-          error: &jsonError) as! NSDictionary
+        var userJSON = (try! NSJSONSerialization.JSONObjectWithData(data,
+          options: NSJSONReadingOptions.MutableContainers)) as! NSDictionary
         
         if jsonError != nil {
-          println("JSON serialization error: \(jsonError!)")
+          print("JSON serialization error: \(jsonError!)")
           let ErrorString = NSString(data: data, encoding: NSUTF8StringEncoding)
-          println("Got data:\(ErrorString)")
+          print("Got data:\(ErrorString)")
         } else {
           User.sharedInstance.name = userJSON["name"] as? String
           User.sharedInstance.email = userJSON["email"] as? String
@@ -243,7 +242,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
       message: errorMessage, delegate: nil, cancelButtonTitle: "OK")
     message.show()
   }
-  private func validateLoginCredentials(#username:String,
+  private func validateLoginCredentials(username username:String,
     password:String) -> (isValid:Bool, errorMessage:String) {
       if username.isEmpty && password.isEmpty {
         return (false, NSLocalizedString("Please input a username and password.", comment:""))

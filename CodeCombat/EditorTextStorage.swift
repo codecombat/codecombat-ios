@@ -26,7 +26,7 @@ class EditorTextStorage: NSTextStorage {
     highlighter = NodeHighlighter(parser: parser)
   }
   
-  required init(coder aDecoder: NSCoder) {
+  required init?(coder aDecoder: NSCoder) {
     attributedStringStore = NSMutableAttributedString()
     super.init(coder: aDecoder)
     let parser = LanguageParser(scope: language, data: attributedStringStore.string, provider: languageProvider)
@@ -80,7 +80,7 @@ class EditorTextStorage: NSTextStorage {
   
   func findArgumentOverlays() -> [(String,NSRange)] {
     var argumentOverlays:[(String,NSRange)] = []
-    let documentRange = NSRange(location: 0, length: count(string))
+    let documentRange = NSRange(location: 0, length: string.characters.count)
     for var charIndex = documentRange.location; charIndex < NSMaxRange(documentRange); charIndex++ {
       let scopeName = highlighter.scopeName(charIndex)
       let scopes = scopeName.componentsSeparatedByString(" ")
@@ -167,7 +167,7 @@ class EditorTextStorage: NSTextStorage {
   func removeDuplicatesFromArrayOfStrings(arr:[String]) -> [String] {
     var extantItems:[String] = []
     return arr.filter({
-      if !contains(extantItems, $0) {
+      if !extantItems.contains($0) {
         extantItems.append($0)
         return true
       } else {
@@ -179,7 +179,7 @@ class EditorTextStorage: NSTextStorage {
   
   func makeTextClear() {
     makingTextClear = true
-    addAttribute(NSForegroundColorAttributeName, value: UIColor.clearColor(), range: NSRange(location: 0, length: count(string)))
+    addAttribute(NSForegroundColorAttributeName, value: UIColor.clearColor(), range: NSRange(location: 0, length: string.characters.count))
     makingTextClear = false
   }
   
@@ -187,7 +187,7 @@ class EditorTextStorage: NSTextStorage {
     let parser = LanguageParser(scope: language, data: attributedStringStore.string, provider: languageProvider)
     highlighter = NodeHighlighter(parser: parser)
     //the most inefficient way of doing this, optimize later
-    let documentRange = NSRange(location: 0, length: count(string))
+    let documentRange = NSRange(location: 0, length: string.characters.count)
     
     self.removeAttribute(NSForegroundColorAttributeName, range: documentRange)
     for var charIndex = documentRange.location; charIndex < NSMaxRange(documentRange); charIndex++ {
@@ -213,8 +213,8 @@ class EditorTextStorage: NSTextStorage {
     
   }
   
-  override func attributesAtIndex(location: Int, effectiveRange range: NSRangePointer) -> [NSObject : AnyObject] {
-    var attributes = attributedStringStore.attributesAtIndex(location, effectiveRange: range)
+  override func attributesAtIndex(location: Int, effectiveRange range: NSRangePointer) -> [String : AnyObject] {
+    let attributes = attributedStringStore.attributesAtIndex(location, effectiveRange: range)
     return attributes
   }
   
@@ -252,7 +252,7 @@ class EditorTextStorage: NSTextStorage {
   }
   
   
-  override func setAttributes(attrs: [NSObject : AnyObject]!, range: NSRange) {
+  override func setAttributes(attrs: [String : AnyObject]!, range: NSRange) {
     attributedStringStore.setAttributes(attrs, range: range)
     self.edited(NSTextStorageEditActions.EditedAttributes,
       range: range,

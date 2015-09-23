@@ -11,7 +11,7 @@ import UIKit
 class EditorInputAccessoryView:UIView {
   var parentTextView:UITextView!
   
-  required init(coder aDecoder: NSCoder) {
+  required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
   

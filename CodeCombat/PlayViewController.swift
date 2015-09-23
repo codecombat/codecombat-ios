@@ -59,7 +59,7 @@ class PlayViewController: UIViewController {
   }
   
   deinit {
-    println("PLAY VIEW CONTROLLER DE-INITED")
+    print("PLAY VIEW CONTROLLER DE-INITED")
     textViewController.textView.parentTextViewController = nil
     webManager.unsubscribe(textViewController)
     webManager.unsubscribe(inventoryViewController)
@@ -75,7 +75,7 @@ class PlayViewController: UIViewController {
   
   func setupViews() {
     let frameWidth = view.frame.size.width
-    let frameHeight = view.frame.size.height
+    //let frameHeight = view.frame.size.height
     let aspectRatio:CGFloat = 1.56888
     let topBarHeight: CGFloat = 50
     let backgroundImageVerticalOverlap: CGFloat = 11
@@ -140,11 +140,11 @@ class PlayViewController: UIViewController {
   }
   
   func setupBackgrounds() {
-    var editorBackground = UIImageView(image: backgroundImage)
+    let editorBackground = UIImageView(image: backgroundImage)
     editorContainerView.addSubview(editorBackground)
     editorContainerView.sendSubviewToBack(editorBackground)
 
-    var bottomBackground = UIImageView(image: UIImage(named: "play_background_bottom"))
+    let bottomBackground = UIImageView(image: UIImage(named: "play_background_bottom"))
     bottomBackground.frame.origin.y = view.frame.size.height - bottomBackground.frame.size.height
     view.insertSubview(bottomBackground, aboveSubview: editorContainerView)
     
@@ -154,8 +154,8 @@ class PlayViewController: UIViewController {
   }
   
   func updateForLevel() {
-    var levelID = LevelSettingsManager.sharedInstance.level
-    if contains([.DungeonsOfKithgard, .GemsInTheDeep, .ShadowGuard, .KounterKithwise, .CrawlwaysOfKithgard, .ForgetfulGemsmith, .TrueNames, .FavorableOdds, .TheRaisedSword, .TheFirstKithmaze, .HauntedKithmaze, .DescendingFurther, .TheSecondKithmaze, .DreadDoor, .KnownEnemy, .MasterOfNames, .LowlyKithmen, .ClosingTheDistance, .TacticalStrike, .TheFinalKithmaze, .TheGauntlet, .KithgardGates, .CavernSurvival, .DefenseOfPlainswood, .WindingTrail], levelID) {
+    let levelID = LevelSettingsManager.sharedInstance.level
+    if [.DungeonsOfKithgard, .GemsInTheDeep, .ShadowGuard, .KounterKithwise, .CrawlwaysOfKithgard, .ForgetfulGemsmith, .TrueNames, .FavorableOdds, .TheRaisedSword, .TheFirstKithmaze, .HauntedKithmaze, .DescendingFurther, .TheSecondKithmaze, .DreadDoor, .KnownEnemy, .MasterOfNames, .LowlyKithmen, .ClosingTheDistance, .TacticalStrike, .TheFinalKithmaze, .TheGauntlet, .KithgardGates, .CavernSurvival, .DefenseOfPlainswood, .WindingTrail].contains(levelID) {
       submitButton.setTitle("DONE", forState: .Normal)
       submitButton.setTitle("DONE", forState: .Highlighted)
       submitButton.setTitle("DONE", forState: .Selected)
@@ -183,7 +183,7 @@ class PlayViewController: UIViewController {
       let startingCode = spell["source"] as? String
       if startingCode != nil {
         textViewController.replaceTextViewContentsWithString(startingCode!)
-        println("set code before load to \(startingCode!)")
+        print("set code before load to \(startingCode!)")
         textViewController.textStorage.undoManager.removeAllActions()
         setUndoRedoEnabled()
 
@@ -192,7 +192,7 @@ class PlayViewController: UIViewController {
   }
   
   func onTomeWinnabilityUpdated(note: NSNotification) {
-    println("winnability updated \(note)")
+    print("winnability updated \(note)")
     if let event = note.userInfo {
       let winnable = event["winnable"] as! Bool
       runButton.selected = !winnable
@@ -266,9 +266,9 @@ class PlayViewController: UIViewController {
     return escapedString
   }
   func handleTomeSourceRequest(){
-    var escapedString = getEscapedSourceString()
+    let escapedString = getEscapedSourceString()
     lastSubmitString == escapedString
-    var js = "if(currentView.tome.spellView) { currentView.tome.spellView.ace.setValue(\"\(escapedString)\"); } else { console.log('damn, no one was selected!'); }"
+    let js = "if(currentView.tome.spellView) { currentView.tome.spellView.ace.setValue(\"\(escapedString)\"); } else { console.log('damn, no one was selected!'); }"
     //println(js)
     webManager.evaluateJavaScript(js, completionHandler: nil)
   }

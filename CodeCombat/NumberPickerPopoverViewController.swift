@@ -41,12 +41,12 @@ class NumberPickerPopoverViewController: UIViewController {
   }
   
   @IBAction func okayWasTapped(sender:UIButton) {
-    pickerDelegate?.didSelectNumber(entryNumberLabel.text!.toInt()!, characterRange: characterRange)
+    pickerDelegate?.didSelectNumber(Int(entryNumberLabel.text!)!, characterRange: characterRange)
     dismissViewControllerAnimated(true, completion: nil)
   }
   
   @IBAction func deleteWasTapped(sender:UIButton) {
-    if count(entryNumberLabel.text!) == 1{
+    if (entryNumberLabel.text!).characters.count == 1{
       entryNumberLabel.text! = "0"
     } else {
       entryNumberLabel.text!.removeAtIndex(entryNumberLabel.text!.endIndex.predecessor())

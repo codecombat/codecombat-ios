@@ -17,11 +17,11 @@ class TomeInventoryItemView: UIView {
   let marginV = CGFloat(3)  // Between props
   let padding = CGFloat(15)  // Top, right, and bottom padding (left padding is just a weird hack)
   
-  required init(coder aDecoder: NSCoder) {
+  required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
   
-  init(item: TomeInventoryItem, coder aDecoder: NSCoder!) {
+  init?(item: TomeInventoryItem, coder aDecoder: NSCoder!) {
     self.item = item
     super.init(coder: aDecoder)
     buildSubviews()
@@ -37,7 +37,7 @@ class TomeInventoryItemView: UIView {
     var y = padding
     let itemWidth = imageSize + 2 * marginH
     var propertyViews: [TomeInventoryItemPropertyView] = []
-    if let name = item.itemData["name"].asString {
+    if item.itemData["name"].asString != nil {
       for property in item.properties {
         let propertyView = TomeInventoryItemPropertyView(
           item: item,

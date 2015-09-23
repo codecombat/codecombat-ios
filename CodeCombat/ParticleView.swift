@@ -12,7 +12,7 @@ import SpriteKit
 class ParticleView: SKView {
 
     var particleScene:SKScene?
-    required init(coder aDecoder: NSCoder)  {
+    required init?(coder aDecoder: NSCoder)  {
         super.init(coder: aDecoder)
         startParticles()
     }

@@ -32,7 +32,7 @@ class DocumentHighlighterTests: XCTestCase {
   func testSimpleJavascriptParsing() {
     let parser = LanguageParser(scope: "javascript", data: "var blah = 5; var test = function() { console.log(\"Hello World\");};", provider: provider)
     let parseRootNode = parser.parse()
-    println(parseRootNode.description())
+    print(parseRootNode.description())
     XCTAssertTrue(parseRootNode != nil, "The parse root node shouldn't be nil.")
   }
   
@@ -76,36 +76,36 @@ class DocumentHighlighterTests: XCTestCase {
     let documentString = "function blah(parameterOne, parameterTwo) {\n return 5; };\n"
     let parser = LanguageParser(scope: "javascript", data: documentString, provider: provider)
     let rootNode = parser.parse()
-    println(rootNode.description())
+    print(rootNode.description())
   }
   
   func testJavascriptStringParsing() {
     let documentString = "var blah = \"Hello World\";"
     let parser = LanguageParser(scope: "javascript", data: documentString, provider: provider)
     let rootNode = parser.parse()
-    println(rootNode.description())
+    print(rootNode.description())
   }
   
   func testNodeHighlighter() {
     let documentString = "var blah = \"Hello World\";"
     let parser = LanguageParser(scope: "javascript", data: documentString, provider: self.provider)
     let highlighter = NodeHighlighter(parser: parser)
-    println(highlighter.scopeName(1))
-    println(highlighter.scopeExtent(1))
+    print(highlighter.scopeName(1))
+    print(highlighter.scopeExtent(1))
   }
   
   func testPythonParsing1() {
     let documentString = "friends = ['john', 'pat', 'gary', 'michael']\nfor i, name in enumerate(friends):\n\tprint \"iteration {iteration} is {name}\".format(iteration=i, name=name)\n"
     let parser = LanguageParser(scope: "python", data: documentString, provider: provider)
     let rootNode = parser.parse()
-    println(rootNode.description())
+    print(rootNode.description())
   }
   
   func testPythonParsingComments() {
     let documentString = "self.attack(hello,goodbye)"
     let parser = LanguageParser(scope: "python", data: documentString, provider: provider)
     let rootNode = parser.parse()
-    println(rootNode.description())
+    print(rootNode.description())
   }
   func testPerformanceExample() {
     // This is an example of a performance test case.

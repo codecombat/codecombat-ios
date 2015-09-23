@@ -20,7 +20,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
     super.init(nibName: "", bundle: nil)
   }
   
-  required convenience init(coder aDecoder: NSCoder) {
+  required convenience init?(coder aDecoder: NSCoder) {
     self.init()
   }
   
@@ -44,7 +44,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
   }
   
   func setUpInventory() {
-    let subviewsToRemove = inventoryView.subviews as! [UIView]
+    let subviewsToRemove = inventoryView.subviews 
     for var index = subviewsToRemove.count - 1; index >= 0; --index {
       subviewsToRemove[index].removeFromSuperview()
     }
@@ -80,18 +80,17 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
     let userInfo = note.userInfo as! [String: AnyObject]
     let entryGroupsJSON = userInfo["entryGroups"] as! String
     let entryGroups = JSON.parse(entryGroupsJSON)
-    var items: [TomeInventoryItem] = []
     for (entryGroupName, entryGroup) in entryGroups.asDictionary! {
-      var entries = entryGroup["props"].asArray!
-      var entryNames: [String] = entries.map({entry in entry["name"].asString!}) as [String]
-      var entryNamesJSON = "\", \"".join(entryNames)
+      let entries = entryGroup["props"].asArray!
+      let entryNames: [String] = entries.map({entry in entry["name"].asString!}) as [String]
+      let entryNamesJSON = entryNames.joinWithSeparator("\", \"")
       var imageInfoData = entryGroup["item"].asDictionary!
-      var imageURL = imageInfoData["imageURL"]!
-      var itemDataJSON = "{\"name\":\"\(entryGroupName)\",\"programmableProperties\":[\"\(entryNamesJSON)\"],\"imageURL\":\"\(imageURL)\"}"
-      var itemData = JSON.parse(itemDataJSON)
-      var item = TomeInventoryItem(itemData: itemData)
+      let imageURL = imageInfoData["imageURL"]!
+      let itemDataJSON = "{\"name\":\"\(entryGroupName)\",\"programmableProperties\":[\"\(entryNamesJSON)\"],\"imageURL\":\"\(imageURL)\"}"
+      let itemData = JSON.parse(itemDataJSON)
+      let item = TomeInventoryItem(itemData: itemData)
       for entry in entries {
-        var property = TomeInventoryItemProperty(propertyData: entry, primary: true)
+        let property = TomeInventoryItemProperty(propertyData: entry, primary: true)
         item.addProperty(property)
       }
       inventory.addInventoryItem(item)
@@ -118,7 +117,7 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
       
     case .Began:
       //Find the item view which received the click
-      var ItemView:TomeInventoryItemView! = itemViewAtLocation(recognizer.locationInView(inventoryView))
+      let ItemView:TomeInventoryItemView! = itemViewAtLocation(recognizer.locationInView(inventoryView))
       if ItemView == nil || ItemView.tomeInventoryItemPropertyAtLocation(recognizer.locationInView(ItemView)) == nil {
         // This weird code is the way to get the drag and drop recognizer to send
         // failure to the scroll gesture recognizer

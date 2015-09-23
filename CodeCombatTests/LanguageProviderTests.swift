@@ -72,7 +72,7 @@ class LanguageProviderTests: XCTestCase {
   func testPatternDescription() {
     let lang = defaultProvider.getLanguage("javascript")!
     let pat = lang.repository["leading-space"]
-    println(pat!.description())
+    print(pat!.description())
   }
   
   func testLanguageParsePerformance() {

@@ -38,7 +38,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   }
   
   func listenToNotifications() {
-    delay(1, {
+    delay(1, closure: {
       self.webManager.subscribe(self, channel: "router:navigated", selector: Selector("onNavigated:"))
       self.webManager.subscribe(self, channel: "level:loading-view-unveiled", selector: Selector("onLevelStarted:"))
       self.webManager.subscribe(self, channel: "auth:logging-out", selector: Selector("onLogout"))
@@ -51,7 +51,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   }
   
   func onSignedUp() {
-    println("Signed up!")
+    print("Signed up!")
     webManager.clearCredentials()
   }
   
@@ -65,7 +65,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
         if success {
           self.onBuyGemsModalUpdateProducts()
         } else {
-          println("Failed to get list of products")
+          print("Failed to get list of products")
         }
       })
     }
@@ -75,7 +75,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   func onBuyGemsModalPurchaseInitiated(note:NSNotification) {
     let productID = note.userInfo!["productID"] as! String
     let desiredProduct = CodeCombatIAPHelper.sharedInstance.productsDict[productID]
-    println("WANTS TO BUY PRODUCT \(productID)")
+    print("WANTS TO BUY PRODUCT \(productID)")
     if desiredProduct != nil {
       productBeingPurchased = desiredProduct!
       CodeCombatIAPHelper.sharedInstance.buyProduct(desiredProduct!)
@@ -96,7 +96,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   
   func sendIPadProductsToWebView() {
     var productsToSend:[[String:AnyObject]] = []
-    for (productID, product) in CodeCombatIAPHelper.sharedInstance.productsDict {
+    for product in CodeCombatIAPHelper.sharedInstance.productsDict.values {
       var productDict:[String:AnyObject] = [:]
       productDict["price"] = CodeCombatIAPHelper.sharedInstance.localizedPriceForProduct(product)
       productDict["id"] = product.productIdentifier
@@ -108,7 +108,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   
   //This listens for when the NSURLConnection login fails (aka password has changed, etc.)
   func onLoginFailure() {
-    println("Login failed!")
+    print("Login failed!")
     if !WebManager.sharedInstance.currentCredentialIsPseudoanonymous() {
       WebManager.sharedInstance.clearCredentials()
     }
@@ -119,11 +119,11 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   
   
   func onWebsiteNotReachable() {
-    println("Game view controller showing not reachable alert")
+    print("Game view controller showing not reachable alert")
     if memoryAlertController == nil {
       let titleString = NSLocalizedString("Internet connection problem", comment:"")
       let messageString = NSLocalizedString("We can't reach the CodeCombat server. Please check your connection and try again.", comment:"")
-      memoryAlertController = UIAlertController(title: "Internet connection problem", message: messageString, preferredStyle: UIAlertControllerStyle.Alert)
+      memoryAlertController = UIAlertController(title: titleString, message: messageString, preferredStyle: UIAlertControllerStyle.Alert)
       memoryAlertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: { success in
         self.memoryAlertController.dismissViewControllerAnimated(true, completion: nil)
         self.memoryAlertController = nil
@@ -145,7 +145,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
     if memoryWarningsReceived % 3 == 0 {
       showMemoryWarningDialogue()
     }
-    println("----------------- Received Memory Warning --------------")
+    print("----------------- Received Memory Warning --------------")
     NSURLCache.sharedURLCache().removeAllCachedResponses()
     webManager.publish("ipad:memory-warning", event: [:])
     super.didReceiveMemoryWarning()
@@ -173,7 +173,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   
   func countDownMemoryWarning() {
     memoryWarningCountdownCounts--
-    println("Counting down!")
+    print("Counting down!")
     if memoryWarningCountdownCounts == 0 {
       memoryWarningCountdownTimer.invalidate()
       UIView.animateWithDuration(2, animations: {
@@ -188,7 +188,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   }
   
   func onWebViewReloadedFromCrash() {
-    println("GameViewController going to reload its webview \(webManager.webView)")
+    print("GameViewController going to reload its webview \(webManager.webView)")
     webView = webManager.webView!
     if webView.superview == view {
       view.sendSubviewToBack(webView)
@@ -233,7 +233,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
     if !isRouteLevel(route) {
       return ""
     } else {
-      let substringIndex = advance(route.startIndex, count(playLevelRoutePrefix))
+      let substringIndex = route.startIndex.advancedBy(playLevelRoutePrefix.characters.count)
       return route.substringFromIndex(substringIndex)
     }
   }
@@ -260,10 +260,10 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
         LevelSettingsManager.sharedInstance.level = .Unknown
       }
       playViewController!.updateForLevel()
-      println("Created a playViewController for \(route)")
+      print("Created a playViewController for \(route)")
     }
     else {
-      println("Route is not a level \(route), so dismissing playViewController \(playViewController), have presentedViewController \(presentedViewController)")
+      print("Route is not a level \(route), so dismissing playViewController \(playViewController), have presentedViewController \(presentedViewController)")
       LevelSettingsManager.sharedInstance.level = .Unknown
       if presentedViewController != nil {
         dismissViewControllerAnimated(false, completion: nil)
@@ -275,7 +275,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   }
   
   func onNavigated(note: NSNotification) {
-    println("onNavigated:", note)
+    print("onNavigated:", note)
     if let event = note.userInfo {
       let route = event["route"]! as! String
       updateFrame(route)
@@ -285,11 +285,11 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
 
   func onLevelStarted(note: NSNotification) {
     if presentedViewController != nil {
-      println("Hmmm, trying to start level again?");
+      print("Hmmm, trying to start level again?");
     } else {
       playViewController!.setupWebView()
       presentViewController(playViewController!, animated: false, completion: nil)
-      println("Now we are presenting \(presentedViewController)")
+      print("Now we are presenting \(presentedViewController)")
     }
   }
 }

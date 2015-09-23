@@ -14,7 +14,7 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
   var functionName = ""
   var defaultContentsToInsertOnRun = ""
   
-  required init(coder aDecoder: NSCoder) {
+  required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
   
@@ -62,13 +62,13 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
       makeStringChoicePopoverWithChoices(["\"fence\""])
     default:
       var variables = editorTextViewController.textStorage.getDefinedVariableNames()
-      let theIndex = advance(editorTextViewController.textStorage.string.startIndex, characterRange.location)
+      let theIndex = editorTextViewController.textStorage.string.startIndex.advancedBy(characterRange.location)
       let substringBeforeOverlay = editorTextViewController.textStorage.string.substringToIndex(theIndex)
       variables = variables.filter({
         return substringBeforeOverlay.rangeOfString($0) != nil
       })
       if functionName != "attack" || variables.count == 0 {
-        if !contains(variables, defaultContentsToInsertOnRun) {
+        if !variables.contains(defaultContentsToInsertOnRun) {
           variables.append(defaultContentsToInsertOnRun)
         }
       }
@@ -109,14 +109,14 @@ class ArgumentOverlayView: UIButton, StringPickerPopoverDelegate {
       let variables = editorTextViewController.textStorage.getDefinedVariableNames()
       //enemy is the target variable, search for variables already defined
       var lowestFree = 0
-      if contains(variables, "enemy") {
+      if variables.contains("enemy") {
         lowestFree = 2
       }
       for variable in variables {
         if variable.hasPrefix("enemy") {
-          let restOfString = variable.stringByReplacingOccurrencesOfString("enemy", withString: "", options: nil, range: nil)
+          let restOfString = variable.stringByReplacingOccurrencesOfString("enemy", withString: "", options: [], range: nil)
           let numericString = restOfString.stringByTrimmingCharactersInSet(NSCharacterSet.letterCharacterSet())
-          if let number = numericString.toInt() {
+          if let number = Int(numericString) {
             if number >= lowestFree {
               lowestFree = number + 1
             }

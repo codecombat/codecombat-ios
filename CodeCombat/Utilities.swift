@@ -11,7 +11,7 @@ import Foundation
 func readResourceFile(filename: String, type: String="json") -> String {
   let bundle = NSBundle.mainBundle()
   let path = bundle.pathForResource(filename, ofType: type)
-  let content = NSString(contentsOfFile: path!, encoding: NSUTF8StringEncoding, error: nil)
+  let content = try? NSString(contentsOfFile: path!, encoding: NSUTF8StringEncoding)
   return content! as String
 }
 

@@ -10,16 +10,16 @@ struct TomeInventoryItemProperty {
   let propertyData: JSON
   let primary: Bool
   var name: String { //What do we do about schemas?
-    return propertyData["name"].toString(pretty: false)
+    return propertyData["name"].toString(false)
   }
   var docHTML: String {
-    return propertyData["initialHTML"].toString(pretty: false)
+    return propertyData["initialHTML"].toString(false)
   }
   
   func codeSnippetForLanguage(language:String) -> String? {
     let snippet = propertyData["snippets"][language]["code"]
     if snippet.isString {
-      return snippet.toString(pretty: false)
+      return snippet.toString(false)
     } else {
       return nil
     }

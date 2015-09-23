@@ -45,14 +45,14 @@ class DocumentNodeTests: XCTestCase {
   }
   
   func testNonDefaultDescription() {
-    var exampleString:NSString = "This is a test string intended to test some of the functions of DocumentNodes."
+    let exampleString:NSString = "This is a test string intended to test some of the functions of DocumentNodes."
     defaultNode.sourceText = exampleString
     defaultNode.range = NSRange(location: 0, length: 4)
     XCTAssertEqual(defaultNode.description(), "0-4: (no name) - Data: \"This\"\n")
   }
   
   func testGetData() {
-    var exampleString:NSString = "Test String"
+    let exampleString:NSString = "Test String"
     defaultNode.sourceText = exampleString
     defaultNode.range = NSRange(location: 0, length: 4)
     XCTAssertEqual(defaultNode.data, "Test", "The data getter should work")

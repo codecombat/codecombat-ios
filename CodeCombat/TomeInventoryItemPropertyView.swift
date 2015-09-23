@@ -20,11 +20,11 @@ class TomeInventoryItemPropertyView: UIButton {
     addTarget(self, action: Selector("onTapped:"), forControlEvents: .TouchUpInside)
   }
   
-  required init(coder aDecoder: NSCoder) {
+  required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
   }
   
-  init(item: TomeInventoryItem,
+  init?(item: TomeInventoryItem,
     property: TomeInventoryItemProperty, coder aDecoder: NSCoder!) {
     super.init(coder: aDecoder)
     baseInit(item, property: property)
@@ -39,7 +39,7 @@ class TomeInventoryItemPropertyView: UIButton {
   func buildSubviews() {
     let padding = CGFloat(5.0)
     if let name = property?.propertyData["name"].asString {
-      var dotLabel = UILabel(
+      let dotLabel = UILabel(
         frame: CGRect(
           x: padding,
           y: padding,
@@ -49,7 +49,7 @@ class TomeInventoryItemPropertyView: UIButton {
       dotLabel.text = " ● "
       dotLabel.textColor = UIColor(red: 117.0 / 255.0, green: 110.0 / 255.0, blue: 90.0 / 255.0, alpha: 1.0)
       dotLabel.sizeToFit()
-      var label = UILabel(
+      let label = UILabel(
         frame: CGRect(
           x: padding + dotLabel.frame.width,
           y: padding,
@@ -71,11 +71,11 @@ class TomeInventoryItemPropertyView: UIButton {
   }
   
   func onTapped(sender: TomeInventoryItemView) {
-    var docView = TomeInventoryItemPropertyDocumentationView(item: item, property: property, frame: CGRect(x: 0, y: 0, width: 320, height: 480))
-    var docViewController = UIViewController()
+    let docView = TomeInventoryItemPropertyDocumentationView(item: item, property: property, frame: CGRect(x: 0, y: 0, width: 320, height: 480))
+    let docViewController = UIViewController()
     docViewController.view = docView
-    var popover = UIPopoverController(contentViewController: docViewController)
-    popover.presentPopoverFromRect(frame, inView: superview!.superview!, permittedArrowDirections: .Down | .Up, animated: true)
-    println("tapped \(self.item.name) \(self.property.name)")
+    let popover = UIPopoverController(contentViewController: docViewController)
+    popover.presentPopoverFromRect(frame, inView: superview!.superview!, permittedArrowDirections: [.Down, .Up], animated: true)
+    print("tapped \(self.item.name) \(self.property.name)")
   }
 }

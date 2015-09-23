@@ -12,9 +12,9 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   
   var webViewConfiguration: WKWebViewConfiguration!
   var urlSesssionConfiguration: NSURLSessionConfiguration?
-  //let rootURL = NSURL(scheme: "http", host: "localhost:3000", path: "/")
-  //let rootURL = NSURL(scheme: "http", host: "10.0.1.2:3000", path: "/")
-  let rootURL = NSURL(scheme: "http", host: "codecombat.com:80", path: "/")
+  //let rootURL = NSURLComponents(string: "http://localhost:3000/")?.URL;
+  //let rootURL = NSURLComponents(string: "http://10.0.1.2:3000/")?.URL;
+  let rootURL = NSURLComponents(string: "http://codecombat.com:80/")?.URL;
   let allowedRoutePrefixes:[String] = ["http://localhost:3000","http://10.0.1.2:3000","http://codecombat.com/play"]
   var operationQueue: NSOperationQueue?
   var webView: WKWebView?  // Assign this if we create one, so that we can evaluate JS in its context.
@@ -41,11 +41,11 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   }
   
   func reachibilityChanged(note:NSNotification) {
-    if hostReachibility.currentReachabilityStatus().value == NotReachable.value {
-      println("Host unreachable")
+    if hostReachibility.currentReachabilityStatus().rawValue == NotReachable.rawValue {
+      print("Host unreachable")
       NSNotificationCenter.defaultCenter().postNotificationName("websiteNotReachable", object: nil)
     } else {
-      println("Host reachable!")
+      print("Host reachable!")
       NSNotificationCenter.defaultCenter().postNotificationName("websiteReachable", object: nil)
     }
   }
@@ -63,7 +63,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   func createLoginProtectionSpace() {
     // http://stackoverflow.com/a/17997943/540620
     let url = rootURL
-    loginProtectionSpace = NSURLProtectionSpace(host: url!.host!, port: url!.port!.integerValue, `protocol`: url!.scheme!, realm: nil, authenticationMethod: nil)  //.HTTPDigest)
+    loginProtectionSpace = NSURLProtectionSpace(host: url!.host!, port: url!.port!.integerValue, `protocol`: url!.scheme, realm: nil, authenticationMethod: nil)  //.HTTPDigest)
   }
   
   func saveUser() {
@@ -80,7 +80,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   
   func currentCredentialIsPseudoanonymous() -> Bool {
     let credentials = getCredentials()
-    if !credentials.isEmpty && credentials.first!.user != nil && count(credentials.first!.user!) == 36 && NSUserDefaults.standardUserDefaults().boolForKey("pseudoanonymousUserCreated") {
+    if !credentials.isEmpty && credentials.first!.user != nil && (credentials.first!.user!).characters.count == 36 && NSUserDefaults.standardUserDefaults().boolForKey("pseudoanonymousUserCreated") {
       let uuid = NSUUID(UUIDString: credentials.first!.user!)
       return uuid != nil
     }
@@ -92,7 +92,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     if credentialsDictionary == nil {
       return []
     }
-    return credentialsDictionary!.values.array as! [NSURLCredential]
+    return credentialsDictionary!.values
   }
   
   func loginToGetAuthCookie() {
@@ -109,18 +109,18 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     loginRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
   
     let loginCredentials:[String:String] = ["username":username, "password":password]
-    let postData = NSJSONSerialization.dataWithJSONObject(loginCredentials, options: NSJSONWritingOptions.allZeros, error: nil)
+    let postData = try? NSJSONSerialization.dataWithJSONObject(loginCredentials, options: NSJSONWritingOptions())
     loginRequest.HTTPBody = postData
     NSURLConnection.sendAsynchronousRequest(loginRequest, queue: NSOperationQueue.mainQueue()) { (response, data, error) -> Void in
       if error != nil {
         dispatch_async(dispatch_get_main_queue(), {
-          println("Web manager failed to log in")
+          print("Web manager failed to log in")
           NSNotificationCenter.defaultCenter().postNotificationName("loginFailure", object: nil)
         })
       } else {
         self.authCookieIsFresh = true
         dispatch_async(dispatch_get_main_queue(), {
-          println("Web manager successfully logged in")
+          print("Web manager successfully logged in")
           NSNotificationCenter.defaultCenter().postNotificationName("loginSuccess", object: nil)
         })
       }
@@ -143,21 +143,20 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   }
   
   func webView(webView: WKWebView, didCommitNavigation navigation: WKNavigation!) {
-    println("Comitted navigation to \(webView.URL)")
-    if !routeURLHasAllowedPrefix(webView.URL!.absoluteString!) {
+    print("Comitted navigation to \(webView.URL)")
+    if !routeURLHasAllowedPrefix(webView.URL!.absoluteString) {
       webView.stopLoading()
       webView.loadRequest(NSURLRequest(URL: NSURL(string: "/play", relativeToURL: rootURL)!))
     } else {
       //Inject the no-zoom javascript
       let noZoomJS = "var meta = document.createElement('meta');meta.setAttribute('name', 'viewport');meta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');document.getElementsByTagName('head')[0].appendChild(meta);"
       webView.evaluateJavaScript(noZoomJS, completionHandler: nil)
-      println("webView didCommitNavigation")
+      print("webView didCommitNavigation")
     }
     currentFragment = self.webView!.URL!.path!
   }
   
   func routeURLHasAllowedPrefix(route:String) -> Bool {
-    var hasAllowedRoute = false
     for allowedPrefix in allowedRoutePrefixes {
       if route.hasPrefix(allowedPrefix) {
         return true
@@ -168,21 +167,21 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
 
   func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
     NSNotificationCenter.defaultCenter().postNotificationName("webViewDidFinishNavigation", object: nil)
-    println("webView didFinishNavigation")
+    print("webView didFinishNavigation")
     for (channel, count) in activeSubscriptions {
       if count > 0 {
-        println("Reregistering \(channel)")
+        print("Reregistering \(channel)")
         registerSubscription(channel)
       }
     }
     if afterLoginFragment != nil {
-      println("Now that we have logged in, we are navigating to \(afterLoginFragment!)")
+      print("Now that we have logged in, we are navigating to \(afterLoginFragment!)")
       publish("router:navigate", event: ["route": afterLoginFragment!])
       afterLoginFragment = nil
     }
   }
   
-  func logIn(#email: String, password: String) {
+  func logIn(email email: String, password: String) {
     let loginScript = "function foobarbaz() {if(me.get('anonymous') && !me.get('iosIdentifierForVendor')){ require('/core/auth').loginUser({'email':'\(email)','password':'\(password)'});} } setTimeout(foobarbaz, 4);"
     let userScript = WKUserScript(source: loginScript, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
     webViewConfiguration!.userContentController.addUserScript(userScript)
@@ -196,7 +195,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   func createAnonymousUser() {
     //should include something
     let creationScript = "function makeAnonymousUser() { me.set('iosIdentifierForVendor','\(User.sharedInstance.email!)'); me.set('password','\(User.sharedInstance.password!)'); me.save();} if (!me.get('iosIdentifierForVendor') && me.get('anonymous')) setTimeout(makeAnonymousUser,1);"
-    println("Injecting script \(creationScript)")
+    print("Injecting script \(creationScript)")
     let userScript = WKUserScript(source: creationScript, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
     webViewConfiguration!.userContentController.addUserScript(userScript)
     let requestURL = NSURL(string: "/play", relativeToURL: rootURL)
@@ -221,7 +220,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   }
   
   private func registerSubscription(channel: String) {
-    evaluateJavaScript("\n".join([
+    evaluateJavaScript([
       "window.addIPadSubscriptionIfReady = function(channel) {",
       "  if (window.addIPadSubscription) {",
       "    window.addIPadSubscription(channel);",
@@ -233,7 +232,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
       "  }",
       "}",
       "window.addIPadSubscriptionIfReady('\(channel)');"
-      ]), completionHandler: nil)
+      ].joinWithSeparator("\n"), completionHandler: nil)
   }
   
   func unsubscribe(observer: AnyObject) {
@@ -264,8 +263,8 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   
   func onJSEvaluated(response: AnyObject!, error: NSError?) {
     if error != nil {
-      println("There was an error evaluating JS: \(error), response: \(response)")
-      println("JS was \(lastJSEvaluated!)")
+      print("There was an error evaluating JS: \(error), response: \(response)")
+      print("JS was \(lastJSEvaluated!)")
     } else if response != nil {
       //println("Got response from evaluating JS: \(response)")
     }
@@ -274,7 +273,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   func onJSError(note: NSNotification) {
     if let event = note.userInfo {
       let message = event["message"]! as! String
-      println("💔💔💔 Unhandled JS error in application: \(message)")
+      print("💔💔💔 Unhandled JS error in application: \(message)")
     }
   }
 
@@ -289,7 +288,12 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     var serialized:NSData?
     var error:NSError?
     if data != nil {
-      serialized = NSJSONSerialization.dataWithJSONObject(data!, options: NSJSONWritingOptions(0), error: &error)
+      do {
+        serialized = try NSJSONSerialization.dataWithJSONObject(data!, options: NSJSONWritingOptions(rawValue: 0))
+      } catch var error1 as NSError {
+        error = error1
+        serialized = nil
+      }
     } else {
       let EmptyObjectString = NSString(string: "{}")
       serialized = EmptyObjectString.dataUsingEncoding(NSUTF8StringEncoding)
@@ -310,10 +314,10 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
       let level = body["level"] as! String
       let arguments = body["arguments"] as! NSArray
       let message = arguments.componentsJoinedByString(" ")
-      println("\(colorEmoji[level]!) \(level): \(message)")
+      print("\(colorEmoji[level]!) \(level): \(message)")
     }
     else {
-      println("got message: \(message.name): \(message.body)")
+      print("got message: \(message.name): \(message.body)")
       scriptMessageNotificationCenter.postNotificationName(message.name, object: self, userInfo: message.body as? [NSObject:AnyObject])
     }
   }
@@ -330,7 +334,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
       //println("WebView just checked in with response \(response), error \(error?)")
     }
     else {
-      println("WebKit missed a checkup. It's either slow to respond, or has crashed. (Probably just slow to respond.)")
+      print("WebKit missed a checkup. It's either slow to respond, or has crashed. (Probably just slow to respond.)")
       webKitCheckupsMissed = 100
     }
   }
@@ -338,7 +342,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   func checkWebKit() {
     //println("webView is \(webView?); asking it to check in")
     if webKitCheckupsMissed > 60 {
-      println("-----------------Oh snap, it crashed!---------------------")
+      print("-----------------Oh snap, it crashed!---------------------")
       webKitCheckupsMissed = -1
       reloadWebView()
     }
@@ -347,7 +351,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   }
   
   func reloadWebView() {
-    var oldSuperView = webView!.superview
+    let oldSuperView = webView!.superview
     if oldSuperView != nil {
       webView!.removeFromSuperview()
     }
@@ -357,7 +361,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     if oldSuperView != nil {
       oldSuperView?.addSubview(webView!)
     }
-    println("WebManager reloaded webview: \(webView!)")
+    print("WebManager reloaded webview: \(webView!)")
     NSNotificationCenter.defaultCenter().postNotificationName("webViewReloadedFromCrash", object: self)
   }
 
