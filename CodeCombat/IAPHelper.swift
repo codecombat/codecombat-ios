@@ -125,7 +125,7 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
     let postData: NSData?
     do {
       postData = try NSJSONSerialization.dataWithJSONObject(receiptDict, options: NSJSONWritingOptions())
-    } catch var error1 as NSError {
+    } catch let error1 as NSError {
       error.memory = error1
       postData = nil
     }
@@ -144,38 +144,39 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()) { (response:NSURLResponse?, data:NSData?, error:NSError?) -> Void in
       if error != nil {
-        print("There was an error \(error.localizedDescription)")
-        let errorString = NSString(data: data, encoding: NSUTF8StringEncoding)
-        print("Error data: \(errorString)")
+        print("There was an error \(error!.localizedDescription)")
+        if data != nil {
+          let errorString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+          print("Error data: \(errorString)")
+        }
       } else {
-        var jsonError:NSErrorPointer = nil
-        var paymentJSON = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions()) as? NSDictionary
-        if jsonError != nil || paymentJSON == nil {
-          print("There was an error serializing the JSON")
-          print(jsonError)
-        } else {
+        let paymentJSONData = NSData()
+        do {
+          let paymentJSON = try NSJSONSerialization.JSONObjectWithData(paymentJSONData, options:NSJSONReadingOptions())
+          guard (paymentJSON as? NSDictionary != nil) else {
+            print("Error: paymentJSON isn't a Dictionary")
+            return
+          }
           print("Should finish transaction here....")
           var userInfo:[String:String!] = [:]
-          if transaction.payment != nil && transaction.payment.productIdentifier != nil {
-            let productID = transaction.payment.productIdentifier
-            userInfo = ["productID":productID]
-          }
+          let productID = transaction.payment.productIdentifier
+          userInfo = ["productID":productID]
           NSNotificationCenter.defaultCenter().postNotificationName("productPurchased", object: nil, userInfo: userInfo)
           SKPaymentQueue.defaultQueue().finishTransaction(transaction)
         }
+        catch let JSONError as NSError {
+          print("There was an error serializing the payment JSON")
+          print("\(JSONError)")
+        }
       }
     }
-    
-    
   }
   
   func restoreTransaction(transaction:SKPaymentTransaction) {
     print("Restore transaction")
     var userInfo:[String:String] = [:]
-    if transaction.payment != nil && transaction.payment.productIdentifier != nil {
-      let productID = transaction.payment.productIdentifier
-      userInfo = ["productID":productID]
-    }
+    let productID = transaction.payment.productIdentifier
+    userInfo = ["productID":productID]
     NSNotificationCenter.defaultCenter().postNotificationName("productPurchased", object: nil, userInfo: userInfo)
     SKPaymentQueue.defaultQueue().finishTransaction(transaction)
     
@@ -183,8 +184,8 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
   
   func failedTransaction(transaction:SKPaymentTransaction) {
     print("Failed transaction")
-    if transaction.error.code != SKErrorPaymentCancelled {
-      print("Transaction error: \(transaction.error.localizedDescription)")
+    if transaction.error?.code != SKErrorPaymentCancelled {
+      print("Transaction error: \(transaction.error!.localizedDescription)")
     }
     SKPaymentQueue.defaultQueue().finishTransaction(transaction)
   }

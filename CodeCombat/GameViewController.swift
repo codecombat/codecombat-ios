@@ -38,7 +38,7 @@ class GameViewController: UIViewController, UIActionSheetDelegate {
   }
   
   func listenToNotifications() {
-    delay(1, closure: {
+    delay(0.1, closure: {
       self.webManager.subscribe(self, channel: "router:navigated", selector: Selector("onNavigated:"))
       self.webManager.subscribe(self, channel: "level:loading-view-unveiled", selector: Selector("onLevelStarted:"))
       self.webManager.subscribe(self, channel: "auth:logging-out", selector: Selector("onLogout"))

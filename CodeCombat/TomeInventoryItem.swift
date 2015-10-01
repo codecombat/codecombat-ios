@@ -13,7 +13,6 @@ class TomeInventoryItem {
     return itemData["name"].toString(false)
   }
   var imageURL: NSURL {
-    var b = itemData["imageURL"]
     var url: String = itemData["imageURL"].toString(false)
     if url.isEmpty {
       url = "/file/db/thang.type/53e4108204c00d4607a89f78/programmicon.png"
@@ -27,16 +26,16 @@ class TomeInventoryItem {
   
   convenience init(itemData: JSON, propertiesData: JSON) {
     self.init(itemData: itemData)
-    for (propIndex, prop) in itemData["programmableProperties"] {
-      for (anotherPropIndex, anotherProp) in propertiesData {
+    for (_, prop) in itemData["programmableProperties"] {
+      for (_, anotherProp) in propertiesData {
         if anotherProp["name"].asString! == prop.asString! {
           properties.append(TomeInventoryItemProperty(propertyData: anotherProp, primary: true))
           break
         }
       }
     }
-    for (propIndex, prop) in itemData["moreProgrammableProperties"] {
-      for (anotherPropIndex, anotherProp) in propertiesData {
+    for (_, prop) in itemData["moreProgrammableProperties"] {
+      for (_, anotherProp) in propertiesData {
         if anotherProp["name"].asString! == prop.asString! {
           properties.append(TomeInventoryItemProperty(propertyData: anotherProp, primary: false))
           break

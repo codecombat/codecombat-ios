@@ -14,8 +14,8 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   var urlSesssionConfiguration: NSURLSessionConfiguration?
   //let rootURL = NSURLComponents(string: "http://localhost:3000/")?.URL;
   //let rootURL = NSURLComponents(string: "http://10.0.1.2:3000/")?.URL;
-  let rootURL = NSURLComponents(string: "http://codecombat.com:80/")?.URL;
-  let allowedRoutePrefixes:[String] = ["http://localhost:3000","http://10.0.1.2:3000","http://codecombat.com/play"]
+  let rootURL = NSURLComponents(string: "https://codecombat.com:443/")?.URL;
+  let allowedRoutePrefixes:[String] = ["http://localhost:3000","http://10.0.1.2:3000","http://codecombat.com","https://localhost:3000","https://10.0.1.2:3000","https://codecombat.com"]
   var operationQueue: NSOperationQueue?
   var webView: WKWebView?  // Assign this if we create one, so that we can evaluate JS in its context.
   var lastJSEvaluated: String?
@@ -92,7 +92,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     if credentialsDictionary == nil {
       return []
     }
-    return credentialsDictionary!.values
+    return Array(credentialsDictionary!.values)
   }
   
   func loginToGetAuthCookie() {
@@ -254,14 +254,14 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     evaluateJavaScript("Backbone.Mediator.publish('\(channel)', \(serializedEvent))", completionHandler: onJSEvaluated)
   }
   
-  func evaluateJavaScript(js: String, completionHandler: ((AnyObject!, NSError!) -> Void)!) {
-    var handler = completionHandler == nil ? onJSEvaluated : completionHandler  // There's got to be a more Swifty way of doing this.
+  func evaluateJavaScript(js: String, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
+    let handler = completionHandler == nil ? onJSEvaluated : completionHandler!  // There's got to be a more Swifty way of doing this.
     lastJSEvaluated = js
     //println(" evaluating JS: \(js)")
     webView?.evaluateJavaScript(js, completionHandler: handler)  // This isn't documented, so is it being added or removed or what?
   }
   
-  func onJSEvaluated(response: AnyObject!, error: NSError?) {
+  func onJSEvaluated(response: AnyObject?, error: NSError?) {
     if error != nil {
       print("There was an error evaluating JS: \(error), response: \(response)")
       print("JS was \(lastJSEvaluated!)")
@@ -284,14 +284,12 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     }
   }
 
-  private func serializeData(data:NSDictionary?) -> String {
-    var serialized:NSData?
-    var error:NSError?
+  private func serializeData(data: NSDictionary?) -> String {
+    var serialized: NSData?
     if data != nil {
       do {
         serialized = try NSJSONSerialization.dataWithJSONObject(data!, options: NSJSONWritingOptions(rawValue: 0))
-      } catch var error1 as NSError {
-        error = error1
+      } catch {
         serialized = nil
       }
     } else {
@@ -328,7 +326,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     contentController.addScriptMessageHandler(self, name: "consoleLogHandler")
   }
   
-  func onWebKitCheckupAnswered(response: AnyObject!, error: NSError?) {
+  func onWebKitCheckupAnswered(response: AnyObject?, error: NSError?) {
     if response != nil {
       webKitCheckupsMissed = -1
       //println("WebView just checked in with response \(response), error \(error?)")

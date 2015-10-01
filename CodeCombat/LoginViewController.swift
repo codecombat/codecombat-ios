@@ -29,7 +29,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     passwordTextField.delegate = self
     //hide button if user created pseudoanonymous user
     if WebManager.sharedInstance.currentCredentialIsPseudoanonymous() {
-      if WebManager.sharedInstance.getCredentials().first!.user! != UIDevice.currentDevice().identifierForVendor.UUIDString {
+      if WebManager.sharedInstance.getCredentials().first!.user! != UIDevice.currentDevice().identifierForVendor?.UUIDString {
         WebManager.sharedInstance.clearCredentials()
         NSUserDefaults.standardUserDefaults().setBool(false, forKey: "pseudoanonymousUserCreated")
         NSUserDefaults.standardUserDefaults().synchronize()
@@ -43,7 +43,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   
   func textFieldShouldReturn(textField: UITextField) -> Bool {
     if textField == usernameTextField {
-      if passwordTextField.text != nil && passwordTextField.text.characters.count > 0 {
+      if passwordTextField.text != nil && passwordTextField.text!.characters.count > 0 {
         login(loginButton)
       } else {
         usernameTextField.resignFirstResponder()
@@ -89,7 +89,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     if !credentialsValues.isEmpty {
       let credential = credentialsValues.first! as NSURLCredential
       if WebManager.sharedInstance.currentCredentialIsPseudoanonymous() {
-        if credential.user! != UIDevice.currentDevice().identifierForVendor.UUIDString {
+        if credential.user! != UIDevice.currentDevice().identifierForVendor?.UUIDString {
           WebManager.sharedInstance.clearCredentials()
           let defaults = NSUserDefaults.standardUserDefaults()
           defaults.setBool(false, forKey: "pseudoanonymousUserCreated")
@@ -109,8 +109,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   
   @IBAction func login(button:UIButton) {
     loginActivityIndicatorView.startAnimating()
-    let username = usernameTextField.text
-    let password = passwordTextField.text
+    let username = usernameTextField.text!
+    let password = passwordTextField.text!
     let validationResults = validateLoginCredentials(username: username, password: password)
     if validationResults.isValid {
       performLoginRequest(username: username, password: password)
@@ -129,7 +129,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   }
   
   @IBAction func signupLater(button:UIButton) {
-    let deviceIdentifier = UIDevice.currentDevice().identifierForVendor.UUIDString
+    let deviceIdentifier = UIDevice.currentDevice().identifierForVendor?.UUIDString
     let randomPassword = generateRandomPassword()
     User.sharedInstance.email = deviceIdentifier
     User.sharedInstance.password = randomPassword
@@ -168,10 +168,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
       "username": username,
       "password": password
     ]
-    var postData = try? NSJSONSerialization.dataWithJSONObject(LoginCredentials, options: NSJSONWritingOptions(rawValue: 0))
+    let postData = try? NSJSONSerialization.dataWithJSONObject(LoginCredentials, options: NSJSONWritingOptions(rawValue: 0))
     LoginRequest.HTTPBody = postData
     let OperationQueue:NSOperationQueue = NSOperationQueue()
-    print("Going to send post data \(postData) for \(LoginCredentials)")
+    //print("Going to send post data \(postData) for \(LoginCredentials)")
     
     NSURLConnection.sendAsynchronousRequest(LoginRequest, queue: OperationQueue, completionHandler: { [weak self] response, data, requestError -> Void in
       if (requestError != nil) {
@@ -181,36 +181,29 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
           errorMessage = NSLocalizedString("There was a request error: \(requestError).", comment:"")
         }
         else {
-          var jsonError:NSError?
-          var errorObject:AnyObject = try! NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers)
-          if jsonError != nil {
-            errorMessage = NSLocalizedString("There was an unknown error logging in.", comment:"")
+          let errorObject:AnyObject = try! NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers)
+          let ErrorDictionaries = errorObject as? [[String:String]]
+          if ErrorDictionaries![0]["property"] == "password" {
+            errorMessage = NSLocalizedString("The password for your account is incorrect.", comment:"")
+          } else if ErrorDictionaries![0]["property"] == "email" {
+            errorMessage = NSLocalizedString("We couldn't find an account for that email.", comment:"")
           } else {
-            let ErrorDictionaries = errorObject as? [[String:String]]
-            if ErrorDictionaries![0]["property"] == "password" {
-              errorMessage = NSLocalizedString("The password for your account is incorrect.", comment:"")
-            } else if ErrorDictionaries![0]["property"] == "email" {
-              errorMessage = NSLocalizedString("We couldn't find an account for that email.", comment:"")
-            } else {
-              errorMessage = NSLocalizedString("Your credentials are incorrect.", comment:"")
-            }
+            errorMessage = NSLocalizedString("Your credentials are incorrect.", comment:"")
           }
         }
         dispatch_async(dispatch_get_main_queue(), {
           self!.handleLoginFailure(errorMessage)
         })
       } else {
-        var jsonError:NSError?
-        var userJSON = (try! NSJSONSerialization.JSONObjectWithData(data,
-          options: NSJSONReadingOptions.MutableContainers)) as! NSDictionary
-        
-        if jsonError != nil {
-          print("JSON serialization error: \(jsonError!)")
-          let ErrorString = NSString(data: data, encoding: NSUTF8StringEncoding)
-          print("Got data:\(ErrorString)")
-        } else {
-          User.sharedInstance.name = userJSON["name"] as? String
-          User.sharedInstance.email = userJSON["email"] as? String
+        do {
+          let userJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers)
+          guard (userJSON as? NSDictionary != nil) else {
+            print("Error: userJSON isn't a Dictionary")
+            return
+          }
+          print("JSON is: \(userJSON)")
+          User.sharedInstance.name = (userJSON as! NSDictionary).objectForKey("name") as? String
+          User.sharedInstance.email = (userJSON as! NSDictionary).objectForKey("email") as? String
           User.sharedInstance.password = password
           WebManager.sharedInstance.authCookieIsFresh = true
           dispatch_async(dispatch_get_main_queue(), {
@@ -219,8 +212,12 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             self!.segueToMainMenu()
           })
         }
+        catch let JSONError as NSError {
+          print("There was an error serializing the user JSON")
+          print("\(JSONError)")
+        }
       }
-    })
+      })
   }
   
   func segueToMainMenu() {
@@ -242,17 +239,17 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
       message: errorMessage, delegate: nil, cancelButtonTitle: "OK")
     message.show()
   }
-  private func validateLoginCredentials(username username:String,
-    password:String) -> (isValid:Bool, errorMessage:String) {
-      if username.isEmpty && password.isEmpty {
-        return (false, NSLocalizedString("Please input a username and password.", comment:""))
-      }
-      else if username.isEmpty {
-        return (false,NSLocalizedString("Please input a username.", comment:""))
-      } else if password.isEmpty {
-        return (false, NSLocalizedString("Please input a password.", comment:""))
-      }
-      return (true, NSLocalizedString("Credentials are valid.", comment:""))
+  
+  private func validateLoginCredentials(username username:String = "", password:String = "") -> (isValid:Bool, errorMessage:String) {
+    if username.isEmpty && password.isEmpty {
+      return (false, NSLocalizedString("Please input a username and password.", comment:""))
+    }
+    else if username.isEmpty {
+      return (false,NSLocalizedString("Please input a username.", comment:""))
+    } else if password.isEmpty {
+      return (false, NSLocalizedString("Please input a password.", comment:""))
+    }
+    return (true, NSLocalizedString("Credentials are valid.", comment:""))
   }
   
   func drawBackgroundGradient() {
