@@ -13,9 +13,8 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   var webViewConfiguration: WKWebViewConfiguration!
   var urlSesssionConfiguration: NSURLSessionConfiguration?
   //let rootURL = NSURLComponents(string: "http://localhost:3000/")?.URL;
-  //let rootURL = NSURLComponents(string: "http://10.0.1.2:3000/")?.URL;
   let rootURL = NSURLComponents(string: "https://codecombat.com:443/")?.URL;
-  let allowedRoutePrefixes:[String] = ["http://localhost:3000","http://10.0.1.2:3000","http://codecombat.com","https://localhost:3000","https://10.0.1.2:3000","https://codecombat.com"]
+  let allowedRoutePrefixes:[String] = ["http://localhost:3000", "https://codecombat.com"]
   var operationQueue: NSOperationQueue?
   var webView: WKWebView?  // Assign this if we create one, so that we can evaluate JS in its context.
   var lastJSEvaluated: String?
@@ -182,13 +181,14 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   }
   
   func logIn(email email: String, password: String) {
-    let loginScript = "function foobarbaz() {if(me.get('anonymous') && !me.get('iosIdentifierForVendor')){ require('/core/auth').loginUser({'email':'\(email)','password':'\(password)'});} } setTimeout(foobarbaz, 4);"
+    // TODO: BUG: we wait a second to make sure that the loginScript is ready to run, but that's a mad hack, and meanwhile the user is looking at the page refresh momentarily after the screen loads.
+    let loginScript = "function foobarbaz() {if(me.get('anonymous') && !me.get('iosIdentifierForVendor')){ require('core/auth').loginUser({'email':'\(email)','password':'\(password)'});} } setTimeout(foobarbaz, 1000);"
     let userScript = WKUserScript(source: loginScript, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
     webViewConfiguration!.userContentController.addUserScript(userScript)
     let requestURL = NSURL(string: "/play", relativeToURL: rootURL)
     let request = NSMutableURLRequest(URL: requestURL!)
     webView!.loadRequest(request)
-    //println("going to log in to \(requestURL) when web view loads! \(loginScript)")
+    //print("going to log in to \(requestURL) when web view loads! \(loginScript)")
   }
   
   //requires that User.email and User.password are set
