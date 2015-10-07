@@ -554,7 +554,7 @@ class EditorTextView: UITextView, NSLayoutManagerDelegate {
   //Draws a faint right border line alongside the line numbers–actually a few pixels past them
   private func drawLineNumberBackground() {
     let context = UIGraphicsGetCurrentContext()
-    let LineNumberBackgroundColor = ColorManager.sharedInstance.gutterBorder
+    let LineNumberBackgroundColor = Color.gutterBorder
     CGContextSetFillColorWithColor(context, LineNumberBackgroundColor.CGColor)
     let LineNumberBackgroundRect = CGRect(
       x: bounds.origin.x + gutterWidth,

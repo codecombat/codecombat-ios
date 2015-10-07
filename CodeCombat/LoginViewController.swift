@@ -253,8 +253,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
   }
   
   func drawBackgroundGradient() {
-    let colorManager:ColorManager = ColorManager.sharedInstance
-    let gradientColors: Array <AnyObject> = [colorManager.grassGreen.CGColor, colorManager.darkBrown.CGColor] //should auto-bridge
+    let gradientColors: Array <AnyObject> = [Color.grassGreen.CGColor, Color.darkBrown.CGColor]
     //conver this to a more sustainable solution
     let gradientStops: [Float] = [0.5703125,0.95]
     let gradientLayer:CAGradientLayer = CAGradientLayer()
