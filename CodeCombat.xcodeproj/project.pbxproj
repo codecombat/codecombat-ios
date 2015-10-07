@@ -48,7 +48,7 @@
 		287AE0D51992927300EEE4F0 /* SpriteDialogue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0C61992927300EEE4F0 /* SpriteDialogue.swift */; };
 		287AE0D91992927300EEE4F0 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0CA1992927300EEE4F0 /* User.swift */; };
 		287AE0DB1992927300EEE4F0 /* WebManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0CC1992927300EEE4F0 /* WebManager.swift */; };
-		287AE0DC1992927300EEE4F0 /* ColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0CD1992927300EEE4F0 /* ColorManager.swift */; };
+		287AE0DC1992927300EEE4F0 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0CD1992927300EEE4F0 /* Color.swift */; };
 		287AE0DE199292CE00EEE4F0 /* IAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0DD199292CE00EEE4F0 /* IAPHelper.swift */; };
 		287AE0E0199292E400EEE4F0 /* InventoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0DF199292E400EEE4F0 /* InventoryCell.swift */; };
 		287AE0FA199293B600EEE4F0 /* fmemopen.c in Sources */ = {isa = PBXBuildFile; fileRef = 287AE0F1199293B600EEE4F0 /* fmemopen.c */; };
@@ -208,7 +208,7 @@
 		287AE0C61992927300EEE4F0 /* SpriteDialogue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpriteDialogue.swift; sourceTree = "<group>"; };
 		287AE0CA1992927300EEE4F0 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		287AE0CC1992927300EEE4F0 /* WebManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebManager.swift; sourceTree = "<group>"; };
-		287AE0CD1992927300EEE4F0 /* ColorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorManager.swift; sourceTree = "<group>"; };
+		287AE0CD1992927300EEE4F0 /* Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		287AE0DD199292CE00EEE4F0 /* IAPHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPHelper.swift; sourceTree = "<group>"; };
 		287AE0DF199292E400EEE4F0 /* InventoryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InventoryCell.swift; sourceTree = "<group>"; };
 		287AE0F0199293B600EEE4F0 /* CodeCombat-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CodeCombat-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -343,9 +343,9 @@
 				C824BF0019FC12180097AE14 /* Frameworks */,
 				287AE08C199290DF00EEE4F0 /* Products */,
 			);
-			indentWidth = 2;
+			indentWidth = 4;
 			sourceTree = "<group>";
-			tabWidth = 2;
+			tabWidth = 4;
 		};
 		287AE08C199290DF00EEE4F0 /* Products */ = {
 			isa = PBXGroup;
@@ -407,6 +407,7 @@
 			isa = PBXGroup;
 			children = (
 				287AE0B11992926400EEE4F0 /* AppDelegate.swift */,
+				287AE0CD1992927300EEE4F0 /* Color.swift */,
 			);
 			name = Application;
 			sourceTree = "<group>";
@@ -419,7 +420,6 @@
 				287AE0C61992927300EEE4F0 /* SpriteDialogue.swift */,
 				287AE0CA1992927300EEE4F0 /* User.swift */,
 				287AE0CC1992927300EEE4F0 /* WebManager.swift */,
-				287AE0CD1992927300EEE4F0 /* ColorManager.swift */,
 				28C650C41A03E15F006220EA /* LevelSettingsManager.swift */,
 			);
 			name = Models;
@@ -790,7 +790,7 @@
 				287AE0DE199292CE00EEE4F0 /* IAPHelper.swift in Sources */,
 				285A5433199C34BD00932DDE /* regversion.c in Sources */,
 				28F3125519CDD1B50089C83D /* LanguageSelectionViewController.swift in Sources */,
-				287AE0DC1992927300EEE4F0 /* ColorManager.swift in Sources */,
+				287AE0DC1992927300EEE4F0 /* Color.swift in Sources */,
 				287993861A007281005F6369 /* ArgumentStringPickerPopoverViewController.swift in Sources */,
 				287AE0D51992927300EEE4F0 /* SpriteDialogue.swift in Sources */,
 				287AE0CF1992927300EEE4F0 /* LoginViewController.swift in Sources */,
