@@ -1,101 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9046" systemVersion="14F27" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="akZ-k3-TF7">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9046" systemVersion="15B22c" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9035"/>
     </dependencies>
     <scenes>
-        <!--Login View Controller-->
-        <scene sceneID="47c-jN-OdT">
-            <objects>
-                <viewController id="akZ-k3-TF7" customClass="LoginViewController" customModule="CodeCombat" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="8al-NB-mF3"/>
-                        <viewControllerLayoutGuide type="bottom" id="iHD-XD-Wjd"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="vVG-9u-rMz">
-                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="loginArtBackground" translatesAutoresizingMaskIntoConstraints="NO" id="Hmy-oh-tGR">
-                                <rect key="frame" x="0.0" y="0.0" width="1024" height="437"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="loginModalBackground" translatesAutoresizingMaskIntoConstraints="NO" id="JpX-fa-MYg">
-                                <rect key="frame" x="249" y="70" width="527" height="627"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="loginInfoBackground" translatesAutoresizingMaskIntoConstraints="NO" id="pui-CK-cNW">
-                                <rect key="frame" x="321" y="206" width="382" height="128"/>
-                            </imageView>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="BUZ-kd-XcH">
-                                <rect key="frame" x="343" y="271" width="360" height="37"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" secureTextEntry="YES"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d32-rG-bSD">
-                                <rect key="frame" x="321" y="331" width="382" height="30"/>
-                                <color key="backgroundColor" red="0.31372549020000001" green="0.25098039220000001" blue="0.1960784314" alpha="1" colorSpace="calibratedRGB"/>
-                                <state key="normal" title="Login">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="4"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                                <connections>
-                                    <action selector="login:" destination="akZ-k3-TF7" eventType="touchUpInside" id="eYC-O0-fBc"/>
-                                </connections>
-                            </button>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="7Qn-3w-c9w">
-                                <rect key="frame" x="672" y="336" width="20" height="20"/>
-                            </activityIndicatorView>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="k9E-0c-SkR">
-                                <rect key="frame" x="343" y="228" width="360" height="43"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HiN-3d-9es">
-                                <rect key="frame" x="426" y="407" width="172" height="30"/>
-                                <state key="normal" title="Sign up for CodeCombat">
-                                    <color key="titleColor" red="0.31372549020000001" green="0.25098039220000001" blue="0.1960784314" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="signup:" destination="akZ-k3-TF7" eventType="touchUpInside" id="8Yv-Mj-73h"/>
-                                </connections>
-                            </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Logo" translatesAutoresizingMaskIntoConstraints="NO" id="Ekg-tE-t9I">
-                                <rect key="frame" x="312" y="96" width="400" height="124"/>
-                            </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gxc-LV-9Hu">
-                                <rect key="frame" x="469" y="445" width="87" height="30"/>
-                                <state key="normal" title="Sign up later">
-                                    <color key="titleColor" red="0.31372549020000001" green="0.25098039220000001" blue="0.1960784314" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="signupLater:" destination="akZ-k3-TF7" eventType="touchUpInside" id="1RK-CW-dxR"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" red="0.31372549019607843" green="0.25098039215686274" blue="0.19607843137254902" alpha="1" colorSpace="calibratedRGB"/>
-                    </view>
-                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
-                    <connections>
-                        <outlet property="backgroundArtImageView" destination="Hmy-oh-tGR" id="509-U3-uaq"/>
-                        <outlet property="loginActivityIndicatorView" destination="7Qn-3w-c9w" id="SVu-X1-AcL"/>
-                        <outlet property="loginButton" destination="d32-rG-bSD" id="4es-OS-hDw"/>
-                        <outlet property="passwordTextField" destination="BUZ-kd-XcH" id="KVA-jm-PfT"/>
-                        <outlet property="signupLaterButton" destination="gxc-LV-9Hu" id="FfA-Xj-oet"/>
-                        <outlet property="usernameTextField" destination="k9E-0c-SkR" id="VHr-zW-NVH"/>
-                        <segue destination="qHW-gw-pyh" kind="modal" identifier="successfulLoginSegue" id="4OP-Gm-0qA"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="lqI-DM-Cd8" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="908.15999999999997" y="42.666666666666671"/>
-        </scene>
         <!--Play View Controller-->
         <scene sceneID="U59-z1-lGZ">
             <objects>
@@ -110,12 +18,15 @@
                         <subviews>
                             <imageView hidden="YES" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" image="play_background" translatesAutoresizingMaskIntoConstraints="NO" id="XTe-fX-TVu">
                                 <rect key="frame" x="0.0" y="109" width="1024" height="659"/>
+                                <animations/>
                             </imageView>
                             <imageView hidden="YES" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" image="play_background_bottom" translatesAutoresizingMaskIntoConstraints="NO" id="o1a-7D-j7k">
                                 <rect key="frame" x="0.0" y="695" width="1011" height="73"/>
+                                <animations/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uGs-wC-Lym">
                                 <rect key="frame" x="885" y="715" width="113" height="45"/>
+                                <animations/>
                                 <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="18"/>
                                 <state key="normal" title="SUBMIT" backgroundImage="large_green_active">
                                     <color key="titleColor" red="1" green="0.74104259174095843" blue="0.48882501297454573" alpha="1" colorSpace="calibratedRGB"/>
@@ -129,6 +40,7 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SkL-FP-pol">
                                 <rect key="frame" x="774" y="715" width="113" height="45"/>
+                                <animations/>
                                 <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="18"/>
                                 <state key="normal" title="RUN" backgroundImage="large_button_inactive">
                                     <color key="titleColor" red="0.74142278439153442" green="0.5512918464294071" blue="0.35825157513350053" alpha="1" colorSpace="calibratedRGB"/>
@@ -145,6 +57,7 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yWl-nf-cCN">
                                 <rect key="frame" x="550" y="728" width="98" height="34"/>
+                                <animations/>
                                 <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="14"/>
                                 <inset key="imageEdgeInsets" minX="-12" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <state key="normal" title="UNDO" image="undo_icon" backgroundImage="small_button_active">
@@ -162,6 +75,7 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZvF-zO-AH3">
                                 <rect key="frame" x="650" y="728" width="98" height="34"/>
+                                <animations/>
                                 <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="14"/>
                                 <inset key="imageEdgeInsets" minX="-12" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <state key="normal" title="REDO" image="redo_icon" backgroundImage="small_button_active">
@@ -179,6 +93,7 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lwx-zM-L4H">
                                 <rect key="frame" x="350" y="728" width="100" height="34"/>
+                                <animations/>
                                 <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="14"/>
                                 <state key="normal" title="RESET CODE" backgroundImage="small_button_active">
                                     <color key="titleColor" red="0.74142278439999998" green="0.55129184639999995" blue="0.3582515751" alpha="1" colorSpace="calibratedRGB"/>
@@ -195,6 +110,7 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OTR-hY-aNL">
                                 <rect key="frame" x="450" y="728" width="100" height="34"/>
+                                <animations/>
                                 <fontDescription key="fontDescription" name="Futura-CondensedExtraBold" family="Futura" pointSize="14"/>
                                 <state key="normal" title="KEYBOARD" backgroundImage="small_button_active">
                                     <color key="titleColor" red="0.74142278439999998" green="0.55129184639999995" blue="0.3582515751" alpha="1" colorSpace="calibratedRGB"/>
@@ -210,6 +126,7 @@
                                 </connections>
                             </button>
                         </subviews>
+                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -227,37 +144,13 @@
             </objects>
             <point key="canvasLocation" x="3372" y="42"/>
         </scene>
-        <!--Game View Controller-->
-        <scene sceneID="pvA-hl-ONN">
-            <objects>
-                <viewController id="qHW-gw-pyh" customClass="GameViewController" customModule="CodeCombat" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="hxg-j4-x7G"/>
-                        <viewControllerLayoutGuide type="bottom" id="naZ-57-dqW"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="hP6-YF-pgF">
-                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="LGw-Ok-FoP" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2144" y="42"/>
-        </scene>
     </scenes>
     <resources>
-        <image name="Logo" width="600" height="186"/>
         <image name="large_button_inactive" width="113" height="49"/>
         <image name="large_button_pressed" width="113" height="49"/>
         <image name="large_green_active" width="113" height="49"/>
         <image name="large_green_inactive" width="113" height="49"/>
         <image name="large_green_pressed" width="113" height="49"/>
-        <image name="loginArtBackground" width="1024" height="435"/>
-        <image name="loginInfoBackground" width="411" height="88"/>
-        <image name="loginModalBackground" width="533" height="639"/>
         <image name="play_background" width="1024" height="659"/>
         <image name="play_background_bottom" width="1011" height="73"/>
         <image name="redo_icon" width="19" height="15"/>
