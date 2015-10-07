@@ -365,9 +365,9 @@
 		287AE082199290DF00EEE4F0 = {
 			isa = PBXGroup;
 			children = (
-				C824BF0019FC12180097AE14 /* Frameworks */,
 				287AE08D199290DF00EEE4F0 /* CodeCombat */,
 				287AE0A0199290DF00EEE4F0 /* CodeCombatTests */,
+				C824BF0019FC12180097AE14 /* Frameworks */,
 				287AE08C199290DF00EEE4F0 /* Products */,
 			);
 			indentWidth = 2;
