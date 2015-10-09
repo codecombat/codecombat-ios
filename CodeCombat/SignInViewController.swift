@@ -75,7 +75,7 @@ class SignInViewController: UIViewController {
 	}
 
 	@objc private func signUp(sender: AnyObject?) {
-//		let requestURL = NSURL(string: "/play?signup=true", relativeToURL: WebManager.sharedInstance.rootURL)
+//		let requestURL = NSURL(string: "/play?signup=true", relativeToURL: rootURL)
 //		let request = NSMutableURLRequest(URL: requestURL!)
 //
 //		WebManager.sharedInstance.webView!.loadRequest(request)

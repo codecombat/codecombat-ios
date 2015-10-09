@@ -133,12 +133,12 @@ class IAPHelper: NSObject, SKProductsRequestDelegate, SKPaymentTransactionObserv
       print("Error serializing gem request!")
       return
     }
-    let request = NSMutableURLRequest(URL: NSURL(string: "/db/payment", relativeToURL: WebManager.sharedInstance.rootURL)!)
+    let request = NSMutableURLRequest(URL: NSURL(string: "/db/payment", relativeToURL: rootURL)!)
     request.HTTPMethod = "POST"
     request.HTTPBody = postData!
     print("Sending request \(postData)")
     print(receiptDict)
-    let cookies = NSHTTPCookieStorage.sharedHTTPCookieStorage().cookiesForURL(WebManager.sharedInstance.rootURL!)
+    let cookies = NSHTTPCookieStorage.sharedHTTPCookieStorage().cookiesForURL(rootURL)
     let headers = NSHTTPCookie.requestHeaderFieldsWithCookies(cookies!)
     request.allHTTPHeaderFields = headers
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")

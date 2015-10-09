@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		21162BEA1BC5996B00910240 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21162BE91BC5996B00910240 /* RootViewController.swift */; };
+		2164990C1BC73D73003E9C4A /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2164990B1BC73D73003E9C4A /* APIClient.swift */; };
 		216DCBA41BC5BEA20054FBFF /* SignInBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216DCBA31BC5BEA20054FBFF /* SignInBackgroundView.swift */; };
 		21BC9E531BC5CF8700467479 /* SignInModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BC9E521BC5CF8700467479 /* SignInModalView.swift */; };
 		2809AF5B19C4800B0054477B /* python.tmLanguageJSON in Resources */ = {isa = PBXBuildFile; fileRef = 2809AF5A19C4800B0054477B /* python.tmLanguageJSON */; };
@@ -160,6 +161,7 @@
 
 /* Begin PBXFileReference section */
 		21162BE91BC5996B00910240 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
+		2164990B1BC73D73003E9C4A /* APIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		216DCBA31BC5BEA20054FBFF /* SignInBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInBackgroundView.swift; sourceTree = "<group>"; };
 		21BC9E521BC5CF8700467479 /* SignInModalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInModalView.swift; sourceTree = "<group>"; };
 		2809AF5A19C4800B0054477B /* python.tmLanguageJSON */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = python.tmLanguageJSON; sourceTree = "<group>"; };
@@ -615,6 +617,7 @@
 		C827D1C719943E8B00B5724C /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				2164990B1BC73D73003E9C4A /* APIClient.swift */,
 				C827D1C819943EA500B5724C /* Utilities.swift */,
 			);
 			name = Utilities;
@@ -797,6 +800,7 @@
 				287AE0DE199292CE00EEE4F0 /* IAPHelper.swift in Sources */,
 				285A5433199C34BD00932DDE /* regversion.c in Sources */,
 				287AE0DC1992927300EEE4F0 /* Color.swift in Sources */,
+				2164990C1BC73D73003E9C4A /* APIClient.swift in Sources */,
 				287993861A007281005F6369 /* ArgumentStringPickerPopoverViewController.swift in Sources */,
 				287AE0D51992927300EEE4F0 /* SpriteDialogue.swift in Sources */,
 				287AE0CF1992927300EEE4F0 /* SignInViewController.swift in Sources */,

@@ -17,7 +17,7 @@ class TomeInventoryItem {
     if url.isEmpty {
       url = "/file/db/thang.type/53e4108204c00d4607a89f78/programmicon.png"
     }
-    return NSURL(string: url, relativeToURL: WebManager.sharedInstance.rootURL!)!
+    return NSURL(string: url, relativeToURL: rootURL)!
   }
   
   init(itemData: JSON) {

@@ -34,7 +34,7 @@ class TomeInventoryItemPropertyDocumentationView: UIView {
   func buildSubviews() {
     let docWebView = WKWebView(frame: frame)
     let wrappedHTML = "<!DOCTYPE html>\n<html><head><meta name='viewport' content='width=320, height=480, initial-scale=1'><link rel='stylesheet' href='/stylesheets/app.css'></head><body><div class='tome-inventory-property-documentation'>\(property.docHTML)</div></body></html>"
-    docWebView.loadHTMLString(wrappedHTML, baseURL: WebManager.sharedInstance.rootURL)
+    docWebView.loadHTMLString(wrappedHTML, baseURL: rootURL)
     addSubview(docWebView)
   }
 }

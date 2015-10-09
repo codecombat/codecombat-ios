@@ -12,8 +12,6 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   
   var webViewConfiguration: WKWebViewConfiguration!
   var urlSesssionConfiguration: NSURLSessionConfiguration?
-  //let rootURL = NSURLComponents(string: "http://localhost:3000/")?.URL;
-  let rootURL = NSURLComponents(string: "https://codecombat.com:443/")?.URL;
   let allowedRoutePrefixes:[String] = ["http://localhost:3000", "https://codecombat.com"]
   var operationQueue: NSOperationQueue?
   var webView: WKWebView?  // Assign this if we create one, so that we can evaluate JS in its context.
@@ -64,7 +62,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   private func createLoginProtectionSpace() {
     // http://stackoverflow.com/a/17997943/540620
     let url = rootURL
-    loginProtectionSpace = NSURLProtectionSpace(host: url!.host!, port: url!.port!.integerValue, `protocol`: url!.scheme, realm: nil, authenticationMethod: nil)  //.HTTPDigest)
+    loginProtectionSpace = NSURLProtectionSpace(host: url.host!, port: url.port!.integerValue, `protocol`: url.scheme, realm: nil, authenticationMethod: nil)
   }
   
   func saveUser() {

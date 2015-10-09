@@ -6,7 +6,22 @@ class User {
 	var name: String?
 	var email: String?
 	var password: String?
-	var rawData: NSDictionary?
+	var rawData: [String: AnyObject]?
+
+	init() {}
+
+	init?(dictionary: [String: AnyObject], password: String) {
+		guard let name = dictionary["name"] as? String,
+			email = dictionary["email"] as? String
+		else {
+			return nil
+		}
+
+		self.name = name
+		self.email = email
+		self.password = password
+		rawData = dictionary
+	}
 
 	class var sharedInstance: User {
 		return sharedUserInstance
