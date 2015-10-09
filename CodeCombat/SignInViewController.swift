@@ -14,7 +14,7 @@ class SignInViewController: UIViewController {
 
 	private let modal = SignInModalView()
 	private var modalTopConstraint: NSLayoutConstraint!
-
+	
 
 	// MARK: - Initializers
 
@@ -57,17 +57,21 @@ class SignInViewController: UIViewController {
 	// MARK: - Actions
 
 	@objc private func signIn(sender: AnyObject?) {
+		guard let username = modal.usernameTextField.text,
+			password = modal.passwordTextField.text
+		where !username.isEmpty && !password.isEmpty
+		else {
+			showError("Please input a username and password.")
+			return
+		}
+
+		modal.usernameTextField.enabled = false
+		modal.passwordTextField.enabled = false
+		modal.signInButton.enabled = false
+		modal.indicator.startAnimating()
+
 //		loginActivityIndicatorView.startAnimating()
-//		let username = usernameTextField.text!
-//		let password = passwordTextField.text!
-//		let validationResults = validateLoginCredentials(username: username, password: password)
-//
-//		if validationResults.isValid {
-//			performLoginRequest(username: username, password: password)
-//		} else {
-//			loginActivityIndicatorView.stopAnimating()
-//			showInvalidCredentialsAlert(validationResults.errorMessage)
-//		}
+//		performLoginRequest(username: username, password: password)
 	}
 
 	@objc private func signUp(sender: AnyObject?) {
@@ -111,6 +115,12 @@ class SignInViewController: UIViewController {
 		modal.layoutIfNeeded()
 		UIView.commitAnimations()
 	}
+
+	private func showError(message: String? = nil) {
+		let alert = UIAlertController(title: "Invalid Credentials", message: message, preferredStyle: .Alert)
+		alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
+		presentViewController(alert, animated: true, completion: nil)
+	}
 }
 
 
@@ -125,24 +135,12 @@ extension SignInViewController: UITextFieldDelegate {
 		return false
 	}
 }
-
-//  @IBOutlet weak var backgroundArtImageView: UIImageView!
-//  @IBOutlet weak var loginButton: UIButton!
-//  @IBOutlet weak var passwordTextField: UITextField!
-//  @IBOutlet weak var signupLaterButton: UIButton!
-//  @IBOutlet weak var usernameTextField: UITextField!
 //  @IBOutlet weak var loginActivityIndicatorView: UIActivityIndicatorView!
-//  var memoryAlertController:UIAlertController!
-//  
+//
 //  override func viewDidLoad() {
 //    super.viewDidLoad()
-//    drawBackgroundGradient()
-//    WebManager.sharedInstance.createLoginProtectionSpace()
 //    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onWebsiteNotReachable"), name: "websiteNotReachable", object: nil)
-//    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onWebsiteReachable"), name: "websiteReachable", object: nil)
 //    WebManager.sharedInstance.checkReachibility()
-//    usernameTextField.delegate = self
-//    passwordTextField.delegate = self
 //    //hide button if user created pseudoanonymous user
 //    if WebManager.sharedInstance.currentCredentialIsPseudoanonymous() {
 //      if WebManager.sharedInstance.getCredentials().first!.user! != UIDevice.currentDevice().identifierForVendor?.UUIDString {
@@ -156,11 +154,6 @@ extension SignInViewController: UITextFieldDelegate {
 //      signupLaterButton.hidden = true
 //    }
 //  }
-//
-//  override func viewDidAppear(animated: Bool) {
-//    super.viewDidAppear(animated)
-//    rememberUser()
-//  }
 //  
 //  func onWebsiteNotReachable() {
 //    print("onWebsiteNotReachable in login view controller")
@@ -173,36 +166,6 @@ extension SignInViewController: UITextFieldDelegate {
 //        self.memoryAlertController = nil
 //      }))
 //      presentViewController(memoryAlertController, animated: true, completion: nil)
-//    }
-//  }
-//  
-//  func onWebsiteReachable() {
-//    if memoryAlertController != nil {
-//      memoryAlertController.dismissViewControllerAnimated(true, completion: {
-//        self.memoryAlertController = nil
-//      })
-//    }
-//  }
-//  
-//  func rememberUser() {
-//    let credentialsValues = WebManager.sharedInstance.getCredentials()
-//    if !credentialsValues.isEmpty {
-//      let credential = credentialsValues.first! as NSURLCredential
-//      if WebManager.sharedInstance.currentCredentialIsPseudoanonymous() {
-//        if credential.user! != UIDevice.currentDevice().identifierForVendor?.UUIDString {
-//          WebManager.sharedInstance.clearCredentials()
-//          let defaults = NSUserDefaults.standardUserDefaults()
-//          defaults.setBool(false, forKey: "pseudoanonymousUserCreated")
-//          defaults.synchronize()
-//          return
-//        }
-//      }
-//      print("User \(credential.user) already connected with saved password; logging in.")
-//      //User.sharedInstance.name = userJSON["name"] as? String
-//      User.sharedInstance.email = credential.user!
-//      User.sharedInstance.password = credential.password!
-//      segueToMainMenu()
-//      WebManager.sharedInstance.loginToGetAuthCookie()
 //    }
 //  }
 //  
@@ -271,36 +234,4 @@ extension SignInViewController: UITextFieldDelegate {
 //        }
 //      }
 //      })
-//  }
-//  
-//  func segueToMainMenu() {
-//    WebManager.sharedInstance.logIn(email: User.sharedInstance.email!, password: User.sharedInstance.password!)
-//    self.performSegueWithIdentifier("successfulLoginSegue", sender:self)
-//  }
-//  
-//  func handleLoginFailure(errorMessage:String) {
-//    self.loginActivityIndicatorView.stopAnimating()
-//    let message:UIAlertView = UIAlertView(
-//      title: NSLocalizedString("Login failure", comment:""),
-//      message: errorMessage, delegate: nil, cancelButtonTitle: "OK")
-//    message.show()
-//  }
-//  
-//  private func showInvalidCredentialsAlert(errorMessage:String) {
-//    let message:UIAlertView = UIAlertView(
-//      title: NSLocalizedString("Invalid credentials", comment:""),
-//      message: errorMessage, delegate: nil, cancelButtonTitle: "OK")
-//    message.show()
-//  }
-//  
-//  private func validateLoginCredentials(username username:String = "", password:String = "") -> (isValid:Bool, errorMessage:String) {
-//    if username.isEmpty && password.isEmpty {
-//      return (false, NSLocalizedString("Please input a username and password.", comment:""))
-//    }
-//    else if username.isEmpty {
-//      return (false,NSLocalizedString("Please input a username.", comment:""))
-//    } else if password.isEmpty {
-//      return (false, NSLocalizedString("Please input a password.", comment:""))
-//    }
-//    return (true, NSLocalizedString("Credentials are valid.", comment:""))
 //  }

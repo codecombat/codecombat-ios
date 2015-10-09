@@ -42,6 +42,12 @@ class SignInModalView: UIImageView {
 		return button
 	}()
 
+	let indicator: UIActivityIndicatorView = {
+		let view = UIActivityIndicatorView(activityIndicatorStyle: .White)
+		view.translatesAutoresizingMaskIntoConstraints = false
+		return view
+	}()
+
 
 	// MARK: - Initializers
 
@@ -64,6 +70,7 @@ class SignInModalView: UIImageView {
 		fields.addSubview(passwordTextField)
 
 		addSubview(signInButton)
+		signInButton.addSubview(indicator)
 
 		NSLayoutConstraint.activateConstraints([
 			logo.centerXAnchor.constraintEqualToAnchor(centerXAnchor),
@@ -87,8 +94,10 @@ class SignInModalView: UIImageView {
 			signInButton.widthAnchor.constraintEqualToAnchor(fields.widthAnchor),
 			signInButton.centerXAnchor.constraintEqualToAnchor(centerXAnchor),
 			NSLayoutConstraint(item: signInButton, attribute: .Top, relatedBy: .Equal, toItem: fields, attribute: .Bottom, multiplier: 1, constant: 16),
-			NSLayoutConstraint(item: signInButton, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 44)
+			NSLayoutConstraint(item: signInButton, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 44),
 
+			indicator.centerYAnchor.constraintEqualToAnchor(signInButton.centerYAnchor),
+			NSLayoutConstraint(item: indicator, attribute: .Trailing, relatedBy: .Equal, toItem: signInButton, attribute: .Trailing, multiplier: 1, constant: -8)
 		])
 	}
 

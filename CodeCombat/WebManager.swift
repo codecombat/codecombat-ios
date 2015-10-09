@@ -57,9 +57,11 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     subscribe(self, channel: "application:error", selector: "onJSError:")
     subscribe(self, channel: "router:navigated", selector: Selector("onNavigated:"))
     webKitCheckupTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("checkWebKit"), userInfo: nil, repeats: true)
+
+	createLoginProtectionSpace()
   }
   
-  func createLoginProtectionSpace() {
+  private func createLoginProtectionSpace() {
     // http://stackoverflow.com/a/17997943/540620
     let url = rootURL
     loginProtectionSpace = NSURLProtectionSpace(host: url!.host!, port: url!.port!.integerValue, `protocol`: url!.scheme, realm: nil, authenticationMethod: nil)  //.HTTPDigest)
@@ -188,6 +190,8 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     let requestURL = NSURL(string: "/play", relativeToURL: rootURL)
     let request = NSMutableURLRequest(URL: requestURL!)
     webView!.loadRequest(request)
+
+	// TODO: Post notification that they logged in
     //print("going to log in to \(requestURL) when web view loads! \(loginScript)")
   }
   

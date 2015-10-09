@@ -40,7 +40,30 @@ class RootViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
+		// TODO: Check for signed in user and show game instead
 		viewController = SignInViewController()
 	}
+
+	//  func rememberUser() {
+	//    let credentialsValues = WebManager.sharedInstance.getCredentials()
+	//    if !credentialsValues.isEmpty {
+	//      let credential = credentialsValues.first! as NSURLCredential
+	//      if WebManager.sharedInstance.currentCredentialIsPseudoanonymous() {
+	//        if credential.user! != UIDevice.currentDevice().identifierForVendor?.UUIDString {
+	//          WebManager.sharedInstance.clearCredentials()
+	//          let defaults = NSUserDefaults.standardUserDefaults()
+	//          defaults.setBool(false, forKey: "pseudoanonymousUserCreated")
+	//          defaults.synchronize()
+	//          return
+	//        }
+	//      }
+	//      print("User \(credential.user) already connected with saved password; logging in.")
+	//      //User.sharedInstance.name = userJSON["name"] as? String
+	//      User.sharedInstance.email = credential.user!
+	//      User.sharedInstance.password = credential.password!
+	//      segueToMainMenu()
+	//      WebManager.sharedInstance.loginToGetAuthCookie()
+	//    }
+	//  }
 }
 
