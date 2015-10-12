@@ -38,7 +38,7 @@ class SignInViewController: UIViewController {
 		modal.signInButton.addTarget(self, action: "signIn:", forControlEvents: .TouchUpInside)
 		view.addSubview(modal)
 
-		modalTopConstraint = NSLayoutConstraint(item: modal, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Top, multiplier: 1, constant: 32)
+		modalTopConstraint = NSLayoutConstraint(item: modal, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Top, multiplier: 1, constant: 64)
 
 		NSLayoutConstraint.activateConstraints([
 			background.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor),
@@ -104,22 +104,13 @@ class SignInViewController: UIViewController {
 	// MARK: - Private
 
 	@objc private func keyboardWillChangeFrame(notification: NSNotification?) {
-		guard let info = notification?.userInfo,
-			value = info[UIKeyboardFrameEndUserInfoKey] as? NSValue,
-			duration = info[UIKeyboardAnimationDurationUserInfoKey] as? NSTimeInterval,
-			rawCurve = info[UIKeyboardAnimationCurveUserInfoKey] as? Int,
-			curve = UIViewAnimationCurve(rawValue: rawCurve)
-		else { return }
+		guard let info = notification?.userInfo, value = info[UIKeyboardFrameEndUserInfoKey] as? NSValue else { return }
 
 		let frame = value.CGRectValue()
 		let visible = max(0, view.bounds.height - frame.origin.y) > 0
 
-		UIView.beginAnimations("keyboard", context: nil)
-		UIView.setAnimationDuration(duration)
-		UIView.setAnimationCurve(curve)
-		modalTopConstraint.constant = 32 - (visible ? 16 : 0)
+		modalTopConstraint.constant = (visible ? 16 : 64)
 		modal.layoutIfNeeded()
-		UIView.commitAnimations()
 	}
 
 	private func showError(message: String? = nil) {
