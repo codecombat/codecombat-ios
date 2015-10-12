@@ -10,23 +10,28 @@ import UIKit
 import WebKit
 class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   
-  var webViewConfiguration: WKWebViewConfiguration!
-  var urlSesssionConfiguration: NSURLSessionConfiguration?
-  let allowedRoutePrefixes:[String] = ["http://localhost:3000", "https://codecombat.com"]
-  var operationQueue: NSOperationQueue?
-  var webView: WKWebView?  // Assign this if we create one, so that we can evaluate JS in its context.
-  var lastJSEvaluated: String?
-  var scriptMessageNotificationCenter:NSNotificationCenter!
-  var activeSubscriptions: [String: Int] = [:]
-  var activeObservers: [NSObject : [String]] = [:]
-  var loginProtectionSpace:NSURLProtectionSpace?
-  var hostReachibility:Reachability!
-  var authCookieIsFresh:Bool = false
-  var webKitCheckupTimer: NSTimer?
-  var webKitCheckupsMissed: Int = -1
-  var currentFragment: String?
-  var afterLoginFragment: String?
-  
+	var webViewConfiguration: WKWebViewConfiguration!
+	var urlSesssionConfiguration: NSURLSessionConfiguration?
+	let allowedRoutePrefixes = ["http://localhost:3000", "https://codecombat.com"]
+	var operationQueue: NSOperationQueue?
+	var webView: WKWebView?  // Assign this if we create one, so that we can evaluate JS in its context.
+	var lastJSEvaluated: String?
+	var scriptMessageNotificationCenter: NSNotificationCenter!
+	var activeSubscriptions = [String: Int]()
+	var activeObservers = [NSObject : [String]]()
+	let loginProtectionSpace: NSURLProtectionSpace? = {
+		// http://stackoverflow.com/a/17997943/540620
+		guard let host = rootURL.host, port = rootURL.port?.integerValue else { return nil }
+		return NSURLProtectionSpace(host: host, port: port, `protocol`: rootURL.scheme, realm: nil, authenticationMethod: nil)
+	}()
+
+	var hostReachibility:Reachability!
+	var authCookieIsFresh:Bool = false
+	var webKitCheckupTimer: NSTimer?
+	var webKitCheckupsMissed: Int = -1
+	var currentFragment: String?
+	var afterLoginFragment: String?
+
   class var sharedInstance:WebManager {
     return WebManagerSharedInstance
   }
@@ -55,18 +60,11 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     subscribe(self, channel: "application:error", selector: "onJSError:")
     subscribe(self, channel: "router:navigated", selector: Selector("onNavigated:"))
     webKitCheckupTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("checkWebKit"), userInfo: nil, repeats: true)
+  }
 
-	createLoginProtectionSpace()
-  }
-  
-  private func createLoginProtectionSpace() {
-    // http://stackoverflow.com/a/17997943/540620
-    let url = rootURL
-    loginProtectionSpace = NSURLProtectionSpace(host: url.host!, port: url.port!.integerValue, `protocol`: url.scheme, realm: nil, authenticationMethod: nil)
-  }
-  
   func saveUser() {
-    let credential = NSURLCredential(user: User.sharedInstance.email!, password: User.sharedInstance.password!, persistence: .Permanent)
+	guard let username = User.currentUser?.email, password = User.currentUser?.password else { return }
+    let credential = NSURLCredential(user: username, password: password, persistence: .Permanent)
     NSURLCredentialStorage.sharedCredentialStorage().setCredential(credential, forProtectionSpace: loginProtectionSpace!)
   }
   
@@ -132,8 +130,8 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     addScriptMessageHandlers()
     webView = WKWebView(frame: WebViewFrame, configuration: webViewConfiguration)
     webView!.navigationDelegate = self
-    if let email = User.sharedInstance.email {
-      logIn(email: email, password: User.sharedInstance.password!)
+    if let email = User.currentUser?.email, password = User.currentUser?.password {
+      logIn(email: email, password: password)
     }
   }
   
@@ -195,8 +193,9 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   
   //requires that User.email and User.password are set
   func createAnonymousUser() {
+	guard let username = User.currentUser?.email, password = User.currentUser?.password else { return }
     //should include something
-    let creationScript = "function makeAnonymousUser() { me.set('iosIdentifierForVendor','\(User.sharedInstance.email!)'); me.set('password','\(User.sharedInstance.password!)'); me.save();} if (!me.get('iosIdentifierForVendor') && me.get('anonymous')) setTimeout(makeAnonymousUser,1);"
+    let creationScript = "function makeAnonymousUser() { me.set('iosIdentifierForVendor','\(username)'); me.set('password','\(password)'); me.save();} if (!me.get('iosIdentifierForVendor') && me.get('anonymous')) setTimeout(makeAnonymousUser,1);"
     print("Injecting script \(creationScript)")
     let userScript = WKUserScript(source: creationScript, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
     webViewConfiguration!.userContentController.addUserScript(userScript)
@@ -370,4 +369,3 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
 private let WebManagerSharedInstance = WebManager()
 
 let colorEmoji = ["debug": "📘", "log": "📓", "info": "📔", "warn": "📙", "error": "📕"]
-//var emoji = "↖↗↘↙⏩⏪▶◀☀☁☎☔☕☝☺♈♉♊♋♌♍♎♏♐♑♒♓♠♣♥♦♨♿⚠⚡⚽⚾⛄⛎⛪⛲⛳⛵⛺⛽✂✈✊✋✌✨✳✴❌❎❓❔❕❗❤➡➿⬅⬆⬇⭐⭕〽㊗㊙🀄🅰🅱🅾🅿🆎🆒🆔🆕🆗🆙🆚🈁🈂🈚🈯🈳🈵🈶🈷🈸🈹🈺🉐🌀🌂🌃🌄🌅🌆🌇🌈🌊🌙🌟🌴🌵🌷🌸🌹🌺🌻🌾🍀🍁🍂🍃🍅🍆🍉🍊🍎🍓🍔🍘🍙🍚🍛🍜🍝🍞🍟🍡🍢🍣🍦🍧🍰🍱🍲🍳🍴🍵🍶🍸🍺🍻🎀🎁🎂🎃🎄🎅🎆🎇🎈🎉🎌🎍🎎🎏🎐🎑🎒🎓🎡🎢🎤🎥🎦🎧🎨🎩🎫🎬🎯🎰🎱🎵🎶🎷🎸🎺🎾🎿🏀🏁🏃🏄🏆🏈🏊🏠🏢🏣🏥🏦🏧🏨🏩🏪🏫🏬🏭🏯🏰🐍🐎🐑🐒🐔🐗🐘🐙🐚🐛🐟🐠🐤🐦🐧🐨🐫🐬🐭🐮🐯🐰🐱🐳🐴🐵🐶🐷🐸🐹🐺🐻👀👂👃👄👆👇👈👉👊👋👌👍👎👏👐👑👒👔👕👗👘👙👜👟👠👡👢👣👦👧👨👩👫👮👯👱👲👳👴👵👶👷👸👻👼👽👾👿💀💁💂💃💄💅💆💇💈💉💊💋💍💎💏💐💑💒💓💔💗💘💙💚💛💜💝💟💡💢💣💤💦💨💩💪💰💱💹💺💻💼💽💿📀📖📝📠📡📢📣📩📫📮📱📲📳📴📶📷📺📻📼🔊🔍🔑🔒🔓🔔🔝🔞🔥🔨🔫🔯🔰🔱🔲🔳🔴🕐🕑🕒🕓🕔🕕🕖🕗🕘🕙🕚🕛🗻🗼🗽😁😂😃😄😉😊😌😍😏😒😓😔😖😘😚😜😝😞😠😡😢😣😥😨😪😭😰😱😲😳😷🙅🙆🙇🙌🙏🚀🚃🚄🚅🚇🚉🚌🚏🚑🚒🚓🚕🚗🚙🚚🚢🚤🚥🚧🚬🚭🚲🚶🚹🚺🚻🚼🚽🚾🛀⏫⏬⏰⏳✅➕➖➗➰🃏🆑🆓🆖🆘🇦🇧🇨🇩🇪🇫🇬🇭🇮🇯🇰🇱🇲🇳🇴🇵🇶🇷🇸🇹🇺🇻🇼🇽🇾🇿🈲🈴🉑🌁🌉🌋🌌🌏🌑🌓🌔🌕🌛🌠🌰🌱🌼🌽🌿🍄🍇🍈🍌🍍🍏🍑🍒🍕🍖🍗🍠🍤🍥🍨🍩🍪🍫🍬🍭🍮🍯🍷🍹🎊🎋🎠🎣🎪🎭🎮🎲🎳🎴🎹🎻🎼🎽🏂🏡🏮🐌🐜🐝🐞🐡🐢🐣🐥🐩🐲🐼🐽🐾👅👓👖👚👛👝👞👤👪👰👹👺💌💕💖💞💠💥💧💫💬💮💯💲💳💴💵💸💾📁📂📃📄📅📆📇📈📉📊📋📌📍📎📏📐📑📒📓📔📕📗📘📙📚📛📜📞📟📤📥📦📧📨📪📰📹🔃🔋🔌🔎🔏🔐🔖🔗🔘🔙🔚🔛🔜🔟🔠🔡🔢🔣🔤🔦🔧🔩🔪🔮🔵🔶🔷🔸🔹🔼🔽🗾🗿😅😆😋😤😩😫😵😸😹😺😻😼😽😾😿🙀🙈🙉🙊🙋🙍🙎🚨🚩🚪🚫"

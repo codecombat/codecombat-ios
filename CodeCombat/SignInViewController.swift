@@ -70,7 +70,12 @@ class SignInViewController: UIViewController {
 		APIClient().performLoginRequest(username: username, password: password) { [weak self] result in
 			switch result {
 			case .Success(let user):
-				print("Signed in: \(user)")
+				WebManager.sharedInstance.authCookieIsFresh = true
+				dispatch_async(dispatch_get_main_queue()) {
+					WebManager.sharedInstance.saveUser()
+					User.currentUser = user
+					// TODO: Show game
+				}
 			case .Failure(let message):
 				dispatch_async(dispatch_get_main_queue()) {
 					self?.showError(message)
@@ -89,8 +94,8 @@ class SignInViewController: UIViewController {
 	}
 
 	@objc private func signUpLater(sender: AnyObject?) {
-		User.sharedInstance.email = UIDevice.currentDevice().identifierForVendor?.UUIDString
-		User.sharedInstance.password = User.randomPassword()
+		User.currentUser = User.anonymousUser()
+
 		WebManager.sharedInstance.saveUser()
 		WebManager.sharedInstance.createAnonymousUser()
 
@@ -164,71 +169,4 @@ extension SignInViewController: UITextFieldDelegate {
 //      }))
 //      presentViewController(memoryAlertController, animated: true, completion: nil)
 //    }
-//  }
-//  
-//  func performLoginRequest(username username:String, password:String) {
-//    let RootURL = WebManager.sharedInstance.rootURL
-//    let LoginURL:NSURL = NSURL(string: "/auth/login", relativeToURL: RootURL)!
-//    let LoginRequest:NSMutableURLRequest = NSMutableURLRequest(
-//      URL: LoginURL,
-//      cachePolicy: NSURLRequestCachePolicy.ReloadIgnoringLocalCacheData,
-//      timeoutInterval: 5.0)
-//    
-//    LoginRequest.HTTPMethod = "POST"
-//    LoginRequest.setValue("application/json",
-//      forHTTPHeaderField: "Content-Type")
-//    let LoginCredentials: [String:String] = [
-//      "username": username,
-//      "password": password
-//    ]
-//    let postData = try? NSJSONSerialization.dataWithJSONObject(LoginCredentials, options: NSJSONWritingOptions(rawValue: 0))
-//    LoginRequest.HTTPBody = postData
-//    let OperationQueue:NSOperationQueue = NSOperationQueue()
-//    //print("Going to send post data \(postData) for \(LoginCredentials)")
-//    
-//    NSURLConnection.sendAsynchronousRequest(LoginRequest, queue: OperationQueue, completionHandler: { [weak self] response, data, requestError -> Void in
-//      if (requestError != nil) {
-//        //This will trigger on unauthorized.
-//        var errorMessage:String
-//        if data == nil {
-//          errorMessage = NSLocalizedString("There was a request error: \(requestError).", comment:"")
-//        }
-//        else {
-//          let errorObject:AnyObject = try! NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers)
-//          let ErrorDictionaries = errorObject as? [[String:String]]
-//          if ErrorDictionaries![0]["property"] == "password" {
-//            errorMessage = NSLocalizedString("The password for your account is incorrect.", comment:"")
-//          } else if ErrorDictionaries![0]["property"] == "email" {
-//            errorMessage = NSLocalizedString("We couldn't find an account for that email.", comment:"")
-//          } else {
-//            errorMessage = NSLocalizedString("Your credentials are incorrect.", comment:"")
-//          }
-//        }
-//        dispatch_async(dispatch_get_main_queue(), {
-//          self!.handleLoginFailure(errorMessage)
-//        })
-//      } else {
-//        do {
-//          let userJSON = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers)
-//          guard (userJSON as? NSDictionary != nil) else {
-//            print("Error: userJSON isn't a Dictionary")
-//            return
-//          }
-//          print("JSON is: \(userJSON)")
-//          User.sharedInstance.name = (userJSON as! NSDictionary).objectForKey("name") as? String
-//          User.sharedInstance.email = (userJSON as! NSDictionary).objectForKey("email") as? String
-//          User.sharedInstance.password = password
-//          WebManager.sharedInstance.authCookieIsFresh = true
-//          dispatch_async(dispatch_get_main_queue(), {
-//            self!.loginActivityIndicatorView.stopAnimating()
-//            WebManager.sharedInstance.saveUser()
-//            self!.segueToMainMenu()
-//          })
-//        }
-//        catch let JSONError as NSError {
-//          print("There was an error serializing the user JSON")
-//          print("\(JSONError)")
-//        }
-//      }
-//      })
 //  }

@@ -1,14 +1,15 @@
-import Foundation
+import UIKit
 
-private let sharedUserInstance = User()
-
-class User {
+struct User {
 	var name: String?
-	var email: String?
-	var password: String?
+	var email: String
+	var password: String
 	var rawData: [String: AnyObject]?
 
-	init() {}
+	init(email: String, password: String) {
+		self.email = email
+		self.password = password
+	}
 
 	init?(dictionary: [String: AnyObject], password: String) {
 		guard let name = dictionary["name"] as? String,
@@ -23,11 +24,14 @@ class User {
 		rawData = dictionary
 	}
 
-	class var sharedInstance: User {
-		return sharedUserInstance
+	static var currentUser: User?
+
+	static func anonymousUser() -> User? {
+		guard let username = UIDevice.currentDevice().identifierForVendor?.UUIDString else { return nil }
+		return User(email: username, password: randomPassword())
 	}
 
-	class func randomPassword() -> String {
+	private static func randomPassword() -> String {
 		let characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXZY0123456789!@#$%^&*()90"
 		let charactersLength = UInt32(characters.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
 
