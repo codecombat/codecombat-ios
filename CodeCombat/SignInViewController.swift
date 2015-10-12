@@ -65,13 +65,19 @@ class SignInViewController: UIViewController {
 			return
 		}
 
-		modal.usernameTextField.enabled = false
-		modal.passwordTextField.enabled = false
-		modal.signInButton.enabled = false
-		modal.indicator.startAnimating()
+		modal.loading = true
 
-//		loginActivityIndicatorView.startAnimating()
-//		performLoginRequest(username: username, password: password)
+		APIClient().performLoginRequest(username: username, password: password) { [weak self] result in
+			switch result {
+			case .Success(let user):
+				print("Signed in: \(user)")
+			case .Failure(let message):
+				dispatch_async(dispatch_get_main_queue()) {
+					self?.showError(message)
+					self?.modal.loading = false
+				}
+			}
+		}
 	}
 
 	@objc private func signUp(sender: AnyObject?) {

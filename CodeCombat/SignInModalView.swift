@@ -48,6 +48,20 @@ class SignInModalView: UIImageView {
 		return view
 	}()
 
+	var loading = false {
+		didSet {
+			usernameTextField.enabled = !loading
+			passwordTextField.enabled = !loading
+			signInButton.enabled = !loading
+
+			if loading {
+				indicator.startAnimating()
+			} else {
+				indicator.stopAnimating()
+			}
+		}
+	}
+
 
 	// MARK: - Initializers
 

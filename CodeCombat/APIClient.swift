@@ -47,34 +47,35 @@ class APIClient {
 		request.HTTPBody = try? NSJSONSerialization.dataWithJSONObject(credentials, options: [])
 
 		session.dataTaskWithRequest(request) { data, _, error in
-			if let error = error {
-//				let errorObject:AnyObject = try! NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers)
-//				let ErrorDictionaries = errorObject as? [[String:String]]
-//				if ErrorDictionaries![0]["property"] == "password" {
-//				errorMessage = NSLocalizedString("The password for your account is incorrect.", comment:"")
-//				} else if ErrorDictionaries![0]["property"] == "email" {
-//				errorMessage = NSLocalizedString("We couldn't find an account for that email.", comment:"")
-//				} else {
-//				errorMessage = NSLocalizedString("Your credentials are incorrect.", comment:"")
-//				}
-//				}
-				completion(.Failure("Failed to sign in."))
+			if error != nil {
+				completion(.Failure("Failed to sign in. (-1)"))
 				return
 			}
 
-			guard let data = data,
-				JSON = try? NSJSONSerialization.JSONObjectWithData(data, options: []),
-				userJSON = JSON as? [String: AnyObject],
-				user = User(dictionary: userJSON, password: password)
-			else {
-				completion(.Failure("Failed to deserialize user JSON."))
+			guard let data = data, JSON = try? NSJSONSerialization.JSONObjectWithData(data, options: []) else {
+				completion(.Failure("Failed to sign in. (-2)"))
 				return
 			}
 
-//			User.sharedInstance = user
-//			WebManager.sharedInstance.authCookieIsFresh = true
+			if let userJSON = JSON as? [String: AnyObject], user = User(dictionary: userJSON, password: password) {
+//				User.sharedInstance = user
+//				WebManager.sharedInstance.authCookieIsFresh = true
+				completion(.Success(user))
+				return
+			}
 
-			completion(.Success(user))
+			if let errors = JSON as? [[String: String]], property = errors.first?["property"] {
+				if property == "password" {
+					completion(.Failure("The password for your account is incorrect."))
+				} else if property == "email" {
+					completion(.Failure("We couldn't find an account for that email."))
+				} else {
+					completion(.Failure("Your credentials are incorrect."))
+				}
+				return
+			}
+
+			completion(.Failure("Failed to sign in. (-3)"))
 		}.resume()
 	}
 }
