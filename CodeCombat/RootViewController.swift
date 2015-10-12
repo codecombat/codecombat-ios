@@ -35,13 +35,20 @@ class RootViewController: UIViewController {
 	}
 
 
+	// MARK: - Initializers
+
+	deinit {
+		NSNotificationCenter.defaultCenter().removeObserver(self)
+	}
+
+
 	// MARK: - UIViewController
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		update()
 
-		// TODO: Check for signed in user and show game instead
-		viewController = SignInViewController()
+		NSNotificationCenter.defaultCenter().addObserver(self, selector: "update", name: User.currentUserDidChangeNotificationName, object: nil)
 	}
 
 	//  func rememberUser() {
@@ -65,5 +72,19 @@ class RootViewController: UIViewController {
 	//      WebManager.sharedInstance.loginToGetAuthCookie()
 	//    }
 	//  }
-}
 
+	
+	// MARK: - Private
+
+	@objc private func update() {
+		if let user = User.currentUser {
+			if let viewController = viewController as? GameViewController {
+				viewController.user = user
+			} else {
+				viewController = GameViewController(user: user)
+			}
+		} else {
+			viewController = SignInViewController()
+		}
+	}
+}
