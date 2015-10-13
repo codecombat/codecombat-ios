@@ -51,33 +51,13 @@ class RootViewController: UIViewController {
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "update", name: User.currentUserDidChangeNotificationName, object: nil)
 	}
 
-	//  func rememberUser() {
-	//    let credentialsValues = WebManager.sharedInstance.getCredentials()
-	//    if !credentialsValues.isEmpty {
-	//      let credential = credentialsValues.first! as NSURLCredential
-	//      if WebManager.sharedInstance.currentCredentialIsPseudoanonymous() {
-	//        if credential.user! != UIDevice.currentDevice().identifierForVendor?.UUIDString {
-	//          WebManager.sharedInstance.clearCredentials()
-	//          let defaults = NSUserDefaults.standardUserDefaults()
-	//          defaults.setBool(false, forKey: "pseudoanonymousUserCreated")
-	//          defaults.synchronize()
-	//          return
-	//        }
-	//      }
-	//      print("User \(credential.user) already connected with saved password; logging in.")
-	//      //User.sharedInstance.name = userJSON["name"] as? String
-	//      User.sharedInstance.email = credential.user!
-	//      User.sharedInstance.password = credential.password!
-	//      segueToMainMenu()
-	//      WebManager.sharedInstance.loginToGetAuthCookie()
-	//    }
-	//  }
-
 	
 	// MARK: - Private
 
 	@objc private func update() {
 		if let user = User.currentUser {
+			// TODO: WebManager.sharedInstance.loginToGetAuthCookie()
+
 			if let viewController = viewController as? GameViewController {
 				viewController.user = user
 			} else {

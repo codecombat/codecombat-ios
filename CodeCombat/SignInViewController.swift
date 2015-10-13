@@ -8,6 +8,7 @@
 
 import UIKit
 
+/// View controller that manages signing and signing up.
 class SignInViewController: UIViewController {
 
 	// Properties
@@ -36,6 +37,7 @@ class SignInViewController: UIViewController {
 		modal.usernameTextField.delegate = self
 		modal.passwordTextField.delegate = self
 		modal.signInButton.addTarget(self, action: "signIn:", forControlEvents: .TouchUpInside)
+		modal.signUpLaterButton.addTarget(self, action: "signUpLater:", forControlEvents: .TouchUpInside)
 		view.addSubview(modal)
 
 		modalTopConstraint = NSLayoutConstraint(item: modal, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Top, multiplier: 1, constant: 64)
@@ -67,14 +69,13 @@ class SignInViewController: UIViewController {
 
 		modal.loading = true
 
-		APIClient().performLoginRequest(username: username, password: password) { [weak self] result in
+		APIClient().signIn(username: username, password: password) { [weak self] result in
 			switch result {
 			case .Success(let user):
 				WebManager.sharedInstance.authCookieIsFresh = true
 				dispatch_async(dispatch_get_main_queue()) {
-					WebManager.sharedInstance.saveUser()
+					// WebManager.sharedInstance.authCookieIsFresh = true
 					User.currentUser = user
-					// TODO: Show game
 				}
 			case .Failure(let message):
 				dispatch_async(dispatch_get_main_queue()) {
@@ -94,15 +95,8 @@ class SignInViewController: UIViewController {
 	}
 
 	@objc private func signUpLater(sender: AnyObject?) {
-		User.currentUser = User.anonymousUser()
-
-		WebManager.sharedInstance.saveUser()
-		WebManager.sharedInstance.createAnonymousUser()
-
 		NSUserDefaults.standardUserDefaults().setBool(true, forKey: "pseudoanonymousUserCreated")
-
-		// TODO: Show game
-//		self.performSegueWithIdentifier("successfulLoginSegue", sender:self)
+		User.currentUser = User.anonymousUser()
 	}
 
 
@@ -114,7 +108,7 @@ class SignInViewController: UIViewController {
 		let frame = value.CGRectValue()
 		let visible = max(0, view.bounds.height - frame.origin.y) > 0
 
-		modalTopConstraint.constant = (visible ? 16 : 64)
+		modalTopConstraint.constant = (visible ? -8 : 64)
 		modal.layoutIfNeeded()
 	}
 
@@ -137,8 +131,7 @@ extension SignInViewController: UITextFieldDelegate {
 		return false
 	}
 }
-//  @IBOutlet weak var loginActivityIndicatorView: UIActivityIndicatorView!
-//
+
 //  override func viewDidLoad() {
 //    super.viewDidLoad()
 //    NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("onWebsiteNotReachable"), name: "websiteNotReachable", object: nil)

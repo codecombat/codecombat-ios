@@ -12,6 +12,17 @@ class SignInModalView: UIImageView {
 
 	// MARK: - Properties
 
+	private let stackView: UIStackView = {
+		let view = UIStackView()
+		view.translatesAutoresizingMaskIntoConstraints = false
+		view.axis = .Vertical
+		view.distribution = .EqualSpacing
+		view.layoutMarginsRelativeArrangement = true
+		view.layoutMargins = UIEdgeInsets(top: 32, left: 32, bottom: 32, right: 32)
+		view.spacing = 24
+		return view
+	}()
+
 	let usernameTextField: UITextField = {
 		let field = UITextField()
 		field.translatesAutoresizingMaskIntoConstraints = false
@@ -42,6 +53,14 @@ class SignInModalView: UIImageView {
 		return button
 	}()
 
+	let signUpLaterButton: UIButton = {
+		let button = UIButton()
+		button.translatesAutoresizingMaskIntoConstraints = false
+		button.setTitle("Sign Up Later", forState: .Normal)
+		button.setTitleColor(Color.darkBrown, forState: .Normal)
+		return button
+	}()
+
 	let indicator: UIActivityIndicatorView = {
 		let view = UIActivityIndicatorView(activityIndicatorStyle: .White)
 		view.translatesAutoresizingMaskIntoConstraints = false
@@ -69,30 +88,33 @@ class SignInModalView: UIImageView {
 		super.init(image: UIImage(named: "loginModalBackground"))
 		userInteractionEnabled = true
 
+		addSubview(stackView)
+
 		let logo = UIImageView(image: UIImage(named: "Logo"))
 		logo.translatesAutoresizingMaskIntoConstraints = false
 		logo.setContentCompressionResistancePriority(UILayoutPriorityDefaultLow, forAxis: .Horizontal)
 		logo.contentMode = .ScaleAspectFit
-		addSubview(logo)
+		stackView.addArrangedSubview(logo)
 
 		let fields = UIImageView(image: UIImage(named: "loginInfoBackground"))
 		fields.translatesAutoresizingMaskIntoConstraints = false
 		fields.userInteractionEnabled = true
-		addSubview(fields)
+		stackView.addArrangedSubview(fields)
 
 		fields.addSubview(usernameTextField)
 		fields.addSubview(passwordTextField)
 
-		addSubview(signInButton)
+		stackView.addArrangedSubview(signInButton)
 		signInButton.addSubview(indicator)
 
-		NSLayoutConstraint.activateConstraints([
-			logo.centerXAnchor.constraintEqualToAnchor(centerXAnchor),
-			NSLayoutConstraint(item: logo, attribute: .Top, relatedBy: .Equal, toItem: self, attribute: .Top, multiplier: 1, constant: -8),
-			NSLayoutConstraint(item: logo, attribute: .Width, relatedBy: .Equal, toItem: self, attribute: .Width, multiplier: 0.8, constant: 0),
+		stackView.addArrangedSubview(signUpLaterButton)
 
-			fields.centerXAnchor.constraintEqualToAnchor(centerXAnchor),
-			NSLayoutConstraint(item: fields, attribute: .Top, relatedBy: .Equal, toItem: logo, attribute: .Bottom, multiplier: 1, constant: -8),
+		NSLayoutConstraint.activateConstraints([
+			stackView.leadingAnchor.constraintEqualToAnchor(leadingAnchor),
+			stackView.trailingAnchor.constraintEqualToAnchor(trailingAnchor),
+			stackView.topAnchor.constraintEqualToAnchor(topAnchor),
+
+			NSLayoutConstraint(item: logo, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 144),
 
 			usernameTextField.centerXAnchor.constraintEqualToAnchor(centerXAnchor),
 			usernameTextField.topAnchor.constraintEqualToAnchor(fields.topAnchor),
@@ -105,9 +127,6 @@ class SignInModalView: UIImageView {
 			passwordTextField.heightAnchor.constraintEqualToAnchor(usernameTextField.heightAnchor),
 			NSLayoutConstraint(item: passwordTextField, attribute: .Top, relatedBy: .Equal, toItem: usernameTextField, attribute: .Bottom, multiplier: 1, constant: 0),
 
-			signInButton.widthAnchor.constraintEqualToAnchor(fields.widthAnchor),
-			signInButton.centerXAnchor.constraintEqualToAnchor(centerXAnchor),
-			NSLayoutConstraint(item: signInButton, attribute: .Top, relatedBy: .Equal, toItem: fields, attribute: .Bottom, multiplier: 1, constant: 16),
 			NSLayoutConstraint(item: signInButton, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 44),
 
 			indicator.centerYAnchor.constraintEqualToAnchor(signInButton.centerYAnchor),

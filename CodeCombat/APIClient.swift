@@ -8,11 +8,17 @@
 
 import Foundation
 
+/// Generic API result.
 enum APIResult<T> {
+	/// The request succeed and has an associated generic value.
 	case Success(T)
+
+	/// The request failed and has an associated error string.
 	case Failure(String)
 }
 
+
+/// Client for communicating with the API.
 class APIClient {
 
 	// MARK: - Properties
@@ -31,7 +37,8 @@ class APIClient {
 
 	// MARK: - Requests
 
-	func performLoginRequest(username username: String, password: String, completion: APIResult<User> -> Void) {
+	/// Sign in with a username and password.
+	func signIn(username username: String, password: String, completion: APIResult<User> -> Void) {
 		guard let URL = NSURL(string: "/auth/login", relativeToURL: baseURL) else {
 			return
 		}
@@ -58,8 +65,6 @@ class APIClient {
 			}
 
 			if let userJSON = JSON as? [String: AnyObject], user = User(dictionary: userJSON, password: password) {
-//				User.sharedInstance = user
-//				WebManager.sharedInstance.authCookieIsFresh = true
 				completion(.Success(user))
 				return
 			}

@@ -12,6 +12,7 @@ import UIKit
 
 //var autoLoggedIn: Bool = false  // Wish class variables were supported.
 
+/// Main game view controller. A current user is required to initialize this view controller.
 class GameViewController: UIViewController {
 
 	// MARK: - Properties
