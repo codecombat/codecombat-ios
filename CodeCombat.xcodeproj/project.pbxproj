@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		21162BEA1BC5996B00910240 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21162BE91BC5996B00910240 /* RootViewController.swift */; };
+		212D1B341BD05D2E00B1CBEA /* GameWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212D1B331BD05D2E00B1CBEA /* GameWebView.swift */; };
 		2164990C1BC73D73003E9C4A /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2164990B1BC73D73003E9C4A /* APIClient.swift */; };
 		216DCBA41BC5BEA20054FBFF /* SignInBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216DCBA31BC5BEA20054FBFF /* SignInBackgroundView.swift */; };
 		21BC9E531BC5CF8700467479 /* SignInModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BC9E521BC5CF8700467479 /* SignInModalView.swift */; };
@@ -161,6 +162,7 @@
 
 /* Begin PBXFileReference section */
 		21162BE91BC5996B00910240 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
+		212D1B331BD05D2E00B1CBEA /* GameWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameWebView.swift; sourceTree = "<group>"; };
 		2164990B1BC73D73003E9C4A /* APIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		216DCBA31BC5BEA20054FBFF /* SignInBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInBackgroundView.swift; sourceTree = "<group>"; };
 		21BC9E521BC5CF8700467479 /* SignInModalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInModalView.swift; sourceTree = "<group>"; };
@@ -456,6 +458,7 @@
 				C827D1D71994934D00B5724C /* Play */,
 				287AE1031992948500EEE4F0 /* Effects */,
 				216DCBA11BC5BE920054FBFF /* Cells */,
+				212D1B331BD05D2E00B1CBEA /* GameWebView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -851,6 +854,7 @@
 				2879938419FFF741005F6369 /* ArgumentOverlayView.swift in Sources */,
 				287AE0FD199293B600EEE4F0 /* NSAttributedStringMarkdownParser.m in Sources */,
 				2873D9861A11883E006358BA /* MemoryWarningViewController.swift in Sources */,
+				212D1B341BD05D2E00B1CBEA /* GameWebView.swift in Sources */,
 				287AE109199294CC00EEE4F0 /* ParticleView.swift in Sources */,
 				280D7E5C19AE2807004F95D4 /* DocumentNode.swift in Sources */,
 			);

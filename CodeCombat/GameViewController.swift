@@ -17,7 +17,17 @@ class GameViewController: UIViewController {
 
 	// MARK: - Properties
 
-	var user: User
+	var user: User {
+		didSet {
+			updateUser()
+		}
+	}
+
+	let webView: GameWebView = {
+		let view = GameWebView()
+		view.translatesAutoresizingMaskIntoConstraints = false
+		return view
+	}()
 
 
 	// MARK: - Initializers
@@ -25,6 +35,7 @@ class GameViewController: UIViewController {
 	init(user: User) {
 		self.user = user
 		super.init(nibName: nil, bundle: nil)
+		updateUser()
 	}
 
 	required init?(coder aDecoder: NSCoder) {
@@ -36,14 +47,29 @@ class GameViewController: UIViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		view.backgroundColor = .redColor()
 
-		let tap = UITapGestureRecognizer(target: self, action: "signOut")
-		view.addGestureRecognizer(tap)
+		view.addSubview(webView)
+
+		NSLayoutConstraint.activateConstraints([
+			webView.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor),
+			webView.trailingAnchor.constraintEqualToAnchor(view.trailingAnchor),
+			webView.topAnchor.constraintEqualToAnchor(view.topAnchor),
+			webView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor)
+		])
 	}
+
+
+	// MARK: - Actions
 
 	@objc private func signOut() {
 		User.currentUser = nil
+	}
+
+
+	// MARK: - Private
+
+	private func updateUser() {
+		webView.user = user
 	}
 
 //  var webManager = WebManager.sharedInstance

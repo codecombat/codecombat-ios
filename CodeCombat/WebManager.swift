@@ -19,11 +19,6 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
 	var scriptMessageNotificationCenter: NSNotificationCenter!
 	var activeSubscriptions = [String: Int]()
 	var activeObservers = [NSObject : [String]]()
-	let loginProtectionSpace: NSURLProtectionSpace? = {
-		// http://stackoverflow.com/a/17997943/540620
-		guard let host = rootURL.host, port = rootURL.port?.integerValue else { return nil }
-		return NSURLProtectionSpace(host: host, port: port, `protocol`: rootURL.scheme, realm: nil, authenticationMethod: nil)
-	}()
 
 	var hostReachibility:Reachability!
 	var authCookieIsFresh:Bool = false
@@ -60,68 +55,6 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     subscribe(self, channel: "application:error", selector: "onJSError:")
     subscribe(self, channel: "router:navigated", selector: Selector("onNavigated:"))
     webKitCheckupTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("checkWebKit"), userInfo: nil, repeats: true)
-  }
-
-  func saveUser() {
-	guard let username = User.currentUser?.email, password = User.currentUser?.password else { return }
-    let credential = NSURLCredential(user: username, password: password, persistence: .Permanent)
-    NSURLCredentialStorage.sharedCredentialStorage().setCredential(credential, forProtectionSpace: loginProtectionSpace!)
-  }
-  
-  func clearCredentials() {
-    let credentialsValues = getCredentials()
-    for credential in credentialsValues {
-      NSURLCredentialStorage.sharedCredentialStorage().removeCredential(credential, forProtectionSpace: loginProtectionSpace!)
-    }
-  }
-  
-  func currentCredentialIsPseudoanonymous() -> Bool {
-    let credentials = getCredentials()
-    if !credentials.isEmpty && credentials.first!.user != nil && (credentials.first!.user!).characters.count == 36 && NSUserDefaults.standardUserDefaults().boolForKey("pseudoanonymousUserCreated") {
-      let uuid = NSUUID(UUIDString: credentials.first!.user!)
-      return uuid != nil
-    }
-    return false
-  }
-  
-  func getCredentials() -> [NSURLCredential] {
-    let credentialsDictionary = NSURLCredentialStorage.sharedCredentialStorage().credentialsForProtectionSpace(loginProtectionSpace!)
-    if credentialsDictionary == nil {
-      return []
-    }
-    return Array(credentialsDictionary!.values)
-  }
-  
-  func loginToGetAuthCookie() {
-    let credentials = getCredentials()
-    if credentials.isEmpty {
-      return
-    }
-    let username = credentials.first!.user!
-    let password = credentials.first!.password!
-    let loginURL = NSURL(string: "/auth/login", relativeToURL: rootURL)!
-    
-    let loginRequest = NSMutableURLRequest(URL: loginURL)
-    loginRequest.HTTPMethod = "POST"
-    loginRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-  
-    let loginCredentials:[String:String] = ["username":username, "password":password]
-    let postData = try? NSJSONSerialization.dataWithJSONObject(loginCredentials, options: NSJSONWritingOptions())
-    loginRequest.HTTPBody = postData
-    NSURLConnection.sendAsynchronousRequest(loginRequest, queue: NSOperationQueue.mainQueue()) { (response, data, error) -> Void in
-      if error != nil {
-        dispatch_async(dispatch_get_main_queue(), {
-          print("Web manager failed to log in")
-          NSNotificationCenter.defaultCenter().postNotificationName("loginFailure", object: nil)
-        })
-      } else {
-        self.authCookieIsFresh = true
-        dispatch_async(dispatch_get_main_queue(), {
-          print("Web manager successfully logged in")
-          NSNotificationCenter.defaultCenter().postNotificationName("loginSuccess", object: nil)
-        })
-      }
-    }
   }
   
   private func instantiateWebView() {
