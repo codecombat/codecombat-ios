@@ -22,6 +22,8 @@ class AppDelegate: UIResponder {
 		window.rootViewController = RootViewController()
 		return window
 	}()
+
+	let reachability = Reachability(hostName: rootURL.host)
 }
 
 
@@ -36,6 +38,9 @@ extension AppDelegate: UIApplicationDelegate {
 
 		// Initialize the IAP helper
 		CodeCombatIAPHelper.sharedInstance
+
+		// Start Reachability
+		reachability.startNotifier()
 
 		// Display window
 		window?.makeKeyAndVisible()

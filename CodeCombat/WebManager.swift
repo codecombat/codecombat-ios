@@ -63,9 +63,9 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     addScriptMessageHandlers()
     webView = WKWebView(frame: WebViewFrame, configuration: webViewConfiguration)
     webView!.navigationDelegate = self
-    if let email = User.currentUser?.email, password = User.currentUser?.password {
-      logIn(email: email, password: password)
-    }
+//    if let email = User.currentUser?.email, password = User.currentUser?.password {
+//      logIn(email: email, password: password)
+//    }
   }
   
   func removeAllUserScripts() {
@@ -109,19 +109,6 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
       publish("router:navigate", event: ["route": afterLoginFragment!])
       afterLoginFragment = nil
     }
-  }
-  
-  func logIn(email email: String, password: String) {
-    // TODO: BUG: we wait a second to make sure that the loginScript is ready to run, but that's a mad hack, and meanwhile the user is looking at the page refresh momentarily after the screen loads.
-    let loginScript = "function foobarbaz() {if(me.get('anonymous') && !me.get('iosIdentifierForVendor')){ require('core/auth').loginUser({'email':'\(email)','password':'\(password)'});} } setTimeout(foobarbaz, 1000);"
-    let userScript = WKUserScript(source: loginScript, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
-    webViewConfiguration!.userContentController.addUserScript(userScript)
-    let requestURL = NSURL(string: "/play", relativeToURL: rootURL)
-    let request = NSMutableURLRequest(URL: requestURL!)
-    webView!.loadRequest(request)
-
-	// TODO: Post notification that they logged in
-    //print("going to log in to \(requestURL) when web view loads! \(loginScript)")
   }
   
   //requires that User.email and User.password are set

@@ -16,13 +16,15 @@ class GameWebView: WKWebView {
 	var user: User? {
 		didSet {
 			guard let user = user  else { return }
-			let loginScript = "" +
-"function __signIn() {" +
-"  if(me.get('anonymous') && !me.get('iosIdentifierForVendor')) {" +
-"    require('core/auth').loginUser({'email':'\(user.email)','password':'\(user.password)'});" +
-"  }" +
-"}" +
-"setTimeout(__signIn, 1000);"
+			
+			let loginScript = [
+				"function __signIn() {",
+				"  if(me.get('anonymous') && !me.get('iosIdentifierForVendor')) {",
+				"    require('core/auth').loginUser({'email':'\(user.email)','password':'\(user.password)'});",
+				"  }",
+				"}",
+				"setTimeout(__signIn, 1000);"
+			].joinWithSeparator("\n")
 
 			let userScript = WKUserScript(source: loginScript, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
 			configuration.userContentController.addUserScript(userScript)
@@ -33,6 +35,10 @@ class GameWebView: WKWebView {
 		}
 	}
 
+	private(set) var currentFragment: String?
+
+	let notificationCenter = NSNotificationCenter()
+
 
 	// MARK: - Initializers
 
@@ -41,6 +47,27 @@ class GameWebView: WKWebView {
 
 		backgroundColor = Color.darkBrown
 		scrollView.scrollEnabled = false
+
+		// TODO: Hookup user script to forward events to notification center
+
+		notificationCenter.addObserver(self, selector: "didReceiveJavaScriptError:", name: "application:error", object: nil)
+		notificationCenter.addObserver(self, selector: "didNavigate:", name: "router:navigated", object: nil)
+	}
+
+	deinit {
+		notificationCenter.removeObserver(self)
+	}
+
+
+	// MARK: - Notifications
+
+	@objc private func didReceiveJavaScriptError(notification: NSNotification) {
+		guard let message = notification.userInfo?["message"] as? String else { return }
+		print("💔💔💔 Unhandled JS error in application: \(message)")
+	}
+
+	@objc private func didNavigate(notification: NSNotification) {
+//		currentFragment = notification.userInfo?["route"] as? String
 	}
 }
 

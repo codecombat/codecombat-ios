@@ -46,9 +46,9 @@ class RootViewController: UIViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		update()
 
 		NSNotificationCenter.defaultCenter().addObserver(self, selector: "update", name: User.currentUserDidChangeNotificationName, object: nil)
+		update()
 	}
 
 	

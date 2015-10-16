@@ -130,6 +130,10 @@ extension SignInViewController: UITextFieldDelegate {
 		signIn(textField)
 		return false
 	}
+
+	func textFieldDidEndEditing(textField: UITextField) {
+		textField.layoutIfNeeded()
+	}
 }
 
 //  override func viewDidLoad() {
