@@ -37,8 +37,6 @@ class GameWebView: WKWebView {
 
 	private(set) var currentFragment: String?
 
-	let notificationCenter = NSNotificationCenter()
-
 
 	// MARK: - Initializers
 
@@ -48,26 +46,17 @@ class GameWebView: WKWebView {
 		backgroundColor = Color.darkBrown
 		scrollView.scrollEnabled = false
 
-		// TODO: Hookup user script to forward events to notification center
-
-		notificationCenter.addObserver(self, selector: "didReceiveJavaScriptError:", name: "application:error", object: nil)
-		notificationCenter.addObserver(self, selector: "didNavigate:", name: "router:navigated", object: nil)
-	}
-
-	deinit {
-		notificationCenter.removeObserver(self)
-	}
-
-
-	// MARK: - Notifications
-
-	@objc private func didReceiveJavaScriptError(notification: NSNotification) {
-		guard let message = notification.userInfo?["message"] as? String else { return }
-		print("💔💔💔 Unhandled JS error in application: \(message)")
-	}
-
-	@objc private func didNavigate(notification: NSNotification) {
-//		currentFragment = notification.userInfo?["route"] as? String
+		configuration.userContentController.addScriptMessageHandler(self, name: "notification")
 	}
 }
 
+
+extension GameWebView: WKScriptMessageHandler {
+	func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+		guard let body = message.body as? [String: AnyObject], name = body["name"] as? String else { return }
+
+		if name == "signOut" {
+			User.currentUser = nil
+		}
+	}
+}
