@@ -20,7 +20,7 @@ struct User {
 	}
 
 	init?(dictionary: [String: AnyObject], password: String) {
-		guard let username = dictionary["username"] as? String else { return nil }
+		guard let username = dictionary["email"] as? String else { return nil }
 
 		self.username = username
 		self.password = password
