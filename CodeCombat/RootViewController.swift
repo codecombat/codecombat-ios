@@ -55,16 +55,17 @@ class RootViewController: UIViewController {
 	// MARK: - Private
 
 	@objc private func update() {
-		if let user = User.currentUser {
-			// TODO: WebManager.sharedInstance.loginToGetAuthCookie()
-
-			if let viewController = viewController as? GameViewController {
-				viewController.user = user
-			} else {
-				viewController = GameViewController(user: user)
-			}
-		} else {
+		guard let user = User.currentUser else {
 			viewController = SignInViewController()
+			return
+		}
+
+		// TODO: WebManager.sharedInstance.loginToGetAuthCookie()
+
+		if let viewController = viewController as? GameViewController {
+			viewController.user = user
+		} else {
+			viewController = GameViewController(user: user)
 		}
 	}
 }

@@ -4,40 +4,36 @@ struct User {
 
 	// MARK: - Properties
 
-	var name: String?
-	var email: String
+	var username: String
 	var password: String
-	var rawData: [String: AnyObject]?
+
+	var isAnonymous: Bool {
+		return !username.containsString("@")
+	}
 
 
 	// MARK: - Initializers
 
-	init(email: String, password: String) {
-		self.email = email
+	init(username: String, password: String) {
+		self.username = username
 		self.password = password
 	}
 
 	init?(dictionary: [String: AnyObject], password: String) {
-		guard let name = dictionary["name"] as? String,
-			email = dictionary["email"] as? String
-		else {
-			return nil
-		}
+		guard let username = dictionary["username"] as? String else { return nil }
 
-		self.name = name
-		self.email = email
+		self.username = username
 		self.password = password
-		rawData = dictionary
 	}
 
 	init?(credential: NSURLCredential) {
-		guard let email = credential.user,
+		guard let username = credential.user,
 			password = credential.password
 		else {
 			return nil
 		}
 
-		self.email = email
+		self.username = username
 		self.password = password
 	}
 
@@ -61,7 +57,7 @@ struct User {
 			else { return }
 
 			for (username, credential) in credentials {
-				if username == user.email {
+				if username == user.username {
 					storage.removeCredential(credential, forProtectionSpace: protectionSpace)
 				}
 			}
@@ -80,14 +76,14 @@ struct User {
 
 	static func anonymousUser() -> User? {
 		guard let username = UIDevice.currentDevice().identifierForVendor?.UUIDString else { return nil }
-		return User(email: username, password: randomPassword())
+		return User(username: username, password: randomPassword())
 	}
 
 
 	// MARK: - Private
 
 	private var credential: NSURLCredential {
-		return NSURLCredential(user: email, password: password, persistence: .Permanent)
+		return NSURLCredential(user: username, password: password, persistence: .Permanent)
 	}
 
 	private static let protectionSpace: NSURLProtectionSpace? = {

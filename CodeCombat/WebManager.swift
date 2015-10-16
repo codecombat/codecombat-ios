@@ -113,7 +113,7 @@ class WebManager: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
   
   //requires that User.email and User.password are set
   func createAnonymousUser() {
-	guard let username = User.currentUser?.email, password = User.currentUser?.password else { return }
+	guard let username = User.currentUser?.username, password = User.currentUser?.password else { return }
     //should include something
     let creationScript = "function makeAnonymousUser() { me.set('iosIdentifierForVendor','\(username)'); me.set('password','\(password)'); me.save();} if (!me.get('iosIdentifierForVendor') && me.get('anonymous')) setTimeout(makeAnonymousUser,1);"
     print("Injecting script \(creationScript)")

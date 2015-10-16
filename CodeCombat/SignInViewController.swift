@@ -95,7 +95,6 @@ class SignInViewController: UIViewController {
 	}
 
 	@objc private func signUpLater(sender: AnyObject?) {
-		NSUserDefaults.standardUserDefaults().setBool(true, forKey: "pseudoanonymousUserCreated")
 		User.currentUser = User.anonymousUser()
 	}
 

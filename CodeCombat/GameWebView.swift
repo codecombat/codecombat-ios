@@ -16,17 +16,31 @@ class GameWebView: WKWebView {
 	var user: User? {
 		didSet {
 			guard let user = user  else { return }
-			
-			let loginScript = [
-				"function __signIn() {",
-				"  if(me.get('anonymous') && !me.get('iosIdentifierForVendor')) {",
-				"    require('core/auth').loginUser({'email':'\(user.email)','password':'\(user.password)'});",
-				"  }",
-				"}",
-				"setTimeout(__signIn, 1000);"
-			].joinWithSeparator("\n")
 
-			let userScript = WKUserScript(source: loginScript, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
+			let script: String
+
+			if user.isAnonymous {
+				script = [
+					"function __signInAnonymous() {",
+					"  me.set('iosIdentifierForVendor','\(user.username)');",
+					"  me.set('password','\(user.password)'); me.save();",
+					"}",
+					"if (!me.get('iosIdentifierForVendor') && me.get('anonymous')) {",
+					"  setTimeout(__signInAnonymous, 1);",
+					"}"
+				].joinWithSeparator("\n")
+			} else {
+				script = [
+					"function __signIn() {",
+					"  if(me.get('anonymous') && !me.get('iosIdentifierForVendor')) {",
+					"    require('core/auth').loginUser({'email':'\(user.username)','password':'\(user.password)'});",
+					"  }",
+					"}",
+					"setTimeout(__signIn, 1000);"
+				].joinWithSeparator("\n")
+			}
+
+			let userScript = WKUserScript(source: script, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
 			configuration.userContentController.addUserScript(userScript)
 
 			if let URL = NSURL(string: "/play", relativeToURL: rootURL) {
