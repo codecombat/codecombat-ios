@@ -64,9 +64,9 @@ class TomeInventoryViewController: UIViewController, UIScrollViewDelegate, UIGes
   }
   
   private func addScriptMessageNotificationObservers() {
-    let webManager = WebManager.sharedInstance
-    webManager.subscribe(self, channel: "tome:palette-cleared", selector: Selector("onInventoryCleared:"))
-    webManager.subscribe(self, channel: "tome:palette-updated", selector: Selector("onInventoryUpdated:"))
+//    let webManager = WebManager.sharedInstance
+//    webManager.subscribe(self, channel: "tome:palette-cleared", selector: Selector("onInventoryCleared:"))
+//    webManager.subscribe(self, channel: "tome:palette-updated", selector: Selector("onInventoryUpdated:"))
   }
   
   func onInventoryCleared(note: NSNotification) {

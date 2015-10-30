@@ -9,22 +9,45 @@
 import UIKit
 import HockeySDK
 
+let rootURL = NSURL(string: "http://localhost:3000/")!
+//let rootURL = NSURL(string: "https://codecombat.com:443/")!
+
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-  
-  var window: UIWindow?
-  
-  func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+class AppDelegate: UIResponder {
+
+	// MARK: - Properties
+
+	lazy var window: UIWindow? = {
+		let window = UIWindow(frame: UIScreen.mainScreen().bounds)
+		window.rootViewController = RootViewController()
+		return window
+	}()
+
+	let reachability = Reachability(hostName: rootURL.host)
+}
+
+
+extension AppDelegate: UIApplicationDelegate {
+	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
 
 		// Setup Hockey
 		let hockey = BITHockeyManager.sharedHockeyManager()
 		hockey.configureWithIdentifier("3428ced3f76216ff4074389af01a3ef7")
-    hockey.startManager()
-    hockey.authenticator.authenticateInstallation()
-    
-    // Initialize the IAP helper ASAP
-    CodeCombatIAPHelper.sharedInstance
+		hockey.startManager()
+		hockey.authenticator.authenticateInstallation()
 
-    return true
-  }
+		// Custom User-Agent
+		NSUserDefaults.standardUserDefaults().registerDefaults(["UserAgent": "CodeCombat-iPad"])
+
+		// Initialize the IAP helper
+		CodeCombatIAPHelper.sharedInstance
+
+		// Start Reachability
+		reachability.startNotifier()
+
+		// Display window
+		window?.makeKeyAndVisible()
+
+		return true
+	}
 }
