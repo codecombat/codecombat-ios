@@ -69,6 +69,7 @@ class APIClient {
 				return
 			}
 
+			// TODO: /auth/login error responses changed 2016-04-11, so this may need updating. 
 			if let errors = JSON as? [[String: String]], property = errors.first?["property"] {
 				if property == "password" {
 					completion(.Failure("The password for your account is incorrect."))
